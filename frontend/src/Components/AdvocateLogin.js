@@ -34,11 +34,6 @@ const AdvocateLogin = () => {
     setError('');
     setLoading(true);
 
-    if (!turnstileToken) {
-      setError('Please complete the CAPTCHA verification');
-      setLoading(false);
-      return;
-    }
 
     try {
       // FIX #1: Uses centralized api instance — no hardcoded URL
@@ -101,35 +96,10 @@ const AdvocateLogin = () => {
               required
             />
           </div>
-          <div className="advocate-form-group turnstile-container">
-            {!isDev && (
-              <Turnstile
-                ref={turnstileRef}
-                siteKey={siteKey}
-                onSuccess={(token) => {
-                  setTurnstileToken(token);
-                  setError('');
-                }}
-                onError={() => {
-                  setError('CAPTCHA verification failed. Please try again.');
-                  setTurnstileToken(null);
-                }}
-                onExpire={() => {
-                  setError('CAPTCHA expired. Please verify again.');
-                  setTurnstileToken(null);
-                }}
-                theme="light"
-                size="normal"
-                responseField={false}
-                refreshExpired="auto"
-                appearance="interaction-only"
-              />
-            )}
-          </div>
           <button 
             type="submit" 
             className="advocate-submit-btn"
-            disabled={loading || !turnstileToken}
+            disabled={loading}
           >
             {loading ? 'Processing...' : 'Login'}
           </button>

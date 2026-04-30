@@ -47,7 +47,7 @@ const LitigantLogin = () => {
   const turnstileRef = useRef(null);
 
   // Use the direct site key instead of environment variable
-  const siteKey = "0x4AAAAAABUex35iY9OmXSBB";
+  const siteKey = process.env.REACT_APP_TURNSTILE_SITE_KEY;
   
   const handleLoginChange = (e) => {
     setLoginData({
@@ -99,11 +99,6 @@ const LitigantLogin = () => {
     setError('');
     setLoading(true);
 
-    if (!turnstileToken) {
-      setError('Please complete the CAPTCHA verification');
-      setLoading(false);
-      return;
-    }
 
     try {
       const response = await axios.post('https://nyaay-desk-app-backend.onrender.com/api/litigant/login', {
@@ -130,10 +125,6 @@ const LitigantLogin = () => {
   const handleForgotPassword = async () => {
     if (!loginData.email) {
       setError('Please enter your email address first');
-      return;
-    }
-    if (!turnstileToken) {
-      setError('Please complete the CAPTCHA verification');
       return;
     }
     setError('');
@@ -240,31 +231,6 @@ const LitigantLogin = () => {
             required
           />
         </div>
-        <div className="litigant-form-group turnstile-container">
-          {window.location.hostname !== 'localhost' && (
-            <Turnstile
-              ref={turnstileRef}
-              siteKey={siteKey}
-              onSuccess={(token) => {
-                setTurnstileToken(token);
-                setError(''); // Clear any previous CAPTCHA errors
-              }}
-              onError={() => {
-                setError('CAPTCHA verification failed. Please try again.');
-                setTurnstileToken(null);
-              }}
-              onExpire={() => {
-                setError('CAPTCHA expired. Please verify again.');
-                setTurnstileToken(null);
-              }}
-              theme="light"
-              size="normal"
-              responseField={false}
-              refreshExpired="auto"
-              appearance="interaction-only" // Using a more modern appearance
-            />
-          )}
-        </div>
         <div className="forgot-password-link">
           <span 
             onClick={handleForgotPassword}
@@ -276,7 +242,7 @@ const LitigantLogin = () => {
         <button 
           type="submit" 
           className="litigant-submit-btn"
-          disabled={loading || !turnstileToken}
+          disabled={loading}
         >
           {loading ? 'Processing...' : 'Login'}
         </button>
