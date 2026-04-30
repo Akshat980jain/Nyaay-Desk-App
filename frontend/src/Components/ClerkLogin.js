@@ -17,13 +17,18 @@ const ClerkLogin = () => {
   const [turnstileToken, setTurnstileToken] = useState(isDev ? 'dev-bypass' : null);
   const turnstileRef = useRef(null);
 
-  const siteKey = process.env.REACT_APP_TURNSTILE_SITE_KEY;
+  const siteKey = "0x4AAAAAABUex35iY9OmXSBB";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
+    if (!turnstileToken) {
+      setError('Please complete the CAPTCHA verification');
+      setLoading(false);
+      return;
+    }
 
     try {
       const response = await axios.post('https://nyaay-desk-app-backend.onrender.com/api/clerk/login', {
@@ -85,10 +90,35 @@ const ClerkLogin = () => {
               required
             />
           </div>
+          <div className="clerk-form-group turnstile-container">
+            {!isDev && (
+              <Turnstile
+                ref={turnstileRef}
+                siteKey={siteKey}
+                onSuccess={(token) => {
+                  setTurnstileToken(token);
+                  setError('');
+                }}
+                onError={() => {
+                  setError('CAPTCHA verification failed. Please try again.');
+                  setTurnstileToken(null);
+                }}
+                onExpire={() => {
+                  setError('CAPTCHA expired. Please verify again.');
+                  setTurnstileToken(null);
+                }}
+                theme="light"
+                size="normal"
+                responseField={false}
+                refreshExpired="auto"
+                appearance="interaction-only"
+              />
+            )}
+          </div>
           <button 
             type="submit" 
             className="clerk-submit-btn"
-            disabled={loading}
+            disabled={loading || !turnstileToken}
           >
             {loading ? 'Processing...' : 'Login'}
           </button>
