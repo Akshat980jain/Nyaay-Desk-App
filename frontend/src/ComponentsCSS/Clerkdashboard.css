@@ -1,0 +1,948 @@
+/* Clerkdashboard.css - Professional Minimalist Clerk Dashboard */
+
+:root {
+  --color-accent: #06b6d4;
+  --color-black: #0f172a;
+  --color-white: #f5f3f0;
+  --color-gray-50: #f5f3f0;
+  --color-gray-100: #ede8e3;
+  --color-gray-200: #e2d9d0;
+  --color-gray-300: #d4c7b8;
+  --color-gray-400: #b8a894;
+  --color-gray-500: #9c8a70;
+  --color-gray-600: #7d6b53;
+  --color-gray-700: #5e4d3a;
+  --color-gray-800: #453629;
+  --color-gray-900: #2d201a;
+  --color-gold: #fbbf24;
+  --color-gold-dark: #f59e0b;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Main Dashboard Wrapper */
+.court-clerk-dashboard {
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--color-gray-50);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* Header */
+.court-clerk-header {
+  background-color: var(--color-black);
+  color: var(--color-white);
+  padding: 16px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid var(--color-gold);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.court-clerk-header-left {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.sidebar-toggle {
+  display: none;
+  background-color: transparent;
+  border: 1px solid var(--color-gray-400);
+  color: var(--color-white);
+  width: 40px;
+  height: 40px;
+  font-size: 20px;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar-toggle:active {
+  background-color: var(--color-gray-900);
+}
+
+.emblem-logo {
+  display: flex;
+  align-items: center;
+}
+
+.emblem-image {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.emblem-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.court-clerk-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-white);
+  letter-spacing: -0.01em;
+}
+
+.court-clerk-header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.court-clerk-logout-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.court-clerk-logout-btn,
+.court-clerk-logout-all-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--color-gray-800);
+  color: var(--color-white);
+  border: 1px solid var(--color-gray-600);
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.court-clerk-logout-btn:active,
+.court-clerk-logout-all-btn:active {
+  background-color: var(--color-gray-900);
+}
+
+.court-clerk-logout-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.court-clerk-profile-toggle {
+  cursor: pointer;
+}
+
+.court-clerk-avatar {
+  width: 40px;
+  height: 40px;
+  background-color: var(--color-gold);
+  color: var(--color-black);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+/* Content Wrapper */
+.court-clerk-content {
+  display: flex;
+  min-height: calc(100vh - 80px);
+}
+
+/* Sidebar */
+.court-clerk-sidebar {
+  width: 260px;
+  background-color: var(--color-white);
+  border-right: 1px solid var(--color-gray-200);
+  padding: 24px 0;
+  position: sticky;
+  top: 80px;
+  height: calc(100vh - 80px);
+  overflow-y: auto;
+}
+
+.court-clerk-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.court-clerk-nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: transparent;
+  color: var(--color-gray-800);
+  border: none;
+  padding: 14px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  border-left: 3px solid transparent;
+}
+
+.court-clerk-nav-btn:hover {
+  background-color: var(--color-gray-50);
+}
+
+.court-clerk-nav-btn.active {
+  background-color: var(--color-gray-100);
+  color: var(--color-black);
+  border-left: 3px solid var(--color-gold);
+  font-weight: 600;
+}
+
+.court-clerk-nav-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+/* Main Content Area */
+.court-clerk-main {
+  flex: 1;
+  padding: 32px 48px;
+  overflow-y: auto;
+}
+
+/* Stats Section */
+.court-clerk-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.court-clerk-stat-card {
+  background-color: var(--color-white);
+  border: 1px solid var(--color-gray-200);
+  padding: 24px;
+}
+
+.court-clerk-stat-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-gray-700);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.court-clerk-stat-value {
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--color-black);
+  margin: 0;
+}
+
+/* Verification Section */
+.court-clerk-verification-section {
+  width: 100%;
+}
+
+.court-clerk-verification-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--color-black);
+  margin-bottom: 32px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--color-gold);
+  letter-spacing: -0.02em;
+}
+
+.court-clerk-unverified-section,
+.court-clerk-verified-section {
+  margin-bottom: 48px;
+}
+
+.court-clerk-section-heading {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-black);
+  margin-bottom: 20px;
+  letter-spacing: -0.01em;
+}
+
+.court-clerk-advocates-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+}
+
+.court-clerk-advocate-card {
+  background-color: var(--color-white);
+  border: 1px solid var(--color-gray-200);
+  padding: 24px;
+}
+
+.court-clerk-advocate-card.court-clerk-verified {
+  border-left: 3px solid var(--color-gold);
+}
+
+.court-clerk-advocate-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-black);
+  margin-bottom: 12px;
+  letter-spacing: -0.01em;
+}
+
+.court-clerk-advocate-detail {
+  font-size: 13px;
+  color: var(--color-gray-700);
+  margin: 6px 0;
+  line-height: 1.5;
+}
+
+.court-clerk-verification-date {
+  font-size: 13px;
+  color: var(--color-gold-dark);
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--color-gray-200);
+  font-weight: 500;
+}
+
+.court-clerk-card-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-gray-200);
+}
+
+.court-clerk-view-doc-btn,
+.court-clerk-verify-btn {
+  flex: 1;
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+}
+
+.court-clerk-view-doc-btn {
+  background-color: var(--color-gray-200);
+  color: var(--color-gray-900);
+}
+
+.court-clerk-view-doc-btn:active {
+  background-color: var(--color-gray-300);
+}
+
+.court-clerk-verify-btn {
+  background-color: var(--color-black);
+  color: var(--color-white);
+}
+
+.court-clerk-verify-btn:active {
+  background-color: var(--color-gray-900);
+}
+
+/* Verification Modal */
+.court-clerk-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(15, 23, 42, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 20px;
+}
+
+.court-clerk-verification-modal {
+  background-color: var(--color-white);
+  border: 1px solid var(--color-gray-200);
+  width: 100%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 32px;
+}
+
+.court-clerk-modal-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-black);
+  margin-bottom: 16px;
+  letter-spacing: -0.01em;
+}
+
+.court-clerk-modal-advocate-name {
+  font-size: 14px;
+  color: var(--color-gray-700);
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--color-gray-200);
+}
+
+.court-clerk-form-group {
+  margin-bottom: 20px;
+}
+
+.court-clerk-form-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--color-gray-800);
+  margin-bottom: 8px;
+}
+
+.court-clerk-form-textarea {
+  width: 100%;
+  min-height: 100px;
+  padding: 12px;
+  font-size: 14px;
+  border: 1px solid var(--color-gray-300);
+  background-color: var(--color-white);
+  color: var(--color-gray-900);
+  font-family: inherit;
+  resize: vertical;
+}
+
+.court-clerk-form-textarea:focus {
+  outline: none;
+  border-color: var(--color-gold);
+}
+
+.court-clerk-signature-section {
+  margin: 24px 0;
+  padding: 20px;
+  background-color: var(--color-gray-50);
+  border: 1px solid var(--color-gray-200);
+}
+
+.court-clerk-signature-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-black);
+  margin-bottom: 16px;
+}
+
+.court-clerk-pin-input {
+  width: 100%;
+  padding: 12px;
+  font-size: 14px;
+  border: 1px solid var(--color-gray-300);
+  background-color: var(--color-white);
+  color: var(--color-gray-900);
+  letter-spacing: 2px;
+}
+
+.court-clerk-pin-input:focus {
+  outline: none;
+  border-color: var(--color-gold);
+}
+
+.court-clerk-generate-signature-btn {
+  width: 100%;
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  background-color: var(--color-black);
+  color: var(--color-white);
+  border: none;
+  cursor: pointer;
+  margin-top: 12px;
+}
+
+.court-clerk-generate-signature-btn:disabled {
+  background-color: var(--color-gray-400);
+  cursor: not-allowed;
+}
+
+.court-clerk-generate-signature-btn:not(:disabled):active {
+  background-color: var(--color-gray-900);
+}
+
+.court-clerk-alert {
+  padding: 16px;
+  margin-top: 16px;
+  border: 1px solid var(--color-gray-200);
+  display: flex;
+  gap: 12px;
+}
+
+.court-clerk-alert-success {
+  background-color: #f0fdf4;
+  border-left: 3px solid var(--color-gold);
+}
+
+.court-clerk-alert-error {
+  background-color: #fef2f2;
+  border-left: 3px solid var(--color-gold-dark);
+}
+
+.court-clerk-alert-icon {
+  flex-shrink: 0;
+}
+
+.court-clerk-check-icon,
+.court-clerk-x-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.court-clerk-alert-content {
+  flex: 1;
+}
+
+.court-clerk-alert-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-black);
+  margin-bottom: 4px;
+}
+
+.court-clerk-alert-message {
+  font-size: 13px;
+  color: var(--color-gray-700);
+  margin: 0;
+}
+
+.court-clerk-signature-details {
+  margin-top: 16px;
+  padding: 16px;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-gray-200);
+}
+
+.court-clerk-signature-details-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-black);
+  margin-bottom: 12px;
+}
+
+.court-clerk-signature-info p {
+  font-size: 12px;
+  color: var(--color-gray-700);
+  margin: 6px 0;
+  line-height: 1.5;
+}
+
+.court-clerk-signature-hash {
+  word-break: break-all;
+  font-family: monospace;
+  font-size: 11px;
+}
+
+.court-clerk-modal-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--color-gray-200);
+}
+
+.court-clerk-confirm-btn,
+.court-clerk-cancel-btn {
+  flex: 1;
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+}
+
+.court-clerk-confirm-btn {
+  background-color: var(--color-gold);
+  color: var(--color-black);
+}
+
+.court-clerk-confirm-btn:disabled {
+  background-color: var(--color-gray-400);
+  cursor: not-allowed;
+}
+
+.court-clerk-confirm-btn:not(:disabled):active {
+  background-color: var(--color-gold-dark);
+}
+
+.court-clerk-cancel-btn {
+  background-color: var(--color-gray-200);
+  color: var(--color-gray-900);
+}
+
+.court-clerk-cancel-btn:active {
+  background-color: var(--color-gray-300);
+}
+
+/* Profile Modal */
+.court-clerk-profile-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(15, 23, 42, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
+.court-clerk-profile-modal {
+  background-color: var(--color-white);
+  border: 1px solid var(--color-gray-200);
+  width: 90%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  padding: 40px;
+}
+
+.court-clerk-close-profile {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background-color: var(--color-gray-100);
+  border: 1px solid var(--color-gray-300);
+  width: 32px;
+  height: 32px;
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-gray-800);
+}
+
+.court-clerk-close-profile:active {
+  background-color: var(--color-gray-200);
+}
+
+.court-clerk-profile-content {
+  text-align: center;
+}
+
+.court-clerk-profile-avatar.court-clerk-large {
+  width: 80px;
+  height: 80px;
+  background-color: var(--color-gold);
+  color: var(--color-black);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  font-weight: 600;
+  margin: 0 auto 20px;
+}
+
+.court-clerk-profile-content h2 {
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--color-black);
+  margin: 0 0 8px 0;
+  letter-spacing: -0.02em;
+}
+
+.court-clerk-profile-content h4 {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-gray-600);
+  margin: 0 0 8px 0;
+}
+
+.court-clerk-profile-content > p {
+  font-size: 14px;
+  color: var(--color-gray-700);
+  margin: 0 0 8px 0;
+}
+
+.court-clerk-profile-details {
+  text-align: left;
+  border-top: 2px solid var(--color-gray-200);
+  padding-top: 24px;
+  margin-top: 24px;
+}
+
+.court-clerk-detail-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--color-gray-200);
+}
+
+.court-clerk-detail-item:last-child {
+  border-bottom: none;
+}
+
+.court-clerk-detail-item span {
+  font-size: 13px;
+  color: var(--color-gray-600);
+  font-weight: 500;
+}
+
+.court-clerk-detail-item strong {
+  font-size: 13px;
+  color: var(--color-black);
+  font-weight: 600;
+  text-align: right;
+}
+
+/* Logout Modal */
+.court-clerk-logout-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(15, 23, 42, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
+.court-clerk-logout-modal {
+  background-color: var(--color-white);
+  border: 1px solid var(--color-gray-200);
+  width: 90%;
+  max-width: 440px;
+  padding: 32px;
+}
+
+.court-clerk-logout-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-black);
+  margin-bottom: 12px;
+  letter-spacing: -0.01em;
+}
+
+.court-clerk-logout-text {
+  font-size: 14px;
+  color: var(--color-gray-700);
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.court-clerk-password-input {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 14px;
+  border: 1px solid var(--color-gray-300);
+  background-color: var(--color-white);
+  color: var(--color-gray-900);
+  margin-bottom: 20px;
+}
+
+.court-clerk-password-input:focus {
+  outline: none;
+  border-color: var(--color-gold);
+}
+
+.court-clerk-logout-actions {
+  display: flex;
+  gap: 12px;
+}
+
+/* Error Message */
+.court-clerk-error-message {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-gray-300);
+  border-left: 3px solid var(--color-gold-dark);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 400px;
+  z-index: 300;
+  font-size: 14px;
+  color: var(--color-gray-900);
+}
+
+.court-clerk-error-icon {
+  width: 20px;
+  height: 20px;
+  color: var(--color-gold-dark);
+  flex-shrink: 0;
+}
+
+/* Loading State */
+.clerk-loading-container {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-gray-50);
+}
+
+.clerk-loading {
+  font-size: 16px;
+  color: var(--color-gray-700);
+  font-weight: 500;
+}
+
+/* Sidebar Overlay */
+.court-clerk-sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(15, 23, 42, 0.7);
+  z-index: 90;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .court-clerk-header {
+    padding: 16px 24px;
+  }
+
+  .court-clerk-main {
+    padding: 24px 32px;
+  }
+
+  .court-clerk-stats {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+  }
+
+  .court-clerk-advocates-grid {
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar-toggle {
+    display: flex;
+  }
+
+  .court-clerk-sidebar {
+    position: fixed;
+    left: -260px;
+    top: 0;
+    height: 100vh;
+    z-index: 95;
+    transition: left 0.3s ease;
+  }
+
+  .court-clerk-sidebar.active {
+    left: 0;
+  }
+
+  .court-clerk-sidebar-overlay {
+    display: block;
+  }
+
+  .court-clerk-content {
+    min-height: calc(100vh - 72px);
+  }
+
+  .court-clerk-header {
+    padding: 12px 16px;
+  }
+
+  .court-clerk-title {
+    font-size: 18px;
+  }
+
+  .court-clerk-logout-buttons {
+    display: none;
+  }
+
+  .court-clerk-main {
+    padding: 20px 16px;
+  }
+
+  .court-clerk-stats {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .court-clerk-advocates-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .court-clerk-card-actions {
+    flex-direction: column;
+  }
+
+  .court-clerk-view-doc-btn,
+  .court-clerk-verify-btn {
+    width: 100%;
+  }
+
+  .court-clerk-profile-modal {
+    padding: 32px 24px;
+  }
+
+  .court-clerk-logout-modal,
+  .court-clerk-verification-modal {
+    padding: 24px;
+  }
+
+  .court-clerk-modal-actions,
+  .court-clerk-logout-actions {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 480px) {
+  .court-clerk-header {
+    padding: 12px;
+  }
+
+  .court-clerk-header-left {
+    gap: 12px;
+  }
+
+  .emblem-image {
+    width: 40px;
+    height: 40px;
+  }
+
+  .court-clerk-title {
+    font-size: 16px;
+  }
+
+  .court-clerk-avatar {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+  }
+
+  .court-clerk-main {
+    padding: 16px 12px;
+  }
+
+  .court-clerk-verification-title {
+    font-size: 20px;
+  }
+
+  .court-clerk-section-heading {
+    font-size: 16px;
+  }
+
+  .court-clerk-advocate-card {
+    padding: 20px;
+  }
+
+  .court-clerk-error-message {
+    bottom: 16px;
+    right: 16px;
+    left: 16px;
+    max-width: none;
+  }
+
+  .court-clerk-modal-overlay {
+    padding: 16px;
+  }
+}

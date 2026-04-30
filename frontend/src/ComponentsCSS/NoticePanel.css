@@ -1,0 +1,328 @@
+/* NoticePanel.css - Modern & Cutting Edge Design */
+
+:root {
+  --primary: #6366f1;
+  --primary-hover: #4f46e5;
+  --danger: #ef4444;
+  --danger-hover: #dc2626;
+  --success: #10b981;
+  --text: #1f2937;
+  --text-light: #6b7280;
+  --bg: #ffffff;
+  --bg-alt: #f9fafb;
+  --border: #e5e7eb;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --radius-sm: 0.25rem;
+  --radius: 0.5rem;
+  --radius-lg: 0.75rem;
+}
+
+/* Base Container */
+.np-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: var(--bg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+
+/* Header Section */
+.np-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.np-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0;
+  background: linear-gradient(to right, var(--primary), #818cf8);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+/* Button Styles */
+.np-button {
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.625rem 1.25rem;
+  border-radius: var(--radius);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.np-add-button {
+  font-size: 0.875rem;
+  font-weight: 600;
+  background-color: var(--primary);
+  color: white;
+  padding: 0.625rem 1.25rem;
+  border-radius: var(--radius);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.np-add-button::before {
+  content: "+";
+  font-size: 1.25rem;
+  line-height: 1;
+  margin-right: 0.25rem;
+}
+
+.np-add-button:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+.np-add-button:active {
+  transform: translateY(0);
+}
+
+/* Action Buttons */
+.np-action-button {
+  font-size: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-sm);
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-weight: 600;
+}
+
+.np-edit-button {
+  background-color: var(--primary);
+  color: white;
+}
+
+.np-edit-button:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+.np-delete-button {
+  background-color: var(--danger);
+  color: white;
+}
+
+.np-delete-button:hover {
+  background-color: var(--danger-hover);
+  transform: translateY(-1px);
+}
+
+/* Error Message */
+.np-error {
+  background-color: rgba(239, 68, 68, 0.1);
+  border-left: 4px solid var(--danger);
+  color: var(--danger);
+  padding: 1rem;
+  border-radius: var(--radius-sm);
+  margin-bottom: 1.5rem;
+  font-size: 0.875rem;
+}
+
+/* Form Styles */
+.np-form {
+  background-color: var(--bg-alt);
+  padding: 1.5rem;
+  border-radius: var(--radius);
+  margin-bottom: 2rem;
+}
+
+.np-form-group {
+  margin-bottom: 1.25rem;
+}
+
+.np-form-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.np-form-input, 
+.np-form-textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background-color: var(--bg);
+  transition: border-color 0.15s ease;
+}
+
+.np-form-input:focus, 
+.np-form-textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+.np-form-textarea {
+  min-height: 150px;
+  resize: vertical;
+}
+
+.np-form-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}
+
+.np-cancel-button {
+  background-color: transparent;
+  color: var(--text-light);
+  border: 1px solid var(--border);
+}
+
+.np-cancel-button:hover {
+  background-color: var(--bg-alt);
+  color: var(--text);
+}
+
+.np-submit-button {
+  background-color: var(--success);
+  color: white;
+}
+
+.np-submit-button:hover {
+  filter: brightness(1.1);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+/* Notice List */
+.np-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.np-list-item {
+  background-color: var(--bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transition: all 0.2s ease;
+  border: 1px solid var(--border);
+}
+
+.np-list-item:hover {
+  box-shadow: var(--shadow);
+  transform: translateY(-2px);
+}
+
+.np-list-content {
+  padding: 1.25rem;
+}
+
+.np-list-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+.np-list-date {
+  font-size: 0.75rem;
+  color: var(--text-light);
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.np-list-description {
+  color: var(--text);
+  margin-bottom: 1.25rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.np-list-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+/* Loading State */
+.np-loading {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-light);
+}
+
+.np-loading-spinner {
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  border: 0.25rem solid rgba(99, 102, 241, 0.2);
+  border-left-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Empty State */
+.np-empty {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text-light);
+  background-color: var(--bg-alt);
+  border-radius: var(--radius);
+  border: 1px dashed var(--border);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .np-container {
+    padding: 1.5rem;
+  }
+  
+  .np-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .np-add-button {
+    width: 100%;
+  }
+  
+  .np-list {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,196 @@
+.clerk-registration-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 60px); /* Adjust based on navbar height */
+  background-color: #f8fafc;
+  padding: 40px 20px;
+  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.clerk-registration-box {
+  background: white;
+  width: 100%;
+  max-width: 600px;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.clerk-registration-heading {
+  text-align: center;
+  color: #1e293b;
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 30px;
+}
+
+.clerk-registration-error {
+  background-color: #fee2e2;
+  color: #ef4444;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  font-size: 14px;
+  text-align: center;
+  border: 1px solid #f87171;
+}
+
+.clerk-registration-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+/* Full width for certain fields */
+.clerk-registration-field:nth-child(1),
+.clerk-registration-field:nth-child(6),
+.clerk-registration-field:nth-child(7) {
+  grid-column: span 2;
+}
+
+.clerk-registration-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.clerk-registration-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 8px;
+}
+
+.clerk-registration-input,
+.clerk-registration-select {
+  padding: 12px 16px;
+  font-size: 15px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background-color: #fff;
+  color: #334155;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.clerk-registration-input:focus,
+.clerk-registration-select:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.clerk-registration-submit-btn {
+  grid-column: span 2;
+  background-color: #2563eb;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-top: 10px;
+}
+
+.clerk-registration-submit-btn:hover {
+  background-color: #1d4ed8;
+}
+
+.clerk-registration-login-text {
+  grid-column: span 2;
+  text-align: center;
+  margin-top: 20px;
+  font-size: 14px;
+  color: #64748b;
+}
+
+.clerk-registration-login-link {
+  background: none;
+  border: none;
+  color: #2563eb;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  font-size: 14px;
+  text-decoration: underline;
+}
+
+.clerk-registration-login-link:hover {
+  color: #1d4ed8;
+}
+
+/* Verification Step Styles */
+.clerk-verification-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.clerk-verification-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.clerk-verification-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 8px;
+}
+
+.clerk-verification-input {
+  padding: 12px 16px;
+  font-size: 20px;
+  letter-spacing: 2px;
+  text-align: center;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background-color: #fff;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.clerk-verification-input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.clerk-verification-instructions {
+  font-size: 13px;
+  color: #64748b;
+  text-align: center;
+  margin-top: 8px;
+}
+
+.clerk-verification-submit-btn {
+  background-color: #2563eb;
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  padding: 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.clerk-verification-submit-btn:hover {
+  background-color: #1d4ed8;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .clerk-registration-form {
+    grid-template-columns: 1fr;
+  }
+  
+  .clerk-registration-field {
+    grid-column: span 1 !important;
+  }
+  
+  .clerk-registration-submit-btn,
+  .clerk-registration-login-text {
+    grid-column: span 1 !important;
+  }
+}

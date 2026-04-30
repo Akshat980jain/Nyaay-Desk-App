@@ -1,0 +1,3487 @@
+/* Professional Court Admin Dashboard - Minimal & Clean */
+
+:root {
+  --primary: #0f172a;
+  --secondary: #475569;
+  --accent: #f59e0b;
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8fafc;
+  --bg-tertiary: #f1f5f9;
+  --border: #e2e8f0;
+  --text-primary: #0f172a;
+  --text-secondary: #64748b;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  --critical: #dc2626;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  line-height: 1.5;
+}
+
+/* Main Container */
+.judicial-mgmt__container {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+/* Header */
+.judicial-mgmt__header {
+  background: var(--bg-primary);
+  padding: 20px 28px;
+  margin-bottom: 24px;
+  border: 1px solid var(--border);
+}
+
+.judicial-mgmt__title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 16px;
+}
+
+.judicial-mgmt__stats {
+  display: flex;
+  gap: 32px;
+}
+
+.judicial-mgmt__stat-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.judicial-mgmt__stat-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.judicial-mgmt__stat-label {
+  font-size: 11px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Blockchain Verification Panel */
+.blockchain-verification-panel {
+  background: var(--bg-primary);
+  padding: 24px 28px;
+  margin-bottom: 24px;
+  border: 1px solid var(--border);
+}
+
+.blockchain-panel-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.blockchain-actions-grid {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.blockchain-action-btn {
+  padding: 7px 14px;
+  font-size: 11px;
+  font-weight: 500;
+  border: 1px solid var(--border);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.blockchain-action-btn:hover {
+  background: var(--bg-tertiary);
+}
+
+.blockchain-action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.blockchain-stats-summary {
+  background: var(--bg-secondary);
+  padding: 16px;
+  margin-top: 16px;
+}
+
+.blockchain-stats-summary h3 {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px;
+  background: var(--bg-primary);
+}
+
+.stat-label {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.stat-value {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.text-success {
+  color: var(--success);
+}
+
+.text-danger {
+  color: var(--error);
+}
+
+/* Content Layout - Horizontal */
+.judicial-mgmt__content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Cases List - Horizontal */
+.judicial-mgmt__sidebar {
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  padding: 20px;
+}
+
+.judicial-mgmt__search-filter {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.judicial-mgmt__search-input,
+.judicial-mgmt__status-filter {
+  padding: 7px 12px;
+  font-size: 12px;
+  border: 1px solid var(--border);
+  background: var(--bg-primary);
+}
+
+.judicial-mgmt__search-input {
+  flex: 1;
+}
+
+.judicial-mgmt__status-filter {
+  width: 160px;
+}
+
+.judicial-mgmt__section-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.judicial-mgmt__cases-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.judicial-mgmt__case-item {
+  padding: 14px;
+  background: var(--bg-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.judicial-mgmt__case-item:hover {
+  background: var(--bg-tertiary);
+}
+
+.judicial-mgmt__case-item--active {
+  background: var(--primary);
+  color: white;
+}
+
+.judicial-mgmt__case-item--active .judicial-mgmt__case-num,
+.judicial-mgmt__case-item--active .judicial-mgmt__case-parties,
+.judicial-mgmt__case-item--active .judicial-mgmt__case-filed {
+  color: white;
+}
+
+.judicial-mgmt__case-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.judicial-mgmt__case-num {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.judicial-mgmt__case-status {
+  padding: 2px 8px;
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.courtadmin__status--filed {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.courtadmin__status--pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.courtadmin__status--investigation {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
+.courtadmin__status--hearing {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.courtadmin__status--awaiting {
+  background: #fed7aa;
+  color: #7c2d12;
+}
+
+.courtadmin__status--disposed {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.courtadmin__status--appealed {
+  background: #fce7f3;
+  color: #831843;
+}
+
+.judicial-mgmt__case-parties {
+  font-size: 11px;
+  margin-bottom: 4px;
+}
+
+.judicial-mgmt__vs {
+  margin: 0 6px;
+  color: var(--text-secondary);
+}
+
+.judicial-mgmt__case-filed {
+  font-size: 10px;
+  color: var(--text-secondary);
+}
+
+.judicial-mgmt__no-cases {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+/* Main Content Area */
+.judicial-mgmt__main-content {
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  padding: 24px;
+  min-height: 500px;
+}
+
+.judicial-mgmt__case-header {
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.judicial-mgmt__case-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.judicial-mgmt__case-badge {
+  padding: 3px 10px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.judicial-mgmt__case-subtitle {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+
+/* Tabs */
+.judicial-mgmt__tabs {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.judicial-mgmt__tab {
+  padding: 6px 14px;
+  font-size: 11px;
+  font-weight: 500;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.judicial-mgmt__tab:hover {
+  background: var(--bg-secondary);
+}
+
+.judicial-mgmt__tab--active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+/* Tab Content */
+.judicial-mgmt__tab-content {
+  margin-top: 24px;
+}
+
+.judicial-mgmt__overview-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.judicial-mgmt__overview-card {
+  background: var(--bg-secondary);
+  padding: 20px;
+}
+
+.judicial-mgmt__overview-card--full {
+  grid-column: 1 / -1;
+}
+
+.judicial-mgmt__card-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.judicial-mgmt__info-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  font-size: 12px;
+}
+
+.judicial-mgmt__info-label {
+  color: var(--text-secondary);
+}
+
+.judicial-mgmt__info-value {
+  font-weight: 500;
+}
+
+.judicial-mgmt__info-status {
+  padding: 2px 8px;
+  font-size: 9px;
+}
+
+.judicial-mgmt__party-section {
+  margin-bottom: 16px;
+}
+
+.judicial-mgmt__party-title {
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+/* Status Timeline */
+.judicial-mgmt__status-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.judicial-mgmt__timeline-item {
+  display: flex;
+  gap: 16px;
+}
+
+.judicial-mgmt__timeline-marker {
+  width: 10px;
+  height: 10px;
+  background: var(--accent);
+  border-radius: 50%;
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+
+.judicial-mgmt__timeline-content {
+  flex: 1;
+}
+
+.judicial-mgmt__timeline-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.judicial-mgmt__timeline-status {
+  padding: 2px 8px;
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.judicial-mgmt__timeline-date {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.judicial-mgmt__timeline-remarks {
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+
+.judicial-mgmt__timeline-user {
+  font-size: 10px;
+  color: var(--text-secondary);
+}
+
+/* Hearings */
+.judicial-mgmt__hearings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.judicial-mgmt__hearing-card {
+  background: var(--bg-secondary);
+  padding: 16px;
+}
+
+.judicial-mgmt__hearing-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.judicial-mgmt__hearing-badge {
+  padding: 3px 10px;
+  font-size: 10px;
+  font-weight: 600;
+  background: var(--accent);
+  color: white;
+}
+
+.judicial-mgmt__hearing-date {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.judicial-mgmt__hearings-content {
+  font-size: 12px;
+}
+
+.judicial-mgmt__hearing-remarks {
+  margin-bottom: 8px;
+}
+
+.judicial-mgmt__next-hearing {
+  color: var(--text-secondary);
+  font-size: 11px;
+}
+
+.judicial-mgmt__attachments {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.judicial-mgmt__attachments-title {
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.judicial-mgmt__attachments-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.judicial-mgmt__download-btn {
+  padding: 4px 10px;
+  font-size: 10px;
+  background: transparent;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.judicial-mgmt__download-btn:hover {
+  background: var(--bg-tertiary);
+}
+
+/* Forms */
+.judicial-mgmt__form {
+  background: var(--bg-secondary);
+  padding: 20px;
+}
+
+.judicial-mgmt__section-title--form {
+  margin-top: 32px;
+}
+
+.judicial-mgmt__form-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.judicial-mgmt__form-group {
+  margin-bottom: 16px;
+}
+
+.judicial-mgmt__form-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  margin-bottom: 6px;
+  color: var(--text-secondary);
+}
+
+.judicial-mgmt__form-input,
+.judicial-mgmt__form-select,
+.judicial-mgmt__form-textarea {
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 12px;
+  border: 1px solid var(--border);
+  background: var(--bg-primary);
+  font-family: inherit;
+}
+
+.judicial-mgmt__form-textarea {
+  resize: vertical;
+}
+
+.judicial-mgmt__form-file {
+  font-size: 11px;
+}
+
+.judicial-mgmt__form-help {
+  font-size: 10px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+.judicial-mgmt__selected-file {
+  font-size: 11px;
+  margin-top: 6px;
+  color: var(--text-secondary);
+}
+
+.judicial-mgmt__form-actions {
+  margin-top: 20px;
+}
+
+.judicial-mgmt__submit-btn {
+  padding: 7px 16px;
+  font-size: 11px;
+  font-weight: 500;
+  background: var(--primary);
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.judicial-mgmt__submit-btn:hover {
+  background: var(--secondary);
+}
+
+.judicial-mgmt__submit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Documents */
+.judicial-mgmt__documents-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.judicial-mgmt__document-card {
+  background: var(--bg-secondary);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.judicial-mgmt__document-name {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.judicial-mgmt__document-type {
+  font-size: 10px;
+  color: var(--text-secondary);
+}
+
+.judicial-mgmt__document-desc {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.judicial-mgmt__document-date {
+  font-size: 10px;
+  color: var(--text-secondary);
+}
+
+.judicial-mgmt__document-download {
+  padding: 5px 12px;
+  font-size: 10px;
+  background: var(--primary);
+  color: white;
+  border: none;
+  cursor: pointer;
+  margin-top: auto;
+}
+
+/* Blockchain Tab */
+.judicial-mgmt__blockchain-tab {
+  max-width: 800px;
+}
+
+.blockchain-case-actions {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.blockchain-btn {
+  padding: 7px 14px;
+  font-size: 11px;
+  font-weight: 500;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.blockchain-btn--audit {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.blockchain-btn--verify {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+
+.blockchain-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.blockchain-info {
+  background: var(--bg-secondary);
+  padding: 20px;
+  font-size: 12px;
+}
+
+.blockchain-info h4 {
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+.blockchain-info ul {
+  margin-left: 20px;
+  margin-top: 12px;
+}
+
+.blockchain-info li {
+  margin-bottom: 6px;
+}
+
+/* Modals */
+.blockchain-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.blockchain-modal {
+  background: var(--bg-primary);
+  max-width: 900px;
+  width: 100%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+}
+
+.blockchain-modal--large {
+  max-width: 1200px;
+}
+
+.blockchain-modal-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.blockchain-modal-header h2 {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.blockchain-modal-close {
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  font-size: 24px;
+  cursor: pointer;
+  color: var(--text-secondary);
+}
+
+.blockchain-modal-content {
+  padding: 20px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* Verification Status */
+.verification-status {
+  padding: 12px;
+  margin-bottom: 20px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.verification-status.verified {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.verification-status.failed {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* Audit Trail */
+.audit-timeline {
+  margin-top: 24px;
+}
+
+.audit-timeline h3 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.verification-summary-box {
+  background: var(--bg-secondary);
+  padding: 16px;
+  margin-bottom: 20px;
+}
+
+.verification-summary-box h4 {
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+
+.summary-stats {
+  display: flex;
+  gap: 20px;
+  font-size: 11px;
+}
+
+.audit-entry {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.audit-entry:last-child {
+  border-bottom: none;
+}
+
+.audit-marker {
+  width: 32px;
+  height: 32px;
+  background: var(--accent);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+  flex-shrink: 0;
+  border-radius: 50%;
+}
+
+.audit-content {
+  flex: 1;
+}
+
+.audit-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.audit-action {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.audit-timestamp {
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.verification-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  font-size: 9px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.verification-badge.verified {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.verification-badge.failed {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.verification-issues {
+  background: #fef3c7;
+  padding: 12px;
+  margin: 12px 0;
+  font-size: 11px;
+}
+
+.verification-issues h5 {
+  font-size: 11px;
+  margin-bottom: 8px;
+}
+
+.verification-issues ul {
+  margin-left: 16px;
+}
+
+.verification-issues li {
+  margin-bottom: 4px;
+}
+
+.severity-critical {
+  color: var(--critical);
+}
+
+.severity-high {
+  color: var(--error);
+}
+
+.severity-medium {
+  color: var(--warning);
+}
+
+.severity-low {
+  color: var(--text-secondary);
+}
+
+.audit-details {
+  margin: 12px 0;
+  font-size: 11px;
+}
+
+.detail-row {
+  display: flex;
+  gap: 12px;
+  padding: 4px 0;
+}
+
+.detail-key {
+  color: var(--text-secondary);
+  min-width: 120px;
+}
+
+.audit-meta {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+  font-size: 10px;
+  color: var(--text-secondary);
+}
+
+.ipfs-link {
+  font-size: 10px;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.view-details-btn {
+  padding: 4px 10px;
+  font-size: 10px;
+  background: black;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  margin-top: 8px;
+  color:white;
+  align-items: center;
+  
+  width: 30%;
+}
+
+/* Tampering Report */
+.alert {
+  padding: 12px;
+  margin-bottom: 20px;
+  font-size: 12px;
+}
+
+.alert-success {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.alert-danger {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.integrity-score {
+  margin-top: 8px;
+  font-weight: 600;
+}
+
+.comparison-table-container {
+  overflow-x: auto;
+  margin: 20px 0;
+}
+
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+
+.comparison-table th,
+.comparison-table td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.comparison-table th {
+  background: var(--bg-secondary);
+  font-weight: 600;
+}
+
+.blockchain-value {
+  background: #e0f2fe;
+}
+
+.database-value {
+  background: #fef3c7;
+}
+
+.severity-badge {
+  padding: 2px 8px;
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.recommended-actions {
+  background: var(--bg-secondary);
+  padding: 16px;
+  margin-top: 20px;
+}
+
+.recommended-actions h3 {
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+.recommended-actions ul {
+  margin-left: 20px;
+  font-size: 12px;
+}
+
+.recommended-actions li {
+  margin-bottom: 8px;
+}
+
+/* No Selection */
+.judicial-mgmt__no-selection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+  text-align: center;
+}
+
+.judicial-mgmt__no-selection-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.judicial-mgmt__no-selection-text {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+/* Error Toast */
+.judicial-mgmt__error-toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: var(--error);
+  color: white;
+  padding: 12px 16px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  z-index: 2000;
+  max-width: 400px;
+}
+
+.judicial-mgmt__error-message {
+  font-size: 12px;
+  flex: 1;
+}
+
+.judicial-mgmt__error-close {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* Loading */
+.courtadmin__loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 80px 20px;
+}
+
+.courtadmin__spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--border);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.courtadmin__loading-text {
+  margin-top: 16px;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.judicial-mgmt__no-data {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .judicial-mgmt__overview-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .judicial-mgmt__cases-list {
+    grid-template-columns: 1fr;
+  }
+
+  .judicial-mgmt__form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .blockchain-actions-grid {
+    flex-direction: column;
+  }
+}
+/* Modal Base Styles */
+.blockchain-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.blockchain-modal {
+  background: #ffffff;
+  max-width: 900px;
+  width: 100%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  animation: slideUp 0.3s ease-out;
+}
+
+.blockchain-modal--large {
+  max-width: 1200px;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Modal Header */
+.blockchain-modal-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #ffffff;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.blockchain-modal-header h2 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #0f172a;
+  margin: 0;
+}
+
+.blockchain-modal-close {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #e2e8f0;
+  background: transparent;
+  font-size: 24px;
+  cursor: pointer;
+  color: #64748b;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.blockchain-modal-close:hover {
+  background: #f8fafc;
+  color: #0f172a;
+  border-color: #cbd5e1;
+}
+
+/* Modal Content */
+.blockchain-modal-content {
+  padding: 24px;
+  overflow-y: auto;
+  flex: 1;
+  font-size: 12px;
+}
+
+.blockchain-modal-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.blockchain-modal-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.blockchain-modal-content::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.blockchain-modal-content::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Current Case Data Section */
+.current-case-data {
+  background: #f8fafc;
+  padding: 16px;
+  margin-bottom: 24px;
+  border: 1px solid #e2e8f0;
+}
+
+.current-case-data h3 {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #0f172a;
+}
+
+.data-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.data-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  padding: 8px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+}
+
+.data-item strong {
+  color: #475569;
+  margin-right: 8px;
+}
+
+.data-item span {
+  color: #0f172a;
+  font-weight: 500;
+}
+
+/* Audit Trail Section */
+.audit-timeline {
+  margin-top: 20px;
+}
+
+.audit-timeline h3 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: #0f172a;
+}
+
+.verification-summary-box {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  padding: 16px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+}
+
+.verification-summary-box h4 {
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #0f172a;
+}
+
+.summary-stats {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-size: 11px;
+}
+
+.summary-stats span {
+  padding: 4px 8px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  display: inline-flex;
+  align-items: center;
+}
+
+.text-success {
+  color: #10b981;
+  font-weight: 500;
+}
+
+.text-danger {
+  color: #ef4444;
+  font-weight: 500;
+}
+
+.text-warning {
+  color: #f59e0b;
+  font-weight: 500;
+}
+
+/* Audit Entry */
+.audit-entry {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.audit-entry:last-child {
+  border-bottom: none;
+}
+
+.audit-marker {
+  width: 36px;
+  height: 36px;
+  background: #0f172a;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 600;
+  flex-shrink: 0;
+  border-radius: 4px;
+}
+
+.audit-content {
+  flex: 1;
+}
+
+.audit-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.audit-action {
+  font-size: 12px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.audit-timestamp {
+  font-size: 10px;
+  color: #64748b;
+}
+
+.verification-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  font-size: 9px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  border-radius: 3px;
+}
+
+.verification-badge.verified {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.verification-badge.failed {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* Verification Issues */
+.verification-issues {
+  background: #fef3c7;
+ 
+  padding: 12px;
+  margin: 12px 0;
+  font-size: 11px;
+}
+
+.verification-issues h5 {
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #92400e;
+}
+
+.verification-issues ul {
+  margin-left: 16px;
+  margin-top: 8px;
+}
+
+.verification-issues li {
+  margin-bottom: 6px;
+  color: #78350f;
+}
+
+/* Audit Details */
+.audit-details {
+  margin: 12px 0;
+  padding: 10px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  font-size: 11px;
+}
+
+.detail-row {
+  display: flex;
+  gap: 12px;
+  padding: 6px 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-key {
+  color: #64748b;
+  min-width: 120px;
+  font-weight: 500;
+}
+
+.detail-value {
+  color: #0f172a;
+  word-break: break-all;
+}
+
+/* Audit Meta */
+.audit-meta {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #e2e8f0;
+  font-size: 10px;
+  color: #64748b;
+}
+
+.blockchain-proof {
+  margin-top: 10px;
+}
+
+.ipfs-link {
+  font-size: 10px;
+  color: #f59e0b;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.ipfs-link:hover {
+  color: #d97706;
+  text-decoration: underline;
+}
+
+.view-details-btn {
+  padding: 6px 14px;
+  font-size: 10px;
+  background: #0f172a;
+  color: white;
+  border: 1px solid #0f172a;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: all 0.2s;
+  font-weight: 500;
+  border-radius: 3px;
+}
+
+.view-details-btn:hover {
+  background: #1e293b;
+  border-color: #1e293b;
+}
+
+/* Verification Status */
+.verification-status {
+  padding: 14px;
+  margin-bottom: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 4px;
+}
+
+.verification-status.verified {
+  background: #d1fae5;
+  color: #065f46;
+ 
+}
+
+.verification-status.failed {
+  background: #fee2e2;
+  color: #991b1b;
+ 
+}
+
+/* Alerts */
+.alert {
+  padding: 14px;
+  margin-bottom: 20px;
+  font-size: 12px;
+  border-radius: 4px;
+ 
+}
+
+.alert-success {
+  background: #d1fae5;
+  color: #065f46;
+  
+}
+
+.alert-danger {
+  background: #fee2e2;
+  color: #991b1b;
+
+}
+
+.integrity-score {
+  margin-top: 10px;
+  font-weight: 600;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
+/* Tampering Patterns */
+.tampering-patterns-summary {
+  background: #fef3c7;
+  border: 1px solid #fcd34d;
+  padding: 16px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+}
+
+.tampering-patterns-summary h3 {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #78350f;
+}
+
+.pattern-summary {
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #fcd34d;
+}
+
+.pattern-summary:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.pattern-summary strong {
+  color: #78350f;
+  display: block;
+  margin-bottom: 6px;
+  font-size: 11px;
+}
+
+.pattern-summary ul {
+  margin-left: 16px;
+  font-size: 11px;
+}
+
+.pattern-summary li {
+  margin-bottom: 4px;
+  color: #78350f;
+}
+
+/* Comparison Table */
+.comparison-table-container {
+  overflow-x: auto;
+  margin: 20px 0;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+}
+
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+
+.comparison-table th,
+.comparison-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.comparison-table th {
+  background: #f1f5f9;
+  font-weight: 600;
+  color: #0f172a;
+  position: sticky;
+  top: 0;
+}
+
+.comparison-table tr:hover {
+  background: #f8fafc;
+}
+
+.comparison-table tr.severity-critical {
+  background: #fef2f2;
+}
+
+.comparison-table tr.severity-high {
+  background: #fef3c7;
+}
+
+.blockchain-value {
+  background: #e0f2fe;
+  font-weight: 500;
+}
+
+.database-value {
+  background: #fef3c7;
+  font-weight: 500;
+}
+
+.severity-badge {
+  padding: 3px 8px;
+  font-size: 9px;
+  font-weight: 600;
+  border-radius: 3px;
+  display: inline-block;
+}
+
+.severity-critical {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.severity-high {
+  background: #fed7aa;
+  color: #7c2d12;
+}
+
+.severity-medium {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.severity-low {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
+/* Blockchain Integrity */
+.blockchain-integrity-details {
+  background: #f1f5f9;
+  padding: 16px;
+  margin-top: 20px;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+}
+
+.blockchain-integrity-details h3 {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #0f172a;
+}
+
+.integrity-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+}
+
+.integrity-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  font-size: 11px;
+}
+
+.integrity-item strong {
+  color: #475569;
+}
+
+.integrity-item span {
+  color: #0f172a;
+  font-weight: 600;
+}
+
+/* Recommended Actions */
+.recommended-actions {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  padding: 16px;
+  margin-top: 20px;
+  border-radius: 4px;
+}
+
+.recommended-actions h3 {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #0f172a;
+}
+
+.recommended-actions ul {
+  margin-left: 20px;
+  font-size: 11px;
+}
+
+.recommended-actions li {
+  margin-bottom: 8px;
+  color: #475569;
+  line-height: 1.5;
+}
+
+/* Full Scan Result */
+.scan-result-badge {
+  display: inline-block;
+  padding: 10px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  border-radius: 4px;
+}
+
+.scan-result-badge.scan-result-passed {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.scan-result-badge.scan-result-failed {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.scan-summary {
+  background: #f8fafc;
+  padding: 16px;
+  margin-bottom: 20px;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+}
+
+.scan-summary h3 {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #0f172a;
+}
+
+.scan-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+}
+
+.scan-stat {
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  text-align: center;
+}
+
+.scan-stat-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.scan-stat-value--critical {
+  color: #dc2626;
+}
+
+.scan-stat-value--high {
+  color: #f59e0b;
+}
+
+.scan-stat-label {
+  font-size: 10px;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+/* Issues List */
+.issues-section {
+  margin-top: 20px;
+}
+
+.issues-section h3 {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #0f172a;
+}
+
+.issues-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.issue-card {
+  border: 1px solid #e2e8f0;
+ 
+  padding: 12px;
+  background: #f8fafc;
+  border-radius: 3px;
+}
+
+.issue-card.severity-critical {
+ 
+  background: #fef2f2;
+}
+
+.issue-card.severity-high {
+  background: #fef3c7;
+}
+
+.issue-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.issue-case {
+  font-size: 11px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.issue-body {
+  font-size: 11px;
+}
+
+.issue-type {
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 4px;
+}
+
+.issue-description {
+  color: #64748b;
+  margin-bottom: 6px;
+}
+
+.issue-plaintiff {
+  color: #0f172a;
+  font-weight: 500;
+}
+
+.scan-recommendation {
+  background: #f1f5f9;
+ 
+  padding: 16px;
+  margin-top: 20px;
+  border-radius: 4px;
+}
+
+.scan-recommendation h3 {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #0f172a;
+}
+
+.scan-recommendation p {
+  font-size: 11px;
+  color: #475569;
+  line-height: 1.6;
+}
+
+/* Alerts Summary */
+.alerts-summary {
+  background: #f8fafc;
+  padding: 16px;
+  margin-bottom: 20px;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+}
+
+.alerts-summary h3 {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #0f172a;
+}
+
+.alerts-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 12px;
+}
+
+.alert-stat {
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  text-align: center;
+}
+
+.alert-stat-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.alert-stat-value--critical {
+  color: #dc2626;
+}
+
+.alert-stat-value--high {
+  color: #f59e0b;
+}
+
+.alert-stat-value--medium {
+  color: #f59e0b;
+}
+
+.alert-stat-label {
+  font-size: 10px;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+/* Alerts List */
+.alerts-list {
+  margin-top: 20px;
+}
+
+.alerts-list h3 {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #0f172a;
+}
+
+.alert-card {
+  border: 1px solid #e2e8f0;
+  
+  padding: 12px;
+  background: #f8fafc;
+  margin-bottom: 12px;
+  border-radius: 3px;
+}
+
+.alert-card.severity-critical {
+ 
+  background: #fef2f2;
+}
+
+.alert-card.severity-high {
+  
+  background: #fef3c7;
+}
+
+.alert-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.alert-timestamp {
+  font-size: 10px;
+  color: #64748b;
+}
+
+.alert-body {
+  font-size: 11px;
+}
+
+.alert-title {
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 4px;
+}
+
+.alert-message {
+  color: #475569;
+  margin-bottom: 6px;
+}
+
+.alert-case {
+  color: #0f172a;
+  font-weight: 500;
+  margin-bottom: 4px;
+}
+
+.alert-action {
+  color: #0f172a;
+  font-weight: 500;
+}
+
+/* Blockchain History */
+.blockchain-history-section {
+  background: #f1f5f9;
+  padding: 16px;
+  margin-top: 20px;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+}
+
+.blockchain-history-section h3 {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #0f172a;
+}
+
+.blockchain-history-section p {
+  font-size: 11px;
+  color: #475569;
+  margin-bottom: 6px;
+}
+
+/* Verification Layers */
+.verification-overview {
+  background: #f8fafc;
+  padding: 16px;
+  margin-bottom: 20px;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+}
+
+.verification-overview h3 {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #0f172a;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  font-size: 11px;
+}
+
+.info-item strong {
+  color: #475569;
+  margin-bottom: 4px;
+}
+
+.info-item span {
+  color: #0f172a;
+}
+
+.hash-display {
+  font-family: 'Monaco', 'Courier New', monospace;
+  font-size: 9px;
+  word-break: break-all;
+  background: #f1f5f9;
+  padding: 4px;
+  border-radius: 2px;
+}
+
+.verification-layers {
+  margin-top: 20px;
+}
+
+.verification-layers h3 {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #0f172a;
+}
+
+.layer-results {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.layer-card {
+  border: 1px solid #e2e8f0;
+
+  padding: 12px;
+  background: #f8fafc;
+  border-radius: 3px;
+}
+
+.layer-card.valid {
+
+  background: #f0fdf4;
+}
+
+.layer-card.invalid {
+ 
+  background: #fef2f2;
+}
+
+.layer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.layer-header h4 {
+  font-size: 12px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.layer-status {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 3px;
+}
+
+.layer-status.success {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.layer-status.failed {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.layer-error {
+  background: #fee2e2;
+  padding: 8px;
+  
+  margin-bottom: 10px;
+  font-size: 11px;
+  color: #991b1b;
+}
+
+.layer-details {
+  background: #f1f5f9;
+  padding: 8px;
+  border-radius: 2px;
+  overflow-x: auto;
+}
+
+.layer-details pre {
+  margin: 0;
+  font-size: 9px;
+  font-family: 'Monaco', 'Courier New', monospace;
+  color: #0f172a;
+}
+
+.tampering-patterns {
+  margin-top: 20px;
+}
+
+.tampering-patterns h3 {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #991b1b;
+}
+
+.pattern-card {
+  border: 1px solid #fcd34d;
+
+  padding: 12px;
+  background: #fffbeb;
+  margin-bottom: 10px;
+  border-radius: 3px;
+}
+
+.pattern-card h4 {
+  font-size: 12px;
+  font-weight: 600;
+  color: #92400e;
+  margin-bottom: 6px;
+}
+
+.pattern-card p {
+  font-size: 11px;
+  color: #78350f;
+  margin-bottom: 8px;
+}
+
+.pattern-indicators {
+  font-size: 11px;
+}
+
+.pattern-indicators strong {
+  color: #92400e;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.pattern-indicators ul {
+  margin-left: 16px;
+}
+
+.pattern-indicators li {
+  color: #78350f;
+  margin-bottom: 3px;
+}
+
+.verification-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.btn-primary {
+  padding: 7px 16px;
+  font-size: 11px;
+  font-weight: 500;
+  background: #0f172a;
+  color: white;
+  border: 1px solid #0f172a;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-radius: 3px;
+}
+
+.btn-primary:hover {
+  background: #1e293b;
+  border-color: #1e293b;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .blockchain-modal {
+    max-width: 95vw;
+    max-height: 95vh;
+  }
+
+  .blockchain-modal--large {
+    max-width: 95vw;
+  }
+
+  .data-grid,
+  .stats-grid,
+  .scan-stats-grid,
+  .alerts-stats-grid,
+  .integrity-grid,
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .audit-header,
+  .alert-header,
+  .issue-header,
+  .layer-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .comparison-table {
+    font-size: 10px;
+  }
+
+  .comparison-table th,
+  .comparison-table td {
+    padding: 8px;
+  }
+
+  .detail-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .blockchain-modal-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .blockchain-modal-close {
+    align-self: flex-end;
+  }
+}
+/* ========================================
+   TEXT EDITOR & FORMATTING STYLES
+   ======================================== */
+
+/* Text Editor Toolbar */
+.text-editor-toolbar {
+  display: flex;
+  gap: 6px;
+  padding: 10px 12px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-bottom: none;
+  flex-wrap: wrap;
+  margin-bottom: 0;
+}
+
+.toolbar-btn {
+  padding: 6px 12px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 0;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.2s;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.toolbar-btn:hover {
+  background: var(--bg-tertiary);
+  border-color: var(--secondary);
+}
+
+.toolbar-btn:active {
+  background: var(--bg-tertiary);
+  transform: translateY(1px);
+}
+
+.toolbar-btn strong {
+  font-weight: 700;
+}
+
+.toolbar-btn em {
+  font-style: italic;
+}
+
+.toolbar-btn u {
+  text-decoration: underline;
+}
+
+/* Toggle Editor Mode Button */
+.toggle-editor-btn {
+  margin-left: auto;
+  padding: 4px 10px;
+  font-size: 10px;
+  font-weight: 500;
+  background: var(--primary);
+  color: white;
+  border: 1px solid var(--primary);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.toggle-editor-btn:hover {
+  background: var(--secondary);
+  border-color: var(--secondary);
+}
+
+/* Hearing Remarks Textarea with Rich Text Support */
+.hearing-remarks-textarea {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  border-radius: 0 !important;
+  margin-top: 0 !important;
+  min-height: 180px;
+  resize: vertical;
+}
+
+/* Formatting Help Text */
+.formatting-help {
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: var(--bg-tertiary);
+
+  font-size: 10px;
+  color: var(--text-secondary);
+}
+
+.formatting-help small {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ========================================
+   HEARING REMARKS DISPLAY
+   ======================================== */
+
+.judicial-mgmt__hearing-remarks {
+  margin: 12px 0;
+  padding: 14px;
+  background: var(--bg-secondary);
+
+  line-height: 1.7;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-size: 12px;
+  color: var(--text-primary);
+}
+
+/* HTML Content Formatting */
+.judicial-mgmt__hearing-remarks strong,
+.judicial-mgmt__hearing-remarks b {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.judicial-mgmt__hearing-remarks em,
+.judicial-mgmt__hearing-remarks i {
+  font-style: italic;
+}
+
+.judicial-mgmt__hearing-remarks u {
+  text-decoration: underline;
+}
+
+.judicial-mgmt__hearing-remarks p {
+  margin-bottom: 8px;
+}
+
+.judicial-mgmt__hearing-remarks p:last-child {
+  margin-bottom: 0;
+}
+
+/* Bullet Lists in Remarks */
+.judicial-mgmt__hearing-remarks ul {
+  margin-left: 20px;
+  margin-bottom: 8px;
+}
+
+.judicial-mgmt__hearing-remarks li {
+  margin-bottom: 4px;
+}
+
+/* ========================================
+   DIGITAL SIGNATURE STYLES
+   ======================================== */
+
+/* Signature Badge on Hearing Card */
+.digital-signature-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  background: var(--success);
+  color: white;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.digital-signature-badge svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+/* Signature Information Panel */
+.judicial-mgmt__hearing-signature-info {
+  margin-top: 16px;
+  padding: 14px;
+  background: #e0f2fe;
+  border: 1px solid #bae6fd;
+ 
+}
+
+.signature-details {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 6px;
+  font-size: 11px;
+  align-items: baseline;
+}
+
+.signature-details:last-of-type {
+  margin-bottom: 10px;
+}
+
+.signature-label {
+  font-weight: 600;
+  color: var(--secondary);
+  min-width: 80px;
+}
+
+.signature-value {
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+/* Signature Action Buttons */
+.verify-signature-btn,
+.sign-hearing-btn {
+  padding: 6px 14px;
+  font-size: 10px;
+  font-weight: 500;
+  border: 1px solid;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+}
+
+.verify-signature-btn {
+  background: #0891b2;
+  color: white;
+  border-color: #0891b2;
+}
+
+.verify-signature-btn:hover {
+  background: #0e7490;
+  border-color: #0e7490;
+}
+
+.sign-hearing-btn {
+  background: var(--success);
+  color: white;
+  border-color: var(--success);
+}
+
+.sign-hearing-btn:hover {
+  background: #059669;
+  border-color: #059669;
+}
+
+/* ========================================
+   CHECKBOX & FORM CONTROLS
+   ======================================== */
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 8px 0;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  cursor: pointer;
+  accent-color: var(--primary);
+}
+
+.checkbox-label span {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.help-text {
+  display: block;
+  margin-top: 4px;
+  margin-left: 26px;
+  color: var(--text-secondary);
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+/* ========================================
+   ENHANCED HEARING CARD LAYOUT
+   ======================================== */
+
+.judicial-mgmt__hearing-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.judicial-mgmt__hearing-card {
+  transition: box-shadow 0.2s, border-color 0.2s;
+  position: relative;
+}
+
+.judicial-mgmt__hearing-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border-color: var(--secondary);
+}
+
+/* Signed Hearing Card Indicator */
+.judicial-mgmt__hearing-card:has(.digital-signature-badge) {
+ 
+}
+
+/* ========================================
+   SIGNATURE VERIFICATION MODAL STYLES
+   ======================================== */
+
+.signature-verification-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+  padding: 20px;
+}
+
+.signature-verification-content {
+  background: var(--bg-primary);
+  max-width: 500px;
+  width: 100%;
+  border: 1px solid var(--border);
+  padding: 24px;
+}
+
+.signature-verification-content h3 {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: var(--text-primary);
+}
+
+.signature-verification-result {
+  padding: 14px;
+  margin-bottom: 16px;
+  font-size: 12px;
+
+}
+
+.signature-verification-result.valid {
+  background: #d1fae5;
+  color: #065f46;
+ 
+}
+
+.signature-verification-result.invalid {
+  background: #fee2e2;
+  color: #991b1b;
+ 
+}
+
+.signature-verification-details {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 12px;
+}
+
+.signature-verification-details p {
+  margin-bottom: 6px;
+}
+
+/* ========================================
+   LOADING STATES FOR SIGNATURE OPERATIONS
+   ======================================== */
+
+.signature-loading {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--text-secondary);
+}
+
+.signature-loading::after {
+  content: '';
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--border);
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ========================================
+   FORM ENHANCEMENTS FOR SIGNATURE
+   ======================================== */
+
+.signature-form-section {
+  background: var(--bg-secondary);
+  padding: 16px;
+  margin-top: 16px;
+  border: 1px solid var(--border);
+ 
+}
+
+.signature-form-section h4 {
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--text-primary);
+}
+
+.signature-info-box {
+  background: #fef3c7;
+  border: 1px solid #fcd34d;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  font-size: 10px;
+  color: #78350f;
+  line-height: 1.5;
+}
+
+.signature-info-box strong {
+  display: block;
+  margin-bottom: 4px;
+  color: #92400e;
+}
+
+/* ========================================
+   RESPONSIVE ADJUSTMENTS
+   ======================================== */
+
+@media (max-width: 768px) {
+  .text-editor-toolbar {
+    gap: 4px;
+    padding: 8px;
+  }
+
+  .toolbar-btn {
+    padding: 5px 10px;
+    font-size: 11px;
+  }
+
+  .toggle-editor-btn {
+    margin-left: 0;
+    margin-top: 4px;
+    width: 100%;
+  }
+
+  .judicial-mgmt__hearing-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .digital-signature-badge {
+    font-size: 9px;
+    padding: 3px 8px;
+  }
+
+  .judicial-mgmt__hearing-signature-info {
+    padding: 12px;
+  }
+
+  .signature-details {
+    flex-direction: column;
+    gap: 2px;
+    margin-bottom: 8px;
+  }
+
+  .signature-label {
+    min-width: unset;
+  }
+
+  .verify-signature-btn,
+  .sign-hearing-btn {
+    width: 100%;
+    margin-top: 8px;
+  }
+
+  .checkbox-label {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  .help-text {
+    margin-left: 0;
+  }
+}
+
+/* ========================================
+   PRINT STYLES FOR SIGNED HEARINGS
+   ======================================== */
+
+@media print {
+  .text-editor-toolbar,
+  .toggle-editor-btn,
+  .verify-signature-btn,
+  .sign-hearing-btn {
+    display: none;
+  }
+
+  .judicial-mgmt__hearing-signature-info {
+    border: 2px solid #000;
+    page-break-inside: avoid;
+  }
+
+  .digital-signature-badge {
+    background: #000 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .judicial-mgmt__hearing-remarks {
+ 
+    page-break-inside: avoid;
+  }
+}
+
+/* ========================================
+   ACCESSIBILITY ENHANCEMENTS
+   ======================================== */
+
+/* Focus States */
+.toolbar-btn:focus,
+.toggle-editor-btn:focus,
+.verify-signature-btn:focus,
+.sign-hearing-btn:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.checkbox-label input[type="checkbox"]:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Screen Reader Only Text */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  .digital-signature-badge {
+    border: 2px solid currentColor;
+  }
+
+  .judicial-mgmt__hearing-signature-info {
+    border-width: 2px;
+  }
+
+  .toolbar-btn {
+    border-width: 2px;
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .toolbar-btn,
+  .verify-signature-btn,
+  .sign-hearing-btn,
+  .judicial-mgmt__hearing-card {
+    transition: none;
+  }
+
+  .signature-loading::after {
+    animation: none;
+  }
+}
+
+/* ========================================
+   ADDITIONAL UTILITY CLASSES
+   ======================================== */
+
+.signature-timestamp {
+  font-size: 10px;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.signature-hash-preview {
+  font-family: 'Monaco', 'Courier New', monospace;
+  font-size: 9px;
+  color: var(--text-secondary);
+  background: var(--bg-tertiary);
+  padding: 4px 6px;
+  border-radius: 2px;
+  word-break: break-all;
+  margin-top: 4px;
+}
+
+.signature-status-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.signature-status-indicator::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.signature-status-indicator.valid {
+  color: var(--success);
+}
+
+.signature-status-indicator.invalid {
+  color: var(--error);
+}
+
+.signature-status-indicator.pending {
+  color: var(--warning);
+}
+
+/* ========================================
+   ENHANCED HEARING ACTIONS SECTION
+   ======================================== */
+
+.judicial-mgmt__hearing-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+.judicial-mgmt__hearing-actions button {
+  flex: 1;
+  min-width: 120px;
+}
+
+/* Empty State for Unsigned Hearings */
+.unsigned-hearing-notice {
+  background: var(--bg-tertiary);
+  border: 1px dashed var(--border);
+  padding: 12px;
+  margin-top: 12px;
+  font-size: 11px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.unsigned-hearing-notice::before {
+  content: '⚠️';
+  margin-right: 6px;
+}
+
+/* Signature Required Indicator */
+.signature-required-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  background: #fef3c7;
+  color: #92400e;
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 1px solid #fcd34d;
+}
+
+/* Signature Complete Indicator */
+.signature-complete-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  background: #d1fae5;
+  color: #065f46;
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 1px solid #86efac;
+}
+
+.signature-complete-badge::before {
+  content: '✓';
+  font-weight: 700;
+}
+/* ========================================
+   DOCUMENT MANAGEMENT STYLES
+   ======================================== */
+
+/* Documents Tab Header */
+.documents-tab-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.request-document-btn {
+  padding: 6px 12px;
+  font-size: 10px;
+  font-weight: 600;
+  background: var(--primary);
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  width:35%;
+}
+
+.request-document-btn:hover {
+  background: var(--secondary);
+}
+
+/* Document Requests Section */
+.document-requests-section {
+  margin-bottom: 32px;
+}
+
+.subsection-title {
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--text-primary);
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Document Requests Table */
+.document-table-container {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+}
+
+.document-requests-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 10px;
+}
+
+.document-requests-table thead {
+  background: var(--bg-secondary);
+}
+
+.document-requests-table th {
+  padding: 8px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-secondary);
+  border-bottom: 1px solid var(--border);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-size: 9px;
+}
+
+.document-requests-table td {
+  padding: 10px 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.document-requests-table tbody tr:hover {
+  background: var(--bg-tertiary);
+}
+
+/* Document Row Status Colors */
+.doc-row--pending_upload {
+  background: #fef3c7;
+}
+
+.doc-row--uploaded_pending_review {
+  background: #e0f2fe;
+}
+
+.doc-row--verified {
+  background: #d1fae5;
+}
+
+.doc-row--rejected {
+  background: #fee2e2;
+}
+
+/* Table Cells */
+.doc-type-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.doc-type-cell strong {
+  font-size: 10px;
+  color: var(--text-primary);
+}
+
+.doc-description {
+  font-size: 9px;
+  color: var(--text-secondary);
+  display: block;
+}
+
+.requested-from-cell {
+  display: flex;
+  align-items: center;
+}
+
+.party-badge {
+  padding: 2px 6px;
+  font-size: 8px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  border-radius: 2px;
+}
+
+.party-badge--litigant {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.party-badge--advocate {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  font-size: 8px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  border-radius: 2px;
+}
+
+.status-badge--pending_upload {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-badge--uploaded_pending_review {
+  background: #bae6fd;
+  color: #075985;
+}
+
+.status-badge--verified {
+  background: #86efac;
+  color: #065f46;
+}
+
+.status-badge--rejected {
+  background: #fecaca;
+  color: #991b1b;
+}
+
+.date-cell {
+  font-size: 9px;
+  color: var(--text-secondary);
+}
+
+/* Document Actions */
+.doc-actions {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+
+.doc-action-btn {
+  padding: 3px 8px;
+  font-size: 8px;
+  font-weight: 600;
+  border: 1px solid;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.doc-action-btn--verify {
+  background: #0891b2;
+  color: white;
+  border-color: #0891b2;
+}
+
+.doc-action-btn--verify:hover {
+  background: #0e7490;
+}
+
+.doc-action-btn--download {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.doc-action-btn--download:hover {
+  background: var(--secondary);
+}
+
+.doc-action-btn--signature {
+  background: #f59e0b;
+  color: white;
+  border-color: #f59e0b;
+}
+
+.doc-action-btn--signature:hover {
+  background: #d97706;
+}
+
+.signature-indicator {
+  font-size: 8px;
+  color: var(--success);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+/* Document Request Form */
+.document-request-form .form-group {
+  margin-bottom: 16px;
+}
+
+.document-request-form label {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--text-secondary);
+}
+
+.document-request-form input,
+.document-request-form select,
+.document-request-form textarea {
+  width: 100%;
+  padding: 7px 10px;
+  font-size: 11px;
+  border: 1px solid var(--border);
+  background: var(--bg-primary);
+  font-family: inherit;
+}
+
+.document-request-form textarea {
+  resize: vertical;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.btn-secondary {
+  padding: 6px 14px;
+  font-size: 10px;
+  font-weight: 500;
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+  background: var(--bg-secondary);
+  border-color: var(--secondary);
+}
+
+/* Document Review Info */
+.document-review-info {
+  background: var(--bg-secondary);
+  padding: 14px;
+  margin-bottom: 20px;
+  border: 1px solid var(--border);
+}
+
+.document-review-info .info-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  font-size: 11px;
+  border-bottom: 1px solid var(--border);
+}
+
+.document-review-info .info-row:last-child {
+  border-bottom: none;
+}
+
+.info-label {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.info-value {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* Verification Form */
+.verification-form .form-group {
+  margin-bottom: 16px;
+}
+
+.verification-form label {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: var(--text-secondary);
+}
+
+.verification-form select,
+.verification-form textarea {
+  width: 100%;
+  padding: 7px 10px;
+  font-size: 11px;
+  border: 1px solid var(--border);
+  background: var(--bg-primary);
+  font-family: inherit;
+}
+
+.verification-form textarea {
+  resize: vertical;
+}
+
+.signature-notice {
+  background: #fef3c7;
+  border: 1px solid #fcd34d;
+  padding: 12px;
+  margin-bottom: 16px;
+  font-size: 10px;
+  color: #78350f;
+  line-height: 1.5;
+}
+
+.signature-notice strong {
+  display: block;
+  margin-bottom: 4px;
+  color: #92400e;
+}
+
+.btn-success {
+  background: var(--success) !important;
+  border-color: var(--success) !important;
+}
+
+.btn-success:hover {
+  background: #059669 !important;
+}
+
+.btn-danger {
+  background: var(--error) !important;
+  border-color: var(--error) !important;
+}
+
+.btn-danger:hover {
+  background: #dc2626 !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .documents-tab-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .request-document-btn {
+    width: 100%;
+  }
+
+  .document-table-container {
+    overflow-x: scroll;
+  }
+
+  .document-requests-table {
+    min-width: 600px;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .doc-actions {
+    flex-direction: column;
+  }
+
+  .doc-action-btn {
+    width: 100%;
+  }
+}
+.document-actions-group {
+  display: flex;
+  gap: 10px;
+}

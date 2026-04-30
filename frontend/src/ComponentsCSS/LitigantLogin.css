@@ -1,0 +1,505 @@
+/* Import color theme */
+@import url('./theme-colors.css');
+
+/* Container Styles */
+.litigant-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+  padding: 24px;
+}
+
+/* Login Box */
+.litigant-login-box {
+  width: 100%;
+  max-width: 440px;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 40px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+}
+
+/* Logo */
+.official-logo {
+  width: 60px;
+  height: 60px;
+  display: block;
+  margin: 0 auto 16px;
+  object-fit: contain;
+}
+
+/* Secure Authentication Badge */
+.secure-authentication {
+  text-align: center;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* Title */
+.litigant-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+/* Form Group */
+.litigant-form-group {
+  margin-bottom: 20px;
+}
+
+/* Label */
+.litigant-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+/* Input */
+.litigant-input {
+  width: 100%;
+  padding: 12px 16px;
+  font-size: 15px;
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  outline: none;
+  font-family: inherit;
+}
+
+.litigant-input:focus {
+  border-color: var(--accent-primary);
+  background-color: var(--bg-primary);
+}
+
+.litigant-input:disabled {
+  background-color: var(--bg-tertiary);
+  color: var(--text-tertiary);
+  cursor: not-allowed;
+}
+
+.litigant-input::placeholder {
+  color: var(--text-tertiary);
+}
+
+/* Form Hint */
+.form-hint {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 6px;
+  line-height: 1.4;
+}
+
+/* Password Strength Meter */
+.password-strength {
+  width: 100%;
+  height: 4px;
+  background-color: var(--border-color);
+  border-radius: 2px;
+  margin-top: 8px;
+  overflow: hidden;
+}
+
+.password-strength-meter {
+  height: 100%;
+  width: 0;
+  transition: all 0.3s ease;
+  border-radius: 2px;
+}
+
+.password-strength-meter.strength-weak {
+  width: 33.33%;
+  background-color: #DC2626;
+}
+
+.password-strength-meter.strength-medium {
+  width: 66.66%;
+  background-color: #F59E0B;
+}
+
+.password-strength-meter.strength-strong {
+  width: 100%;
+  background-color: #059669;
+}
+
+/* Turnstile Container */
+.turnstile-container {
+  display: flex;
+  justify-content: center;
+  margin: 24px 0;
+}
+
+/* Forgot Password Link */
+.forgot-password-link {
+  text-align: right;
+  margin-bottom: 24px;
+}
+
+.text-link {
+  font-size: 14px;
+  color: var(--accent-primary);
+  cursor: pointer;
+  transition: color 0.2s ease;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.text-link:hover {
+  color: var(--accent-primary-hover);
+}
+
+.text-link:active {
+  color: var(--accent-primary-active);
+}
+
+/* Buttons */
+.litigant-submit-btn {
+  width: 100%;
+  padding: 12px 24px;
+  font-size: 15px;
+  font-weight: 500;
+  color: white;
+  background-color: var(--accent-primary);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.litigant-submit-btn:hover:not(:disabled) {
+  background-color: var(--accent-primary-hover);
+}
+
+.litigant-submit-btn:active:not(:disabled) {
+  background-color: var(--accent-primary-active);
+}
+
+.litigant-submit-btn:disabled {
+  background-color: var(--text-tertiary);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.litigant-secondary-btn {
+  padding: 12px 24px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-primary);
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.litigant-secondary-btn:hover:not(:disabled) {
+  background-color: var(--hover-bg);
+  border-color: var(--text-tertiary);
+}
+
+.litigant-secondary-btn:active:not(:disabled) {
+  background-color: var(--active-bg);
+}
+
+.litigant-secondary-btn:disabled {
+  background-color: var(--bg-tertiary);
+  color: var(--text-tertiary);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Form Actions */
+.form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.form-actions .litigant-secondary-btn {
+  flex: 1;
+}
+
+.form-actions .litigant-submit-btn {
+  flex: 1;
+}
+
+/* Message Boxes */
+.litigant-error-box {
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  background-color: #FEE2E2;
+  border: 1px solid #FCA5A5;
+  border-radius: 8px;
+  color: #991B1B;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.litigant-success-box {
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  background-color: #D1FAE5;
+  border: 1px solid #6EE7B7;
+  border-radius: 8px;
+  color: #065F46;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* View Transitions */
+.view-transition {
+  animation-duration: 0.3s;
+  animation-timing-function: ease-in-out;
+  animation-fill-mode: both;
+}
+
+.fade-in {
+  animation-name: fadeIn;
+}
+
+.fade-out {
+  animation-name: fadeOut;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .litigant-container {
+    padding: 16px;
+  }
+
+  .litigant-login-box {
+    padding: 32px 24px;
+    max-width: 100%;
+  }
+
+  .official-logo {
+    width: 50px;
+    height: 50px;
+  }
+
+  .litigant-title {
+    font-size: 22px;
+  }
+
+  .secure-authentication {
+    font-size: 12px;
+    margin-bottom: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .litigant-container {
+    padding: 12px;
+    align-items: flex-start;
+    padding-top: 40px;
+  }
+
+  .litigant-login-box {
+    padding: 24px 20px;
+  }
+
+  .official-logo {
+    width: 45px;
+    height: 45px;
+    margin-bottom: 12px;
+  }
+
+  .litigant-title {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+
+  .secure-authentication {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+  }
+
+  .litigant-form-group {
+    margin-bottom: 16px;
+  }
+
+  .litigant-label {
+    font-size: 13px;
+  }
+
+  .litigant-input {
+    padding: 10px 14px;
+    font-size: 14px;
+  }
+
+  .litigant-submit-btn,
+  .litigant-secondary-btn {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+
+  .form-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .form-actions .litigant-secondary-btn,
+  .form-actions .litigant-submit-btn {
+    width: 100%;
+  }
+
+  .forgot-password-link {
+    margin-bottom: 20px;
+  }
+
+  .text-link {
+    font-size: 13px;
+  }
+
+  .turnstile-container {
+    margin: 20px 0;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .view-transition {
+    animation: none;
+  }
+
+  .litigant-input,
+  .litigant-submit-btn,
+  .litigant-secondary-btn,
+  .text-link {
+    transition: none;
+  }
+}
+
+/* Focus Visible for Keyboard Navigation */
+.litigant-input:focus-visible,
+.litigant-submit-btn:focus-visible,
+.litigant-secondary-btn:focus-visible,
+.text-link:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+/* Loading State Animation */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.litigant-submit-btn:disabled::after {
+  content: '';
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-left: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  vertical-align: middle;
+}
+
+/* Turnstile Responsive */
+@media (max-width: 480px) {
+  .turnstile-container iframe {
+    transform: scale(0.9);
+    transform-origin: center;
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .litigant-error-box {
+    background-color: #7F1D1D;
+    border-color: #991B1B;
+    color: #FEE2E2;
+  }
+
+  .litigant-success-box {
+    background-color: #064E3B;
+    border-color: #065F46;
+    color: #D1FAE5;
+  }
+
+  .litigant-container {
+    background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+  }
+
+  .official-logo {
+    filter: brightness(0.9);
+  }
+}
+.litigantdash-header-right-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.litigantdash-print-receipt-button {
+  padding: 8px 16px;
+  font-size: 13px;
+}
+
+.litigantdash-close-modal-button {
+  width: 32px;
+  height: 32px;
+  font-size: 20px;
+  padding: 0;
+  flex-shrink: 0;
+}
+.litigantdash-hearing-search-form-container {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+}
+
+.litigantdash-hearing-search-form-container .litigantdash-form-group-item {
+  flex: 1;
+  max-width: 400px;
+  margin-bottom: 0;
+  width:70%;
+}
+
+.litigantdash-hearing-search-form-container .litigantdash-search-hearings-button {
+  flex-shrink: 0;
+  height: 44px;
+  width:30%;
+}
