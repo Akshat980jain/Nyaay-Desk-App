@@ -4,8 +4,9 @@
 // Replace your existing socketService.js with this updated version
 
 import { io } from 'socket.io-client';
+import API_BASE_URL from '../config';
 
-const SOCKET_URL = 'http://localhost:5000';
+const SOCKET_URL = API_BASE_URL;
 
 class SocketService {
   constructor() {

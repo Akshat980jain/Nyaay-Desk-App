@@ -106,7 +106,7 @@ const LitigantLogin = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:5000/api/litigant/login', {
+      const response = await axios.post('https://nyaay-desk-app-backend.onrender.com/api/litigant/login', {
         email: loginData.email,
         password: loginData.password,
         'cf-turnstile-response': turnstileToken // This is the correct field name expected by Cloudflare
@@ -141,7 +141,7 @@ const LitigantLogin = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post('http://localhost:5000/api/litigant/forgot-password', { 
+      const response = await axios.post('https://nyaay-desk-app-backend.onrender.com/api/litigant/forgot-password', { 
         email: loginData.email,
         'cf-turnstile-response': turnstileToken
       });
@@ -176,7 +176,7 @@ const LitigantLogin = () => {
       return;
     }
     try {
-      const response = await axios.post('http://localhost:5000/api/litigant/reset-password', {
+      const response = await axios.post('https://nyaay-desk-app-backend.onrender.com/api/litigant/reset-password', {
         party_id,
         otp: resetData.otp,
         newPassword: resetData.newPassword,

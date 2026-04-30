@@ -320,13 +320,13 @@ const [isHearingDetailsOpen, setIsHearingDetailsOpen] = useState(false);
           navigate('/advlogin');
           throw new Error('No authentication token found');
         }
-        const response = await axios.get('http://localhost:5000/api/advocate/profile', {
+        const response = await axios.get('https://nyaay-desk-app-backend.onrender.com/api/advocate/profile', {
           headers: { 'Authorization': `Bearer ${token}` },
         });
         setProfile(response.data.advocate);
         if (response.data.advocate.profilePicture) {
           setProfilePicture(
-            `http://localhost:5000/api/advocate/profile-picture/${response.data.advocate.profilePicture}`
+            `https://nyaay-desk-app-backend.onrender.com/api/advocate/profile-picture/${response.data.advocate.profilePicture}`
           );
         }
         setLoading(false);
@@ -362,7 +362,7 @@ useEffect(() => {
     try {
       const token = localStorage.getItem('token');
       // Changed endpoint from '/api/my-document-requests' to advocate-specific route
-      const response = await axios.get('http://localhost:5000/api/advocate/my-document-requests', {
+      const response = await axios.get('https://nyaay-desk-app-backend.onrender.com/api/advocate/my-document-requests', {
         headers: { Authorization: `Bearer ${token}` },
       });
       setDocumentRequests(response.data.requests || []);
@@ -381,7 +381,7 @@ useEffect(() => {
     setCasesLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:5000/api/cases/advocate', {
+      const response = await axios.get('https://nyaay-desk-app-backend.onrender.com/api/cases/advocate', {
         headers: { 'Authorization': `Bearer ${token}` },
       });
       setCases(response.data.cases || []);
@@ -396,7 +396,7 @@ useEffect(() => {
     setJoinRequestsLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:5000/advocate/pending-requests', {
+      const response = await axios.get('https://nyaay-desk-app-backend.onrender.com/advocate/pending-requests', {
         headers: { 'Authorization': `Bearer ${token}` },
       });
       setJoinRequests(response.data.pendingRequests || []);
@@ -420,7 +420,7 @@ useEffect(() => {
     setNocRequestsLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`http://localhost:5000/api/advocate-change/advocate-requests/${profile.advocate_id}`, {
+      const response = await axios.get(`https://nyaay-desk-app-backend.onrender.com/api/advocate-change/advocate-requests/${profile.advocate_id}`, {
         headers: { 'Authorization': `Bearer ${token}` },
       });
       setNocRequests(response.data || []);
@@ -450,7 +450,7 @@ useEffect(() => {
       const formData = new FormData();
       formData.append('profilePicture', file);
       const response = await axios.post(
-        'http://localhost:5000/api/advocate/profile-picture',
+        'https://nyaay-desk-app-backend.onrender.com/api/advocate/profile-picture',
         formData,
         {
           headers: {
@@ -460,7 +460,7 @@ useEffect(() => {
         }
       );
       setProfilePicture(
-        `http://localhost:5000/api/advocate/profile-picture/${
+        `https://nyaay-desk-app-backend.onrender.com/api/advocate/profile-picture/${
           response.data.profilePicture.filename
         }?${new Date().getTime()}`
       );
@@ -490,7 +490,7 @@ const handleRequestedDocumentUpload = async (e, documentId, caseNum) => {
     formData.append('file', documentFile);
 
     await axios.post(
-      `http://localhost:5000/api/case/${caseNum}/upload-requested-document/${documentId}`,
+      `https://nyaay-desk-app-backend.onrender.com/api/case/${caseNum}/upload-requested-document/${documentId}`,
       formData,
       {
         headers: {
@@ -506,7 +506,7 @@ const handleRequestedDocumentUpload = async (e, documentId, caseNum) => {
     document.getElementById('advocat-requested-doc-file-input').value = '';
     
     // Refresh document requests - CHANGED THIS LINE
-    const response = await axios.get('http://localhost:5000/api/advocate/my-document-requests', {
+    const response = await axios.get('https://nyaay-desk-app-backend.onrender.com/api/advocate/my-document-requests', {
       headers: { Authorization: `Bearer ${token}` },
     });
     setDocumentRequests(response.data.requests || []);
@@ -524,7 +524,7 @@ const handleRequestedDocumentUpload = async (e, documentId, caseNum) => {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.get(
-        `http://localhost:5000/api/case/${searchCaseNum}/hearings/advocate`,
+        `https://nyaay-desk-app-backend.onrender.com/api/case/${searchCaseNum}/hearings/advocate`,
         {
           headers: { 'Authorization': `Bearer ${token}` },
         }
@@ -543,7 +543,7 @@ const handleRequestedDocumentUpload = async (e, documentId, caseNum) => {
     try {
       const token = localStorage.getItem('token');
       const caseResponse = await axios.get(
-        `http://localhost:5000/api/case/${caseNum}/documents/advocate`,
+        `https://nyaay-desk-app-backend.onrender.com/api/case/${caseNum}/documents/advocate`,
         {
           headers: { 'Authorization': `Bearer ${token}` },
         }
@@ -578,7 +578,7 @@ const handleRequestedDocumentUpload = async (e, documentId, caseNum) => {
       formData.append('document_type', documentType);
       formData.append('description', documentDescription);
       await axios.post(
-        `http://localhost:5000/api/case/${selectedCaseForDocuments.case_num}/document/advocate`,
+        `https://nyaay-desk-app-backend.onrender.com/api/case/${selectedCaseForDocuments.case_num}/document/advocate`,
         formData,
         {
           headers: {
@@ -604,7 +604,7 @@ const handleRequestedDocumentUpload = async (e, documentId, caseNum) => {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.get(
-        `http://localhost:5000/api/document/${documentId}/download/advocate`,
+        `https://nyaay-desk-app-backend.onrender.com/api/document/${documentId}/download/advocate`,
         {
           headers: { 'Authorization': `Bearer ${token}` },
           responseType: 'blob',
@@ -625,7 +625,7 @@ const handleRequestedDocumentUpload = async (e, documentId, caseNum) => {
   const downloadAttachment = async (filename, originalname) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`http://localhost:5000/api/files/${filename}`, {
+      const response = await axios.get(`https://nyaay-desk-app-backend.onrender.com/api/files/${filename}`, {
         headers: { 'Authorization': `Bearer ${token}` },
         responseType: 'blob',
       });
@@ -765,7 +765,7 @@ const handleRequestedDocumentUpload = async (e, documentId, caseNum) => {
     try {
       const token = localStorage.getItem('token');
       await axios.post(
-        'http://localhost:5000/api/advocate/logout',
+        'https://nyaay-desk-app-backend.onrender.com/api/advocate/logout',
         {},
         {
           headers: { 'Authorization': `Bearer ${token}` },
@@ -783,7 +783,7 @@ const handleRequestedDocumentUpload = async (e, documentId, caseNum) => {
     try {
       const token = localStorage.getItem('token');
       await axios.post(
-        'http://localhost:5000/api/advocate/logout-all',
+        'https://nyaay-desk-app-backend.onrender.com/api/advocate/logout-all',
         { password: logoutPassword },
         {
           headers: { 'Authorization': `Bearer ${token}` },
@@ -1484,7 +1484,7 @@ const renderDocuments = () => (
         payload.reason = declineReason;
       }
 
-      await axios.put(`http://localhost:5000/api/advocate-change/respond-noc/${requestId}`, payload, {
+      await axios.put(`https://nyaay-desk-app-backend.onrender.com/api/advocate-change/respond-noc/${requestId}`, payload, {
         headers: { 'Authorization': `Bearer ${token}` },
       });
 

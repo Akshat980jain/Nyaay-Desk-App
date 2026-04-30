@@ -74,7 +74,7 @@ const CourtAdminLiveDashboard = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/courtadmin/profile', {
+      const response = await fetch('https://nyaay-desk-app-backend.onrender.com/api/courtadmin/profile', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 

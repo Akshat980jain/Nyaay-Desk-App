@@ -30,7 +30,7 @@ const CourtAdminManagement = () => {
     type: ''
   });
 
-  const API_URL = 'http://localhost:5000';
+  const API_URL = 'https://nyaay-desk-app-backend.onrender.com';
 
   const getHeaders = () => {
     const token = localStorage.getItem('token');
@@ -49,7 +49,7 @@ const CourtAdminManagement = () => {
           return;
         }
 
-        const response = await axios.get('http://localhost:5000/api/clerk/profile', {
+        const response = await axios.get('https://nyaay-desk-app-backend.onrender.com/api/clerk/profile', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
 

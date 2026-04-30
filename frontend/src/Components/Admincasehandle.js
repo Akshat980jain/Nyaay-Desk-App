@@ -81,7 +81,7 @@ const [showRequestForm, setShowRequestForm] = useState(false);
           
           console.log('Using token:', token.substring(0, 10) + '...');
           
-          const response = await axios.get('http://localhost:5000/api/cases/admin', {
+          const response = await axios.get('https://nyaay-desk-app-backend.onrender.com/api/cases/admin', {
             headers: { 
               'Authorization': `Bearer ${token}`,
               'Content-Type': 'application/json'
@@ -235,7 +235,7 @@ const handleDocumentRequest = async (e) => {
   try {
     const token = localStorage.getItem('token');
     const response = await axios.post(
-      `http://localhost:5000/api/courtadmin/case/${selectedCase.case_num}/request-document`,
+      `https://nyaay-desk-app-backend.onrender.com/api/courtadmin/case/${selectedCase.case_num}/request-document`,
       {
         document_type: documentRequestForm.document_type,
         description: documentRequestForm.description,
@@ -271,7 +271,7 @@ const handleDocumentRequest = async (e) => {
   const handleCaseApproval = async (approve) => {
     try {
       const response = await axios.patch(
-        `http://localhost:5000/api/case/${selectedCase.case_num}/approve`,
+        `https://nyaay-desk-app-backend.onrender.com/api/case/${selectedCase.case_num}/approve`,
         { case_approved: approve },
         { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }}
       );
@@ -458,7 +458,7 @@ const insertFormatting = (before, after = '') => {
       }
 
       const response = await axios.post(
-        `http://localhost:5000/api/case/${selectedCase.case_num}/hearing/${hearingId}/sign`,
+        `https://nyaay-desk-app-backend.onrender.com/api/case/${selectedCase.case_num}/hearing/${hearingId}/sign`,
         {},
         { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }}
       );
@@ -483,7 +483,7 @@ const insertFormatting = (before, after = '') => {
   const verifyHearingSignature = async (hearingId) => {
     try {
       const response = await axios.get(
-        `http://localhost:5000/api/case/${selectedCase.case_num}/hearing/${hearingId}/verify-signature`,
+        `https://nyaay-desk-app-backend.onrender.com/api/case/${selectedCase.case_num}/hearing/${hearingId}/verify-signature`,
         { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }}
       );
 
@@ -504,7 +504,7 @@ const insertFormatting = (before, after = '') => {
     e.preventDefault();
     try {
       const response = await axios.patch(
-        `http://localhost:5000/api/case/${selectedCase.case_num}/status`,
+        `https://nyaay-desk-app-backend.onrender.com/api/case/${selectedCase.case_num}/status`,
         statusForm,
         { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }}
       );
@@ -592,7 +592,7 @@ const insertFormatting = (before, after = '') => {
       }
       
       const response = await axios.post(
-        `http://localhost:5000/api/case/${selectedCase.case_num}/hearing`,
+        `https://nyaay-desk-app-backend.onrender.com/api/case/${selectedCase.case_num}/hearing`,
         formData,
         { 
           headers: { 
@@ -670,7 +670,7 @@ const insertFormatting = (before, after = '') => {
       // Make the request
       const response = await axios({
         method: 'POST',
-       url: `http://localhost:5000/api/courtadmin/case/${selectedCase.case_num}/upload-document`,
+       url: `https://nyaay-desk-app-backend.onrender.com/api/courtadmin/case/${selectedCase.case_num}/upload-document`,
         data: formData,
         headers: {
           'Authorization': `Bearer ${token}`
@@ -742,7 +742,7 @@ const handleDocumentDownload = async (documentId) => {
     // Download request with proper headers and response type
     const response = await axios({
       method: 'GET',
-      url: `http://localhost:5000/api/document/${documentId}/download`,
+      url: `https://nyaay-desk-app-backend.onrender.com/api/document/${documentId}/download`,
       responseType: 'blob', // Critical for binary file handling
       headers: {
         'Authorization': `Bearer ${token}`
@@ -797,7 +797,7 @@ const handleDocumentDownload = async (documentId) => {
     
     try {
       const response = await axios.patch(
-        `http://localhost:5000/api/case/${selectedCase.case_num}/office-details`,
+        `https://nyaay-desk-app-backend.onrender.com/api/case/${selectedCase.case_num}/office-details`,
         officeUseForm,
         { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }}
       );
@@ -843,7 +843,7 @@ const handleDocumentDownload = async (documentId) => {
       }
       
       const response = await axios.patch(
-        `http://localhost:5000/api/case/${selectedCase.case_num}/hearing/${hearingId}`,
+        `https://nyaay-desk-app-backend.onrender.com/api/case/${selectedCase.case_num}/hearing/${hearingId}`,
         formData,
         { 
           headers: { 
@@ -895,7 +895,7 @@ const handleDocumentDownload = async (documentId) => {
       }
       
       const response = await axios.post(
-        `http://localhost:5000/api/case/${selectedCase.case_num}/hearing/${hearingId}/attachments`,
+        `https://nyaay-desk-app-backend.onrender.com/api/case/${selectedCase.case_num}/hearing/${hearingId}/attachments`,
         formData,
         { 
           headers: { 

@@ -152,7 +152,7 @@ const [popup, setPopup] = useState({ isOpen: false, message: '', type: 'success'
           navigate('/litilogin');
           throw new Error('No authentication token found');
         }
-        const response = await axios.get('http://localhost:5000/api/litigant/profile', {
+        const response = await axios.get('https://nyaay-desk-app-backend.onrender.com/api/litigant/profile', {
           headers: { Authorization: `Bearer ${token}` },
         });
         setProfile(response.data.litigant);
@@ -172,7 +172,7 @@ const [popup, setPopup] = useState({ isOpen: false, message: '', type: 'success'
       setCasesLoading(true);
       try {
         const token = localStorage.getItem('token');
-        const response = await axios.get('http://localhost:5000/api/cases/litigant', {
+        const response = await axios.get('https://nyaay-desk-app-backend.onrender.com/api/cases/litigant', {
           headers: { Authorization: `Bearer ${token}` },
         });
         setCases(response.data.cases || []);
@@ -191,7 +191,7 @@ const [popup, setPopup] = useState({ isOpen: false, message: '', type: 'success'
   const fetchAdvocateChangeRequests = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`http://localhost:5000/api/advocate-change/litigant-requests/${profile.party_id}`, {
+      const response = await axios.get(`https://nyaay-desk-app-backend.onrender.com/api/advocate-change/litigant-requests/${profile.party_id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setAdvocateChangeRequests(response.data || []);
@@ -203,7 +203,7 @@ const [popup, setPopup] = useState({ isOpen: false, message: '', type: 'success'
   const handleFinalSubmitToCourt = async (requestId) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.put(`http://localhost:5000/api/advocate-change/court-pending`, {
+      await axios.put(`https://nyaay-desk-app-backend.onrender.com/api/advocate-change/court-pending`, {
         requestId,
         status: 'Court Pending'
       }, {
@@ -233,7 +233,7 @@ useEffect(() => {
       try {
         const token = localStorage.getItem('token');
         const hearingPromises = cases.map((legalCase) =>
-          axios.get(`http://localhost:5000/api/case/${legalCase.case_num}/hearings`, {
+          axios.get(`https://nyaay-desk-app-backend.onrender.com/api/case/${legalCase.case_num}/hearings`, {
             headers: { Authorization: `Bearer ${token}` },
           })
         );
@@ -268,7 +268,7 @@ useEffect(() => {
     setRequestsLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:5000/api/my-document-requests', {
+      const response = await axios.get('https://nyaay-desk-app-backend.onrender.com/api/my-document-requests', {
         headers: { Authorization: `Bearer ${token}` },
       });
       setDocumentRequests(response.data.requests || []);
@@ -302,7 +302,7 @@ const handleRequestedDocumentUpload = async (e, documentId, caseNum) => {
     formData.append('file', documentFile);
 
     await axios.post(
-      `http://localhost:5000/api/case/${caseNum}/upload-requested-document/${documentId}`,
+      `https://nyaay-desk-app-backend.onrender.com/api/case/${caseNum}/upload-requested-document/${documentId}`,
       formData,
       {
         headers: {
@@ -318,7 +318,7 @@ const handleRequestedDocumentUpload = async (e, documentId, caseNum) => {
     document.getElementById('requested-doc-file-input').value = '';
     
     // Refresh document requests
-    const response = await axios.get('http://localhost:5000/api/my-document-requests', {
+    const response = await axios.get('https://nyaay-desk-app-backend.onrender.com/api/my-document-requests', {
       headers: { Authorization: `Bearer ${token}` },
     });
     setDocumentRequests(response.data.requests || []);
@@ -336,7 +336,7 @@ const handleHearingSearch = async (e) => {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.get(
-        `http://localhost:5000/api/case/${searchCaseNum}/hearings`,
+        `https://nyaay-desk-app-backend.onrender.com/api/case/${searchCaseNum}/hearings`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setSearchedHearings(response.data.hearings);
@@ -470,7 +470,7 @@ const handleHearingSearch = async (e) => {
     try {
       const token = localStorage.getItem('token');
       await axios.post(
-        'http://localhost:5000/api/litigant/logout',
+        'https://nyaay-desk-app-backend.onrender.com/api/litigant/logout',
         {},
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -486,7 +486,7 @@ const handleHearingSearch = async (e) => {
     try {
       const token = localStorage.getItem('token');
       await axios.post(
-        'http://localhost:5000/api/litigant/logout-all',
+        'https://nyaay-desk-app-backend.onrender.com/api/litigant/logout-all',
         { password: logoutPassword },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -587,7 +587,7 @@ const handleTopLevelChange = (field, value) => {
       delete dataToSubmit.police_station_details;
     }
       const response = await axios.post(
-        'http://localhost:5000/api/filecase/litigant',
+        'https://nyaay-desk-app-backend.onrender.com/api/filecase/litigant',
         dataToSubmit,
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -603,7 +603,7 @@ const handleTopLevelChange = (field, value) => {
     setDocumentsLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:5000/api/cases/litigant', {
+      const response = await axios.get('https://nyaay-desk-app-backend.onrender.com/api/cases/litigant', {
         headers: { Authorization: `Bearer ${token}` },
       });
       const caseData = response.data.cases.find((c) => c.case_num === caseNum);
@@ -646,7 +646,7 @@ const handleTopLevelChange = (field, value) => {
       formData.append('document_type', documentType);
       formData.append('description', documentDescription);
       await axios.post(
-        `http://localhost:5000/api/case/${selectedCaseForDocuments.case_num}/document`,
+        `https://nyaay-desk-app-backend.onrender.com/api/case/${selectedCaseForDocuments.case_num}/document`,
         formData,
         {
           headers: {
@@ -670,7 +670,7 @@ const handleTopLevelChange = (field, value) => {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.get(
-        `http://localhost:5000/api/document/${documentId}/download`,
+        `https://nyaay-desk-app-backend.onrender.com/api/document/${documentId}/download`,
         {
           headers: { Authorization: `Bearer ${token}` },
           responseType: 'blob',
@@ -693,7 +693,7 @@ const handleTopLevelChange = (field, value) => {
   const downloadAttachment = async (filename, originalname) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`http://localhost:5000/api/files/${filename}`, {
+      const response = await axios.get(`https://nyaay-desk-app-backend.onrender.com/api/files/${filename}`, {
         headers: { Authorization: `Bearer ${token}` },
         responseType: 'blob',
       });
@@ -854,7 +854,7 @@ const handleTopLevelChange = (field, value) => {
                       </button>
                       <button 
                         className="litigantdash-view-details-button"
-                        onClick={() => window.open(`http://localhost:5000/api/advocate-change/generate-application/${req._id}`, '_blank')}
+                        onClick={() => window.open(`${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/api/advocate-change/generate-application/${req._id}`, '_blank')}
                       >
                         Print NOC
                       </button>

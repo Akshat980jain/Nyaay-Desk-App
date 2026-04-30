@@ -31,7 +31,7 @@ const ClerkLogin = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:5000/api/clerk/login', {
+      const response = await axios.post('https://nyaay-desk-app-backend.onrender.com/api/clerk/login', {
         ...formData,
         'cf-turnstile-response': turnstileToken
       });

@@ -155,7 +155,7 @@ const toggleSpeech = () => {
   };
 
 const callLlamaStreamingAPI = async (prompt, onToken) => {
-  const response = await fetch("http://localhost:5000/api/llama/stream", {
+  const response = await fetch("https://nyaay-desk-app-backend.onrender.com/api/llama/stream", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ prompt })
@@ -533,7 +533,7 @@ const submitCase = async () => {
       delete dataToSubmit.police_station_details;
     }
 
-    const response = await fetch('http://localhost:5000/api/filecase/litigant', {
+    const response = await fetch('https://nyaay-desk-app-backend.onrender.com/api/filecase/litigant', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -609,7 +609,7 @@ const submitCase = async () => {
       }
 
       const response = await fetch(
-        `http://localhost:5000/api/case/${targetCaseNumber}/hearings`,
+        `https://nyaay-desk-app-backend.onrender.com/api/case/${targetCaseNumber}/hearings`,
         { 
           headers: { 'Authorization': `Bearer ${token}` },
           method: 'GET'
@@ -664,7 +664,7 @@ const submitCase = async () => {
         return;
       }
 
-      const response = await fetch('http://localhost:5000/api/cases/litigant', {
+      const response = await fetch('https://nyaay-desk-app-backend.onrender.com/api/cases/litigant', {
         headers: { 'Authorization': `Bearer ${token}` },
         method: 'GET'
       });
@@ -710,7 +710,7 @@ const submitCase = async () => {
       const lowerInput = userInput.toLowerCase();
       
       if (lowerInput.includes('today')) {
-        const response = await fetch('http://localhost:5000/api/calendar/today', {
+        const response = await fetch('https://nyaay-desk-app-backend.onrender.com/api/calendar/today', {
           headers: { 'Authorization': `Bearer ${token}` },
           method: 'GET'
         });
@@ -762,7 +762,7 @@ const submitCase = async () => {
       }
 
       const response = await fetch(
-        `http://localhost:5000/api/case/${targetCaseNumber}/video-meeting`,
+        `https://nyaay-desk-app-backend.onrender.com/api/case/${targetCaseNumber}/video-meeting`,
         { 
           headers: { 'Authorization': `Bearer ${token}` },
           method: 'GET'

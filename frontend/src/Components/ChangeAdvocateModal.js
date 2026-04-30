@@ -73,7 +73,7 @@ const ChangeAdvocateModal = ({ isOpen, onClose, legalCase, litigantProfile, part
       const token = localStorage.getItem('token');
       
       // Step 1: Submit Request
-      const res = await axios.post('http://localhost:5000/api/advocate-change/request', payload, {
+      const res = await axios.post('https://nyaay-desk-app-backend.onrender.com/api/advocate-change/request', payload, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -84,7 +84,7 @@ const ChangeAdvocateModal = ({ isOpen, onClose, legalCase, litigantProfile, part
       if (hasNoc && nocFile) {
         const formData = new FormData();
         formData.append('noc_document', nocFile);
-        await axios.post(`http://localhost:5000/api/advocate-change/upload-noc/${requestId}`, formData, {
+        await axios.post(`https://nyaay-desk-app-backend.onrender.com/api/advocate-change/upload-noc/${requestId}`, formData, {
           headers: {
             Authorization: `Bearer ${token}`,
             'Content-Type': 'multipart/form-data'
@@ -270,7 +270,8 @@ const ChangeAdvocateModal = ({ isOpen, onClose, legalCase, litigantProfile, part
 
   const handlePrintApplication = () => {
     if (submittedRequestId) {
-      window.open(`http://localhost:5000/api/advocate-change/generate-application/${submittedRequestId}`, '_blank', 'width=800,height=800');
+      const API = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+      window.open(`${API}/api/advocate-change/generate-application/${submittedRequestId}`, '_blank', 'width=800,height=800');
     }
   };
 

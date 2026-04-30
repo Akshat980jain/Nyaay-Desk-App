@@ -32,7 +32,7 @@ const PublicCaseSearch = () => {
     setSearched(true);
 
     try {
-      const response = await axios.get('http://localhost:5000/api/public/case-search', {
+      const response = await axios.get('https://nyaay-desk-app-backend.onrender.com/api/public/case-search', {
         params: { type: searchType, q: query.trim() }
       });
       setResults(response.data.cases || []);

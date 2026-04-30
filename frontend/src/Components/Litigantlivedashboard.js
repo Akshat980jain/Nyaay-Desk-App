@@ -51,7 +51,7 @@ const LitigantLiveDashboard = ({ litigantId }) => {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:5000/api/cases/litigant', {
+      const response = await fetch('https://nyaay-desk-app-backend.onrender.com/api/cases/litigant', {
         headers: {
           'Authorization': `Bearer ${token}`
         }

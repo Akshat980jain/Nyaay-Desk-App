@@ -21,7 +21,7 @@ const AdvocateChangeReview = ({ profile }) => {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
-      const response = await axios.get('http://localhost:5000/api/advocate-change/court-pending', {
+      const response = await axios.get('https://nyaay-desk-app-backend.onrender.com/api/advocate-change/court-pending', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setRequests(response.data);
@@ -51,7 +51,7 @@ const AdvocateChangeReview = ({ profile }) => {
       };
 
       await axios.put(
-        `http://localhost:5000/api/advocate-change/review/${selectedRequest._id}`,
+        `https://nyaay-desk-app-backend.onrender.com/api/advocate-change/review/${selectedRequest._id}`,
         payload,
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -69,14 +69,14 @@ const AdvocateChangeReview = ({ profile }) => {
 
   const openNocDocument = (url) => {
     if (!url) return;
-    // URL would be something like 'uploads/cop_documents/NOC-123.pdf'
-    // For demo purposes, we will construct the local URL.
-    const fileUrl = `http://localhost:5000/${url.replace(/\\\\/g, '/')}`;
+    const API = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+    const fileUrl = `${API}/${url.replace(/\\\\/g, '/')}`;
     window.open(fileUrl, '_blank');
   };
 
   const viewGeneratedApplication = (id) => {
-    window.open(`http://localhost:5000/api/advocate-change/generate-application/${id}`, '_blank', 'width=800,height=800');
+    const API = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+    window.open(`${API}/api/advocate-change/generate-application/${id}`, '_blank', 'width=800,height=800');
   };
 
   if (loading) return <div className="adv-review-loading">Loading pending requests...</div>;

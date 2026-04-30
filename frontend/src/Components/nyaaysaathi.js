@@ -146,7 +146,7 @@ const NyaySaathi = () => {
   // ==================== LLAMA API WITH STREAMING ====================
   const callLlamaStreamingAPI = async (prompt, onToken, controller) => {
     try {
-      const response = await fetch("http://localhost:5000/api/llama/stream", {
+      const response = await fetch("https://nyaay-desk-app-backend.onrender.com/api/llama/stream", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt }),

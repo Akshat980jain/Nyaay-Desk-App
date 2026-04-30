@@ -54,7 +54,7 @@ const AuditTrailReportGenerator = ({ caseData, onClose, showLoadingOverlay, hide
   
       // Fetch audit trail
       const auditResponse = await axios.get(
-        `http://localhost:5000/api/blockchain/case/${caseData.case_num}/audit-trail`,
+        `https://nyaay-desk-app-backend.onrender.com/api/blockchain/case/${caseData.case_num}/audit-trail`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -62,7 +62,7 @@ const AuditTrailReportGenerator = ({ caseData, onClose, showLoadingOverlay, hide
 
       // Fetch verification report
       const verificationResponse = await axios.get(
-        `http://localhost:5000/api/blockchain/case/${caseData.case_num}/verify`,
+        `https://nyaay-desk-app-backend.onrender.com/api/blockchain/case/${caseData.case_num}/verify`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }

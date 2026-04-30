@@ -47,7 +47,7 @@ const LitigantAdvocateSearch = () => {
   const handleFinalSubmitToCourt = async (requestId) => {
     try {
       const token = localStorage.getItem('token');
-      await axios.put(`http://localhost:5000/api/advocate-change/court-pending`, {
+      await axios.put(`https://nyaay-desk-app-backend.onrender.com/api/advocate-change/court-pending`, {
         requestId,
         status: 'Court Pending'
       }, {
@@ -72,7 +72,7 @@ const LitigantAdvocateSearch = () => {
   const fetchAdvocateChangeRequests = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`http://localhost:5000/api/advocate-change/litigant-requests/${currentPartyId}`, {
+      const response = await axios.get(`https://nyaay-desk-app-backend.onrender.com/api/advocate-change/litigant-requests/${currentPartyId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setAdvocateChangeRequests(response.data || []);
@@ -86,7 +86,7 @@ const LitigantAdvocateSearch = () => {
       setLoading(true);
       const token = localStorage.getItem('token');
       const response = await axios.get(
-        'http://localhost:5000/api/cases/litigant',
+        'https://nyaay-desk-app-backend.onrender.com/api/cases/litigant',
         { headers: { Authorization: `Bearer ${token}` } }
       );
       
@@ -103,7 +103,7 @@ const LitigantAdvocateSearch = () => {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.get(
-        'http://localhost:5000/litigant/pending-requests',
+        'https://nyaay-desk-app-backend.onrender.com/litigant/pending-requests',
         { headers: { Authorization: `Bearer ${token}` } }
       );
       
@@ -127,7 +127,7 @@ const LitigantAdvocateSearch = () => {
       const token = localStorage.getItem('token');
       // Fixed the URL to match the backend endpoint
       const response = await axios.get(
-        `http://localhost:5000/advocates/search?district=${district}`,
+        `https://nyaay-desk-app-backend.onrender.com/advocates/search?district=${district}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       
@@ -158,7 +158,7 @@ const LitigantAdvocateSearch = () => {
       setLoading(true);
       const token = localStorage.getItem('token');
       await axios.post(
-        `http://localhost:5000/cases/${selectedCase._id}/request-advocate`,
+        `https://nyaay-desk-app-backend.onrender.com/cases/${selectedCase._id}/request-advocate`,
         {
           advocateId,
           advocateName,
@@ -173,7 +173,7 @@ const LitigantAdvocateSearch = () => {
       try {
         await fetchCases();
         const response = await axios.get(
-          'http://localhost:5000/api/cases/litigant',
+          'https://nyaay-desk-app-backend.onrender.com/api/cases/litigant',
           { headers: { Authorization: `Bearer ${token}` } }
         );
         const updatedCases = response.data.cases;
@@ -204,7 +204,7 @@ const LitigantAdvocateSearch = () => {
       setLoading(true);
       const token = localStorage.getItem('token');
       await axios.post(
-        `http://localhost:5000/cases/${selectedCase._id}/remove-advocate`,
+        `https://nyaay-desk-app-backend.onrender.com/cases/${selectedCase._id}/remove-advocate`,
         { partyType },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -241,7 +241,7 @@ const LitigantAdvocateSearch = () => {
       setLoading(true);
       const token = localStorage.getItem('token');
       await axios.post(
-        `http://localhost:5000/cases/${selectedCase._id}/cancel-request`,
+        `https://nyaay-desk-app-backend.onrender.com/cases/${selectedCase._id}/cancel-request`,
         { partyType },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -252,7 +252,7 @@ const LitigantAdvocateSearch = () => {
       // Re-fetch the specific case so the UI immediately updates
       try {
         const response = await axios.get(
-          'http://localhost:5000/api/cases/litigant',
+          'https://nyaay-desk-app-backend.onrender.com/api/cases/litigant',
           { headers: { Authorization: `Bearer ${token}` } }
         );
         const updatedCases = response.data.cases;
@@ -276,7 +276,7 @@ const LitigantAdvocateSearch = () => {
       setLoading(true);
       const token = localStorage.getItem('token');
       await axios.put(
-        `http://localhost:5000/cases/${caseId}/advocate-requests/${requestId}`,
+        `https://nyaay-desk-app-backend.onrender.com/cases/${caseId}/advocate-requests/${requestId}`,
         { status: 'approved' },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -292,7 +292,7 @@ const LitigantAdvocateSearch = () => {
       // Re-fetch the specific case so the UI immediately updates
       try {
         const response = await axios.get(
-          'http://localhost:5000/api/cases/litigant',
+          'https://nyaay-desk-app-backend.onrender.com/api/cases/litigant',
           { headers: { Authorization: `Bearer ${token}` } }
         );
         const updatedCases = response.data.cases;
@@ -325,7 +325,7 @@ const LitigantAdvocateSearch = () => {
       setLoading(true);
       const token = localStorage.getItem('token');
       await axios.put(
-        `http://localhost:5000/cases/${caseId}/advocate-requests/${requestId}`,
+        `https://nyaay-desk-app-backend.onrender.com/cases/${caseId}/advocate-requests/${requestId}`,
         { status: 'rejected' },
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -803,7 +803,7 @@ const LitigantAdvocateSearch = () => {
                           </button>
                           <button 
                             className="las-btn las-btn-secondary las-btn-sm"
-                            onClick={() => window.open(`http://localhost:5000/api/advocate-change/generate-application/${req._id}`, '_blank')}
+                            onClick={() => window.open(`${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/api/advocate-change/generate-application/${req._id}`, '_blank')}
                           >
                             Print NOC
                           </button>

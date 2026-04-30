@@ -96,7 +96,7 @@ const AdminLogin = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:5000/api/courtadmin/login', {
+      const response = await axios.post('https://nyaay-desk-app-backend.onrender.com/api/courtadmin/login', {
         email: loginData.email,
         password: loginData.password,
         'cf-turnstile-response': turnstileToken
@@ -131,7 +131,7 @@ const AdminLogin = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post('http://localhost:5000/api/courtadmin/forgot-password', { 
+      const response = await axios.post('https://nyaay-desk-app-backend.onrender.com/api/courtadmin/forgot-password', { 
         email: loginData.email,
         'cf-turnstile-response': turnstileToken
       });
@@ -170,7 +170,7 @@ const AdminLogin = () => {
     }
 
     try {
-      const response = await axios.post(`http://localhost:5000/api/courtadmin/reset-password/${e.target.token.value}`, {
+      const response = await axios.post(`https://nyaay-desk-app-backend.onrender.com/api/courtadmin/reset-password/${e.target.token.value}`, {
         newPassword: resetData.newPassword
       });
 
@@ -466,7 +466,7 @@ const AdminLogin = () => {
     
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.post('http://localhost:5000/api/courtadmin/change-password', {
+      const response = await axios.post('https://nyaay-desk-app-backend.onrender.com/api/courtadmin/change-password', {
         currentPassword: changePasswordData.currentPassword,
         newPassword: changePasswordData.newPassword
       }, {
