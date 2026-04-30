@@ -118,6 +118,11 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 
+// ─── Health Check Route (for Render) ─────────────────────────────────────────
+app.get('/', (req, res) => {
+  res.json({ status: 'ok', service: 'e-Court CMS Backend', timestamp: new Date().toISOString() });
+});
+
 // ─── FIX #3: Mount modular route files ───────────────────────────────────────
 app.use('/api/advocate', advocateRoutes);
 app.use('/api/litigant', litigantRoutes);

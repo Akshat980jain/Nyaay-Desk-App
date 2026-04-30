@@ -46,10 +46,23 @@ class CryptoService {
 
         // Check if key files exist
         if (!fs.existsSync(privateKeyPath) || !fs.existsSync(publicKeyPath)) {
-          console.error('❌ RSA keys not found!');
-          console.log('   For local development: Run node blockchain/utils/generateKeys.js');
-          console.log('   For production: Set RSA_PRIVATE_KEY_BASE64 and RSA_PUBLIC_KEY_BASE64 env vars');
-          return false;
+          console.warn('⚠️  RSA keys not found — auto-generating for this environment...');
+          
+          // Auto-generate keys
+          const keysDir = path.join(__dirname, '../keys');
+          if (!fs.existsSync(keysDir)) {
+            fs.mkdirSync(keysDir, { recursive: true });
+          }
+          
+          const key = new NodeRSA({ b: 2048 });
+          key.setOptions({ encryptionScheme: 'pkcs1' });
+          
+          const genPrivate = key.exportKey('private');
+          const genPublic = key.exportKey('public');
+          
+          fs.writeFileSync(privateKeyPath, genPrivate);
+          fs.writeFileSync(publicKeyPath, genPublic);
+          console.log('✅ RSA keys auto-generated successfully');
         }
 
         privateKeyContent = fs.readFileSync(privateKeyPath, 'utf8');
