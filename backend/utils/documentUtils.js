@@ -2,7 +2,17 @@ const fs = require('fs');
 const crypto = require('crypto');
 const pdfParse = require("pdf-parse");
 const path = require('path');
-const pdfjsLib = require("pdfjs-dist/build/pdf.js");
+
+// pdfjs-dist requires browser APIs (DOMMatrix, Path2D) that may not be
+// available in all Node.js server environments. Wrap in try-catch so
+// the rest of the application still works if it fails to load.
+let pdfjsLib = null;
+try {
+  pdfjsLib = require("pdfjs-dist/build/pdf.js");
+} catch (err) {
+  console.warn('⚠️  pdfjs-dist not available:', err.message);
+  console.warn('   extractTextWithPdfjs() will use pdf-parse as fallback.');
+}
 
 
 const AES_KEY =
@@ -71,6 +81,11 @@ async function extractTextFromPDF(filePath) {
 
 /* PDF.js FALLBACK */
 async function extractTextWithPdfjs(filePath) {
+  // If pdfjs-dist is not available, fall back to pdf-parse
+  if (!pdfjsLib) {
+    console.warn('pdfjs-dist unavailable, falling back to pdf-parse');
+    return extractTextFromPDF(filePath);
+  }
   const data = new Uint8Array(fs.readFileSync(filePath));
   const loadingTask = pdfjsLib.getDocument({ data });
   const doc = await loadingTask.promise;

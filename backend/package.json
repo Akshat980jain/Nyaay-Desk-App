@@ -48,7 +48,7 @@
     "node-rsa": "^1.1.1",
     "node-tesseract-ocr": "^2.2.1",
     "path": "^0.12.7",
-    "pdf-parse": "^2.4.5",
+    "pdf-parse": "^1.1.1",
     "pdfjs-dist": "^2.16.105",
     "redis": "^5.10.0",
     "socket.io": "^4.8.3",
