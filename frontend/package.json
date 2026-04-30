@@ -13,7 +13,7 @@
   "scripts": {
     "start": "react-scripts start",
     "dev": "node scripts/start.js",
-    "build": "CI=false NODE_OPTIONS=--max-old-space-size=512 GENERATE_SOURCEMAP=false react-scripts build",
+    "build": "CI=false NODE_OPTIONS=--max-old-space-size=512 GENERATE_SOURCEMAP=false react-scripts build && rm -rf dist && mv build dist",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
