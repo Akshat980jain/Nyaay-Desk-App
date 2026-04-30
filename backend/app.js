@@ -884,7 +884,7 @@ app.post('/api/advocate/logout-all', authenticateToken, async (req, res) => {
 });
 const profilePicturesDir = path.join(__dirname, 'uploads/profile_pictures');
 if (!fs.existsSync(profilePicturesDir)) {
-  fs.mkdirSync(profilePicturesDir);
+  fs.mkdirSync(profilePicturesDir, { recursive: true });
 }
 // Multer Profile 
 const profilePictureStorage = multer.diskStorage({
