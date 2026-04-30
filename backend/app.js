@@ -164,15 +164,25 @@ mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/daily_sch
     maxPoolSize: 10,
 })
     .then(async () => {
+        console.log('\x1b[32m  ✅ Database Connection Established\x1b[0m');
         try {
+            // Initialize blockchain components carefully
             await blockchain.initialize();
+            console.log('  🔗 Blockchain Service Initialized');
+            
             initializeScheduler();
-        } catch (err) {} 
-        await initializeBlockchain();
-        console.log('\x1b[32m  ✅ Database & Blockchain Ready\x1b[0m');
+            console.log('  ⏰ Scheduler Initialized');
+            
+            await initializeBlockchain();
+            console.log('\x1b[32m  ✅ Blockchain System Ready\x1b[0m');
+        } catch (err) {
+            console.error('\x1b[33m  ⚠️ Blockchain initialization warning:\x1b[0m', err.message);
+            // We don't throw here to allow the Express server to still start
+        }
     })
     .catch(err => {
         console.error('\x1b[31m  ❌ [DB] MongoDB initial connection failed:\x1b[0m', err);
+        // On Render, we want to see this error clearly in the logs
     });
 
 // ─── MongoDB Connection Event Handlers ──────────────────────────────────────
