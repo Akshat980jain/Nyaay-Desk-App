@@ -72,13 +72,22 @@ class CaseRepository @Inject constructor(
     fun subscribeToRealtimeUpdates(userId: String) {
         CoroutineScope(Dispatchers.IO).launch {
             val channel = supabase.realtime.channel("cases-channel")
-            val changes = channel.postgresChangeFlow<CaseDto>(schema = "public") {
+            val changes = channel.postgresChangeFlow<io.github.jan.supabase.realtime.PostgresAction>(schema = "public") {
                 table = "cases"
             }
             channel.subscribe()
-            changes.collect { payload ->
-                // When a case changes remotely, refresh local DB
-                caseDao.insertCase(payload.toEntity())
+            changes.collect { action ->
+                when (action) {
+                    is io.github.jan.supabase.realtime.PostgresAction.Insert -> {
+                        val dto = action.decodeRecord<CaseDto>()
+                        caseDao.insertCase(dto.toEntity())
+                    }
+                    is io.github.jan.supabase.realtime.PostgresAction.Update -> {
+                        val dto = action.decodeRecord<CaseDto>()
+                        caseDao.insertCase(dto.toEntity())
+                    }
+                    else -> {}
+                }
             }
         }
     }
@@ -121,5 +130,5 @@ fun CaseDto.toEntity() = CaseEntity(
     nextHearingDate = nextHearingDate,
     caseType = caseType,
     description = description,
-    documentUrls = documentUrls
+    documentUrls = documentUrls ?: emptyList()
 )

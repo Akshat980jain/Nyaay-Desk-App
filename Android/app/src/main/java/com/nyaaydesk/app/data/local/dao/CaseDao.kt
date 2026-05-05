@@ -8,6 +8,9 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface CaseDao {
 
+    @Query("SELECT * FROM cases")
+    suspend fun getAllCasesSync(): List<CaseEntity>
+
     /** Returns a live Flow of all cached cases. Updates UI automatically when DB changes. */
     @Query("SELECT * FROM cases ORDER BY nextHearingDate ASC")
     fun observeAllCases(): Flow<List<CaseEntity>>

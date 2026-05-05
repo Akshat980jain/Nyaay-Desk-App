@@ -84,7 +84,7 @@ fun AdminDashboardScreen(viewModel: AdminViewModel = hiltViewModel()) {
                 ) {
                     Row(modifier = Modifier.padding(16.dp), horizontalArrangement = Arrangement.spacedBy(12.dp),
                         verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Default.CheckCircle, null, tint = StatusDisposed, Modifier.size(24.dp))
+                        Icon(Icons.Default.CheckCircle, null, modifier = Modifier.size(24.dp), tint = StatusDisposed)
                         Text("All advocate verifications up to date!", style = MaterialTheme.typography.bodyMedium, color = StatusDisposed)
                     }
                 }

@@ -83,7 +83,7 @@ fun AdvocateDashboardScreen(
                         Row(modifier = Modifier.padding(16.dp),
                             horizontalArrangement = Arrangement.spacedBy(12.dp),
                             verticalAlignment = Alignment.CenterVertically) {
-                            Icon(Icons.Default.CheckCircle, null, tint = StatusDisposed, Modifier.size(24.dp))
+                            Icon(Icons.Default.TrendingUp, null, modifier = Modifier.size(20.dp), tint = NavyBlue)
                             Text("No hearings scheduled for today.",
                                 style = MaterialTheme.typography.bodyMedium, color = StatusDisposed)
                         }
