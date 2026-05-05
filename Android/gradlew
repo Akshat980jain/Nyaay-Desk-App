@@ -1,0 +1,3 @@
+#!/bin/sh
+# Minimal gradlew for CI/CD
+exec gradle "$@"

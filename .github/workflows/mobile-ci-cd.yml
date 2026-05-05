@@ -98,21 +98,14 @@ jobs:
       - name: Resolve Swift Packages
         run: swift package resolve
 
+      - name: Resolve Swift Packages
+        run: swift package resolve
+
       - name: Build for simulator
-        run: |
-          xcodebuild \
-            -project NyaayDesk.xcodeproj \
-            -scheme NyaayDesk \
-            -destination 'platform=iOS Simulator,name=iPhone 15 Pro,OS=latest' \
-            -configuration Debug \
-            build
+        run: swift build -v
 
       - name: Run unit tests
-        run: |
-          xcodebuild test \
-            -project NyaayDesk.xcodeproj \
-            -scheme NyaayDeskTests \
-            -destination 'platform=iOS Simulator,name=iPhone 15 Pro,OS=latest'
+        run: swift test -v
 
   # ────────────────────────────────────────────────────────────────
   # DEPLOY: Upload AAB to Play Store (on main branch push only)
