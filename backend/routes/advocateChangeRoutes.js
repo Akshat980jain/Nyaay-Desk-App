@@ -1,13 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const AdvocateChangeRequest = require('../models/AdvocateChangeRequest');
-const LegalCase = require('../models/LegalCase');
+const supabase = require('../supabaseClient');
 const multer = require('multer');
 
 // Configure Multer for NOC uploads
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'uploads/cop_documents'); // reusing the existing uploads dir
+        cb(null, 'uploads/cop_documents');
     },
     filename: function (req, file, cb) {
         cb(null, 'NOC-' + Date.now() + '-' + file.originalname);
@@ -40,19 +39,21 @@ router.post('/request', async (req, res) => {
         else if (requestNocFromLawyer) initialStatus = 'NOC Requested';
         else initialStatus = 'Application Filed';
 
-        const newRequest = new AdvocateChangeRequest({
-            caseId,
-            litigantId,
-            existingAdvocateId,
-            hasNoc,
-            nocDetails: hasNoc ? nocDetails : undefined,
-            reasonForNoNoc: !hasNoc && !requestNocFromLawyer ? reasonForNoNoc : undefined,
-            nocRequestStatus: requestNocFromLawyer ? 'Requested' : 'None',
+        const newRequest = {
+            case_id: caseId,
+            litigant_id: litigantId,
+            existing_advocate_id: existingAdvocateId,
+            has_noc: hasNoc,
+            noc_details: hasNoc ? nocDetails : null,
+            reason_for_no_noc: !hasNoc && !requestNocFromLawyer ? reasonForNoNoc : null,
+            noc_request_status: requestNocFromLawyer ? 'Requested' : 'None',
             status: initialStatus
-        });
+        };
 
-        await newRequest.save();
-        res.status(201).json({ message: 'Request submitted successfully', request: newRequest });
+        const { data, error } = await supabase.from('advocate_change_requests').insert([newRequest]).select().single();
+        if (error) throw error;
+
+        res.status(201).json({ message: 'Request submitted successfully', request: data });
     } catch (error) {
         console.error('Error submitting advocate change request:', error);
         res.status(500).json({ message: 'Server error', error: error.message });
@@ -63,23 +64,18 @@ router.post('/request', async (req, res) => {
 router.post('/upload-noc/:requestId', upload.single('noc_document'), async (req, res) => {
     try {
         const { requestId } = req.params;
-        
-        if (!req.file) {
-            return res.status(400).json({ message: 'NOC document is required' });
-        }
+        if (!req.file) return res.status(400).json({ message: 'NOC document is required' });
 
-        const request = await AdvocateChangeRequest.findById(requestId);
-        if (!request) {
-            return res.status(404).json({ message: 'Request not found' });
-        }
+        const { data, error } = await supabase
+            .from('advocate_change_requests')
+            .update({ noc_document_url: req.file.path, status: 'NOC Submitted' })
+            .eq('request_id', requestId)
+            .select()
+            .single();
 
-        request.nocDocumentUrl = req.file.path;
-        request.status = 'NOC Submitted'; // Ensure status reflects NOC submission
-        await request.save();
-
-        res.json({ message: 'NOC uploaded successfully', request });
+        if (error || !data) return res.status(404).json({ message: 'Request not found' });
+        res.json({ message: 'NOC uploaded successfully', request: data });
     } catch (error) {
-        console.error('Error uploading NOC:', error);
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 });
@@ -87,12 +83,13 @@ router.post('/upload-noc/:requestId', upload.single('noc_document'), async (req,
 // 3. Get pending requests for Admin/Court review
 router.get('/court-pending', async (req, res) => {
     try {
-        // Find requests that need review (Application Filed or NOC Submitted)
-        const pendingRequests = await AdvocateChangeRequest.find({
-            status: { $in: ['NOC Submitted', 'Application Filed', 'Under Court Review'] }
-        }).populate('caseId');
+        const { data, error } = await supabase
+            .from('advocate_change_requests')
+            .select('*, legal_cases(*)')
+            .in('status', ['NOC Submitted', 'Application Filed', 'Under Court Review']);
 
-        res.json(pendingRequests);
+        if (error) throw error;
+        res.json(data);
     } catch (error) {
         res.status(500).json({ message: 'Server error', error: error.message });
     }
@@ -102,50 +99,58 @@ router.get('/court-pending', async (req, res) => {
 router.put('/review/:requestId', async (req, res) => {
     try {
         const { requestId } = req.params;
-        const { action, remarks, adminId } = req.body; // action: 'Approve', 'Reject', 'Clarification'
+        const { action, remarks, adminId } = req.body;
 
         if (!['Approve', 'Reject', 'Clarification'].includes(action)) {
             return res.status(400).json({ message: 'Invalid action' });
         }
 
-        const request = await AdvocateChangeRequest.findById(requestId);
-        if (!request) {
-            return res.status(404).json({ message: 'Request not found' });
-        }
+        const { data: request, error: fetchError } = await supabase.from('advocate_change_requests').select('*').eq('request_id', requestId).single();
+        if (fetchError || !request) return res.status(404).json({ message: 'Request not found' });
 
-        request.reviewRemarks = remarks;
-        request.reviewedBy = adminId;
-        request.reviewedAt = new Date();
+        let status = 'Under Court Review';
+        if (action === 'Approve') status = 'Approved';
+        else if (action === 'Reject') status = 'Rejected';
+        else if (action === 'Clarification') status = 'Clarification Requested';
+
+        const { data: updatedRequest, error: updateError } = await supabase
+            .from('advocate_change_requests')
+            .update({ 
+                status, 
+                review_remarks: remarks, 
+                reviewed_by: adminId, 
+                reviewed_at: new Date().toISOString() 
+            })
+            .eq('request_id', requestId)
+            .select()
+            .single();
+
+        if (updateError) throw updateError;
 
         if (action === 'Approve') {
-            request.status = 'Approved';
-            
-            // Logic to remove old advocate from case
-            const legalCase = await LegalCase.findById(request.caseId);
+            const { data: legalCase, error: caseError } = await supabase.from('legal_cases').select('*').eq('case_num', request.case_id).single();
             if (legalCase) {
-                // If it's the plaintiff's advocate
-                if (legalCase.plaintiff_details && legalCase.plaintiff_details.advocate_id === request.existingAdvocateId) {
-                    legalCase.plaintiff_details.advocate_id = '';
-                    legalCase.plaintiff_details.advocate = '';
-                }
-                // If it's the respondent's advocate
-                if (legalCase.respondent_details && legalCase.respondent_details.advocate_id === request.existingAdvocateId) {
-                    legalCase.respondent_details.advocate_id = '';
-                    legalCase.respondent_details.advocate = '';
-                }
-                await legalCase.save();
-            }
+                let pDetails = legalCase.plaintiff_details;
+                let rDetails = legalCase.respondent_details;
 
-        } else if (action === 'Reject') {
-            request.status = 'Rejected';
-        } else if (action === 'Clarification') {
-            request.status = 'Clarification Requested';
+                if (pDetails?.advocate_id === request.existing_advocate_id) {
+                    pDetails.advocate_id = '';
+                    pDetails.advocate = '';
+                }
+                if (rDetails?.advocate_id === request.existing_advocate_id) {
+                    rDetails.advocate_id = '';
+                    rDetails.advocate = '';
+                }
+
+                await supabase.from('legal_cases').update({ 
+                    plaintiff_details: pDetails, 
+                    respondent_details: rDetails 
+                }).eq('case_num', request.case_id);
+            }
         }
 
-        await request.save();
-        res.json({ message: `Request ${action}d successfully`, request });
+        res.json({ message: `Request ${action}d successfully`, request: updatedRequest });
     } catch (error) {
-        console.error('Error reviewing request:', error);
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 });
@@ -153,8 +158,9 @@ router.put('/review/:requestId', async (req, res) => {
 // 5. Get requests for a specific case
 router.get('/case/:caseId', async (req, res) => {
     try {
-        const requests = await AdvocateChangeRequest.find({ caseId: req.params.caseId });
-        res.json(requests);
+        const { data, error } = await supabase.from('advocate_change_requests').select('*').eq('case_id', req.params.caseId);
+        if (error) throw error;
+        res.json(data);
     } catch (error) {
         res.status(500).json({ message: 'Server error', error: error.message });
     }
@@ -163,8 +169,9 @@ router.get('/case/:caseId', async (req, res) => {
 // 6. Get requests for a specific litigant
 router.get('/litigant-requests/:litigantId', async (req, res) => {
     try {
-        const requests = await AdvocateChangeRequest.find({ litigantId: req.params.litigantId }).populate('caseId');
-        res.json(requests);
+        const { data, error } = await supabase.from('advocate_change_requests').select('*, legal_cases(*)').eq('litigant_id', req.params.litigantId);
+        if (error) throw error;
+        res.json(data);
     } catch (error) {
         res.status(500).json({ message: 'Server error', error: error.message });
     }
@@ -173,71 +180,72 @@ router.get('/litigant-requests/:litigantId', async (req, res) => {
 // 7. Get NOC requests for a specific advocate
 router.get('/advocate-requests/:advocateId', async (req, res) => {
     try {
-        const requests = await AdvocateChangeRequest.find({ 
-            existingAdvocateId: req.params.advocateId,
-            nocRequestStatus: { $in: ['Requested', 'Signed', 'Declined'] }
-        }).populate('caseId');
-        res.json(requests);
+        const { data, error } = await supabase
+            .from('advocate_change_requests')
+            .select('*, legal_cases(*)')
+            .eq('existing_advocate_id', req.params.advocateId)
+            .in('noc_request_status', ['Requested', 'Signed', 'Declined']);
+        if (error) throw error;
+        res.json(data);
     } catch (error) {
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 });
 
-// 7. Advocate responds to NOC request (Sign or Decline)
+// 8. Advocate responds to NOC request (Sign or Decline)
 router.put('/respond-noc/:requestId', async (req, res) => {
     try {
         const { requestId } = req.params;
-        const { action, reason, digitalSignature } = req.body; // action: 'Sign' or 'Decline'
+        const { action, reason, digitalSignature } = req.body;
 
-        const request = await AdvocateChangeRequest.findById(requestId);
-        if (!request) {
-            return res.status(404).json({ message: 'Request not found' });
-        }
-
+        const updateData = {};
         if (action === 'Sign') {
-            request.nocRequestStatus = 'Signed';
-            request.status = 'NOC Signed';
-            request.nocDigitalSignature = digitalSignature;
-            request.hasNoc = true;
-            // Map the digital signature info to nocDetails for consistent review
-            request.nocDetails = {
+            updateData.noc_request_status = 'Signed';
+            updateData.status = 'NOC Signed';
+            updateData.noc_digital_signature = digitalSignature;
+            updateData.has_noc = true;
+            updateData.noc_details = {
                 advocateName: digitalSignature.signedBy,
                 enrollmentNumber: 'Digital Signature Verified',
                 signatureType: 'Digital',
-                dateSigned: new Date()
+                dateSigned: new Date().toISOString()
             };
         } else if (action === 'Decline') {
-            request.nocRequestStatus = 'Declined';
-            request.status = 'NOC Declined';
-            request.nocDeclineReason = reason;
+            updateData.noc_request_status = 'Declined';
+            updateData.status = 'NOC Declined';
+            updateData.noc_decline_reason = reason;
         }
 
-        await request.save();
-        res.json({ message: `NOC ${action}ed successfully`, request });
+        const { data, error } = await supabase
+            .from('advocate_change_requests')
+            .update(updateData)
+            .eq('request_id', requestId)
+            .select()
+            .single();
+
+        if (error) throw error;
+        res.json({ message: `NOC ${action}ed successfully`, request: data });
     } catch (error) {
-        console.error('Error responding to NOC request:', error);
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 });
 
-// 6. Generate Application HTML for printing
+// 9. Generate Application HTML for printing
 router.get('/generate-application/:requestId', async (req, res) => {
     try {
         const { requestId } = req.params;
-        const request = await AdvocateChangeRequest.findById(requestId).populate('caseId');
-        if (!request) {
-            return res.status(404).json({ message: 'Request not found' });
-        }
+        const { data: request, error } = await supabase.from('advocate_change_requests').select('*, legal_cases(*)').eq('request_id', requestId).single();
+        if (error || !request) return res.status(404).json({ message: 'Request not found' });
 
-        const legalCase = request.caseId;
+        const legalCase = request.legal_cases;
         const courtName = legalCase?.court || '_______________';
         const caseNo = legalCase?.case_num || '_______________';
         const district = legalCase?.district || '_______________';
         const plaintiff = legalCase?.plaintiff_details?.name || '_______________';
         const respondent = legalCase?.respondent_details?.name || '_______________';
         
-        const isSigned = request.nocRequestStatus === 'Signed';
-        const signatureInfo = request.nocDigitalSignature || {};
+        const isSigned = request.noc_request_status === 'Signed';
+        const signatureInfo = request.noc_digital_signature || {};
 
         const htmlContent = `
             <!DOCTYPE html>
@@ -276,11 +284,11 @@ router.get('/generate-application/:requestId', async (req, res) => {
                 <div class="doc-title">NO OBJECTION CERTIFICATE (NOC) & DISCHARGE APPLICATION</div>
 
                 <div class="section">
-                    <p>I, the undersigned litigant, hereby submit this application to discharge my current advocate <span class="bold">${request.existingAdvocateId}</span> and appoint new counsel in the above-noted matter.</p>
+                    <p>I, the undersigned litigant, hereby submit this application to discharge my current advocate <span class="bold">${request.existing_advocate_id}</span> and appoint new counsel in the above-noted matter.</p>
                 </div>
 
                 <div class="section">
-                    <p><span class="bold">REASON FOR CHANGE:</span> ${request.reasonForNoNoc || 'Digital Transition of Counsel'}</p>
+                    <p><span class="bold">REASON FOR CHANGE:</span> ${request.reason_for_no_noc || 'Digital Transition of Counsel'}</p>
                 </div>
 
                 <div class="section" style="margin-top: 40px;">
@@ -290,7 +298,7 @@ router.get('/generate-application/:requestId', async (req, res) => {
                         <div class="signature-box" style="margin-top: 15px; border-left: 5px solid #22c55e;">
                             <p class="bold" style="color: #166534; margin-top: 0;">✓ DIGITALLY SIGNED</p>
                             <p>Signed by: <span class="bold">${signatureInfo.signedBy || 'Advocate'}</span></p>
-                            <p>Timestamp: ${new Date(signatureInfo.timestamp).toLocaleString()}</p>
+                            <p>Timestamp: ${signatureInfo.timestamp ? new Date(signatureInfo.timestamp).toLocaleString() : 'N/A'}</p>
                             <p class="bold" style="margin-bottom: 5px;">Verification Hash (SHA-256):</p>
                             <p class="hash-code">${signatureInfo.signatureHash || 'N/A'}</p>
                         </div>
@@ -306,7 +314,7 @@ router.get('/generate-application/:requestId', async (req, res) => {
                     </div>
                     <div style="text-align: right">
                         <p>Generated on: ${new Date().toLocaleDateString()}</p>
-                        <p>Portal Ref: ${request._id}</p>
+                        <p>Portal Ref: ${request.request_id}</p>
                     </div>
                 </div>
 
@@ -315,34 +323,34 @@ router.get('/generate-application/:requestId', async (req, res) => {
                 </div>
             </body>
             </html>
-        `;
+        \`;
 
         res.send(htmlContent);
     } catch (error) {
-        console.error('Error generating application:', error);
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 });
 
-// 8. Litigant submits signed request to court
+// 10. Litigant submits signed request to court
 router.put('/court-pending', async (req, res) => {
     try {
         const { requestId } = req.body;
-        const request = await AdvocateChangeRequest.findById(requestId);
-        if (!request) {
-            return res.status(404).json({ message: 'Request not found' });
-        }
+        const { data: request, error: fetchError } = await supabase.from('advocate_change_requests').select('*').eq('request_id', requestId).single();
+        if (fetchError || !request) return res.status(404).json({ message: 'Request not found' });
 
-        // Only allow submitting if it's Signed or Application Filed
         if (['NOC Signed', 'Application Filed'].includes(request.status)) {
-            request.status = 'Under Court Review';
-            await request.save();
-            res.json({ message: 'Application submitted to court successfully', request });
+            const { data: updatedRequest, error: updateError } = await supabase
+                .from('advocate_change_requests')
+                .update({ status: 'Under Court Review' })
+                .eq('request_id', requestId)
+                .select()
+                .single();
+            if (updateError) throw updateError;
+            res.json({ message: 'Application submitted to court successfully', request: updatedRequest });
         } else {
             res.status(400).json({ message: 'Request is not in a submittable state' });
         }
     } catch (error) {
-        console.error('Error submitting to court:', error);
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 });

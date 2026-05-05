@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import '../ComponentsCSS/litigantcaseassign.css'; // Update this path if needed
+import { supabase } from '../services/supabaseClient';
+import supabaseApi from '../services/supabaseApi';
+import '../ComponentsCSS/litigantcaseassign.css';
 import ChangeAdvocateModal from './ChangeAdvocateModal';
 import Popup from './Popup';
 
@@ -21,21 +22,12 @@ const LitigantAdvocateSearch = () => {
   const [advocateChangeRequests, setAdvocateChangeRequests] = useState([]);
   const [popup, setPopup] = useState({ isOpen: false, message: '', type: 'success' });
   
-  const getPartyIdFromToken = () => {
+  const currentPartyId = (() => {
     try {
-      const token = localStorage.getItem('token');
-      if (!token) return null;
-      const base64Url = token.split('.')[1];
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-      }).join(''));
-      return JSON.parse(jsonPayload).party_id;
-    } catch (e) {
-      return null;
-    }
-  };
-  const currentPartyId = getPartyIdFromToken();
+      const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+      return userData.litigant_id || userData.party_id || null;
+    } catch { return null; }
+  })();
   
   // Fetch litigant's cases
   useEffect(() => {
@@ -46,36 +38,25 @@ const LitigantAdvocateSearch = () => {
 
   const handleFinalSubmitToCourt = async (requestId) => {
     try {
-      const token = localStorage.getItem('token');
-      await axios.put(`https://nyaay-desk-app-backend.onrender.com/api/advocate-change/court-pending`, {
-        requestId,
-        status: 'Court Pending'
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setPopup({
-        isOpen: true,
-        message: 'Application submitted to court successfully!',
-        type: 'success'
-      });
+      await supabaseApi.put('/api/advocate-change/court-pending', { requestId });
+      setPopup({ isOpen: true, message: 'Application submitted to court successfully!', type: 'success' });
       fetchAdvocateChangeRequests();
     } catch (err) {
       console.error('Error submitting to court:', err);
-      setPopup({
-        isOpen: true,
-        message: 'Failed to submit to court. Please try again.',
-        type: 'error'
-      });
+      setPopup({ isOpen: true, message: 'Failed to submit to court. Please try again.', type: 'error' });
     }
   };
 
   const fetchAdvocateChangeRequests = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get(`https://nyaay-desk-app-backend.onrender.com/api/advocate-change/litigant-requests/${currentPartyId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setAdvocateChangeRequests(response.data || []);
+      if (!currentPartyId) return;
+      const { data, error } = await supabase
+        .from('advocate_change_requests')
+        .select('*')
+        .eq('litigant_id', currentPartyId)
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      setAdvocateChangeRequests(data || []);
     } catch (err) {
       console.error('Error fetching advocate change requests:', err);
     }
@@ -84,30 +65,38 @@ const LitigantAdvocateSearch = () => {
   const fetchCases = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('token');
-      const response = await axios.get(
-        'https://nyaay-desk-app-backend.onrender.com/api/cases/litigant',
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      
-      setCases(response.data.cases);
-      setLoading(false);
+      if (!currentPartyId) { setLoading(false); return; }
+      const { data, error } = await supabase
+        .from('legal_cases')
+        .select('*')
+        .or(`plaintiff_details->>party_id.eq.${currentPartyId},respondent_details->>party_id.eq.${currentPartyId}`);
+      if (error) throw error;
+      setCases(data || []);
     } catch (error) {
       console.error('Error fetching cases:', error);
-      setError(error.response?.data?.message || 'Failed to fetch cases');
+      setError('Failed to fetch cases');
+    } finally {
       setLoading(false);
     }
   };
 
   const fetchPendingRequests = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get(
-        'https://nyaay-desk-app-backend.onrender.com/litigant/pending-requests',
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      
-      setPendingRequests(response.data.pendingRequests);
+      if (!currentPartyId) return;
+      const { data, error } = await supabase
+        .from('advocate_change_requests')
+        .select('*')
+        .eq('status', 'pending')
+        .eq('litigant_id', currentPartyId);
+      if (error) throw error;
+      // Group by case_num for display
+      const grouped = (data || []).reduce((acc, req) => {
+        const caseNum = req.case_num;
+        if (!acc[caseNum]) acc[caseNum] = { case_id: caseNum, case_num: caseNum, requests: [] };
+        acc[caseNum].requests.push(req);
+        return acc;
+      }, {});
+      setPendingRequests(Object.values(grouped));
     } catch (error) {
       console.error('Error fetching pending requests:', error);
     }
@@ -115,38 +104,36 @@ const LitigantAdvocateSearch = () => {
 
   const searchAdvocates = async () => {
     try {
-      if (!selectedCase || !selectedCase.district) {
-        setError('No case or district selected');
-        return;
-      }
-      
       setLoading(true);
-      const district = selectedCase.district;
-      console.log("Searching advocates in district:", district);
+      setError('');
+      const district = selectedCase?.district?.trim();
       
-      const token = localStorage.getItem('token');
-      // Fixed the URL to match the backend endpoint
-      const response = await axios.get(
-        `https://nyaay-desk-app-backend.onrender.com/advocates/search?district=${district}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      console.log('Searching for advocates in district:', district);
+
+      // Query advocates table directly
+      let query = supabase
+        .from('advocates')
+        .select('*')
+        .eq('status', 'active');
       
-      console.log("Response received:", response.data);
+      if (district) {
+        query = query.ilike('district', `%${district}%`);
+      }
+
+      const { data, error: fetchError } = await query.order('name', { ascending: true });
       
-      if (response.data.advocates && Array.isArray(response.data.advocates)) {
-        console.log("Advocates found:", response.data.advocates.length);
-        setAdvocates(response.data.advocates);
-        if (response.data.advocates.length === 0) {
-          setError('No advocates found in this district');
-        }
-      } else {
-        console.log("No advocates found for this district");
-        setAdvocates([]);
-        setError('No advocates found in this district');
+      if (fetchError) throw fetchError;
+
+      console.log('Search Results:', data);
+      setAdvocates(data || []);
+      if (!data || data.length === 0) {
+        setError(district
+          ? `No advocates found in ${district}.`
+          : 'No advocates found');
       }
     } catch (error) {
-      console.error("Error fetching advocates:", error);
-      setError(error.response?.data?.message || 'Failed to fetch advocates');
+      console.error('Error fetching advocates:', error);
+      setError('Failed to fetch advocates. Check browser console for details.');
       setAdvocates([]);
     } finally {
       setLoading(false);
@@ -156,44 +143,65 @@ const LitigantAdvocateSearch = () => {
   const requestAdvocate = async (advocateId, advocateName, partyType) => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('token');
-      await axios.post(
-        `https://nyaay-desk-app-backend.onrender.com/cases/${selectedCase._id}/request-advocate`,
-        {
-          advocateId,
-          advocateName,
-          partyType
-        },
-        { headers: { Authorization: `Bearer ${token}` } }
+      setError('');
+      
+      // 1. Fetch latest case data to ensure we have current advocate_requests
+      const { data: caseData, error: fetchError } = await supabase
+        .from('legal_cases')
+        .select('advocate_requests, case_num')
+        .eq('case_num', selectedCase.case_num)
+        .single();
+      
+      if (fetchError) throw fetchError;
+      
+      const existingRequests = Array.isArray(caseData.advocate_requests) ? caseData.advocate_requests : [];
+      
+      // 2. Check if a pending request already exists for this advocate and party
+      const isAlreadyPending = existingRequests.some(
+        req => req.advocate_id === advocateId && req.party_type === partyType && req.status === 'pending'
       );
       
-      setSuccess(`Request sent to advocate ${advocateName}`);
-      
-      // Re-fetch the specific case so the UI updates to show 'Request Pending'
-      try {
-        await fetchCases();
-        const response = await axios.get(
-          'https://nyaay-desk-app-backend.onrender.com/api/cases/litigant',
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        const updatedCases = response.data.cases;
-        const updatedSelectedCase = updatedCases.find(c => c._id === selectedCase._id);
-        if (updatedSelectedCase) {
-          setSelectedCase(updatedSelectedCase);
-        }
-      } catch (e) {
-        console.error("Failed to update selected case data", e);
+      if (isAlreadyPending) {
+        setSuccess(`A request is already pending with ${advocateName}.`);
+        setLoading(false);
+        return;
       }
       
+      // 3. Create the new request object
+      const timestamp = new Date().toISOString();
+      const newRequest = {
+        _id: `REQ-${Date.now()}`,
+        request_id: `REQ-${Date.now()}`,
+        advocate_id: advocateId,
+        advocate_name: advocateName,
+        party_type: partyType,
+        status: 'pending',
+        requested_at: timestamp,
+        updated_at: timestamp,
+        litigant_id: currentPartyId
+      };
+      
+      // 4. Update the legal_cases table by appending the new request
+      const { error: updateError } = await supabase
+        .from('legal_cases')
+        .update({ 
+          advocate_requests: [...existingRequests, newRequest] 
+        })
+        .eq('case_num', selectedCase.case_num);
+      
+      if (updateError) throw updateError;
+      
+      setSuccess(`Join request sent to Advocate ${advocateName}!`);
+      
+      // 5. Update local state and refresh cases
+      await fetchCases();
       setLoading(false);
       
       // Clear success message after 3 seconds
-      setTimeout(() => {
-        setSuccess('');
-      }, 3000);
+      setTimeout(() => setSuccess(''), 3000);
     } catch (error) {
       console.error('Error requesting advocate:', error);
-      setError(error.response?.data?.message || 'Failed to send request');
+      setError('Failed to send join request. Please try again.');
       setLoading(false);
     }
   };
@@ -202,35 +210,21 @@ const LitigantAdvocateSearch = () => {
     if (!window.confirm(`Are you sure you want to remove your assigned ${partyType}'s advocate?`)) return;
     try {
       setLoading(true);
-      const token = localStorage.getItem('token');
-      await axios.post(
-        `https://nyaay-desk-app-backend.onrender.com/cases/${selectedCase._id}/remove-advocate`,
-        { partyType },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      
+      // Clear advocate from the JSONB field in legal_cases
+      const update = partyType === 'plaintiff'
+        ? { 'plaintiff_details': { ...selectedCase.plaintiff_details, advocate_id: null, advocate: '' } }
+        : { 'respondent_details': { ...selectedCase.respondent_details, advocate_id: null, advocate: '' } };
+      const { error } = await supabase.from('legal_cases').update(update).eq('case_num', selectedCase.case_num);
+      if (error) throw error;
       setSuccess('Advocate removed successfully');
-      
-      // Update selected case and case list
-      const updatedCase = { ...selectedCase };
-      if (partyType === 'plaintiff') {
-        updatedCase.plaintiff_details.advocate_id = null;
-        updatedCase.plaintiff_details.advocate = '';
-      } else {
-        updatedCase.respondent_details.advocate_id = null;
-        updatedCase.respondent_details.advocate = '';
-      }
+      const updatedCase = { ...selectedCase, ...update };
       setSelectedCase(updatedCase);
-      
       await fetchCases();
       setLoading(false);
-      
-      setTimeout(() => {
-        setSuccess('');
-      }, 3000);
+      setTimeout(() => setSuccess(''), 3000);
     } catch (error) {
       console.error('Error removing advocate:', error);
-      setError(error.response?.data?.message || 'Failed to remove advocate');
+      setError('Failed to remove advocate');
       setLoading(false);
     }
   };
@@ -239,34 +233,21 @@ const LitigantAdvocateSearch = () => {
     if (!window.confirm(`Are you sure you want to cancel your pending advocate request?`)) return;
     try {
       setLoading(true);
-      const token = localStorage.getItem('token');
-      await axios.post(
-        `https://nyaay-desk-app-backend.onrender.com/cases/${selectedCase._id}/cancel-request`,
-        { partyType },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      
+      const { error } = await supabase
+        .from('advocate_change_requests')
+        .update({ status: 'cancelled' })
+        .eq('case_num', selectedCase.case_num)
+        .eq('litigant_id', currentPartyId)
+        .eq('status', 'pending');
+      if (error) throw error;
       setSuccess('Pending request cancelled successfully');
       await fetchCases();
-      
-      // Re-fetch the specific case so the UI immediately updates
-      try {
-        const response = await axios.get(
-          'https://nyaay-desk-app-backend.onrender.com/api/cases/litigant',
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        const updatedCases = response.data.cases;
-        const updatedSelectedCase = updatedCases.find(c => c._id === selectedCase._id);
-        if (updatedSelectedCase) {
-          setSelectedCase(updatedSelectedCase);
-        }
-      } catch (e) {}
-      
+      await fetchPendingRequests();
       setLoading(false);
       setTimeout(() => setSuccess(''), 3000);
     } catch (error) {
       console.error('Error cancelling request:', error);
-      setError(error.response?.data?.message || 'Failed to cancel request');
+      setError('Failed to cancel request');
       setLoading(false);
     }
   };
@@ -274,48 +255,19 @@ const LitigantAdvocateSearch = () => {
   const handleApproveRequest = async (caseId, requestId) => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('token');
-      await axios.put(
-        `https://nyaay-desk-app-backend.onrender.com/cases/${caseId}/advocate-requests/${requestId}`,
-        { status: 'approved' },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      
+      const { error } = await supabase
+        .from('advocate_change_requests')
+        .update({ status: 'approved', reviewed_at: new Date().toISOString() })
+        .eq('id', requestId);
+      if (error) throw error;
       setSuccess('Advocate request approved');
-      
-      // Update the local state to remove the request from pending
-      setPendingRequests(pendingRequests.filter(req => req.request_id !== requestId));
-      
-      // Refresh the cases
+      setPendingRequests(pendingRequests.filter(req => req.requests?.every(r => r.id !== requestId)));
       await fetchCases();
-      
-      // Re-fetch the specific case so the UI immediately updates
-      try {
-        const response = await axios.get(
-          'https://nyaay-desk-app-backend.onrender.com/api/cases/litigant',
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        const updatedCases = response.data.cases;
-        
-        if (selectedCase && selectedCase._id === caseId) {
-          const updatedSelectedCase = updatedCases.find(c => c._id === caseId);
-          if (updatedSelectedCase) {
-            setSelectedCase(updatedSelectedCase);
-          }
-        }
-      } catch (e) {
-        console.error("Failed to update selected case data", e);
-      }
-      
       setLoading(false);
-      
-      // Clear success message
-      setTimeout(() => {
-        setSuccess('');
-      }, 3000);
+      setTimeout(() => setSuccess(''), 3000);
     } catch (error) {
       console.error('Error approving request:', error);
-      setError(error.response?.data?.message || 'Failed to approve request');
+      setError('Failed to approve request');
       setLoading(false);
     }
   };
@@ -323,24 +275,18 @@ const LitigantAdvocateSearch = () => {
   const handleRejectRequest = async (caseId, requestId) => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('token');
-      await axios.put(
-        `https://nyaay-desk-app-backend.onrender.com/cases/${caseId}/advocate-requests/${requestId}`,
-        { status: 'rejected' },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      
+      const { error } = await supabase
+        .from('advocate_change_requests')
+        .update({ status: 'rejected', reviewed_at: new Date().toISOString() })
+        .eq('id', requestId);
+      if (error) throw error;
       setSuccess('Request rejected successfully');
       fetchPendingRequests();
       setLoading(false);
-      
-      // Clear success message after 3 seconds
-      setTimeout(() => {
-        setSuccess('');
-      }, 3000);
+      setTimeout(() => setSuccess(''), 3000);
     } catch (error) {
       console.error('Error rejecting request:', error);
-      setError(error.response?.data?.message || 'Failed to reject request');
+      setError('Failed to reject request');
       setLoading(false);
     }
   };
@@ -420,7 +366,7 @@ const LitigantAdvocateSearch = () => {
               </thead>
               <tbody>
                 {cases.map(caseItem => (
-                  <tr key={caseItem._id}>
+                  <tr key={caseItem.case_num}>
                     <td>{caseItem.case_num || 'N/A'}</td>
                     <td>{caseItem.court}</td>
                     <td>{caseItem.case_type}</td>
@@ -698,7 +644,7 @@ const LitigantAdvocateSearch = () => {
                   <div>
                     <h4 className="las-request-title">Advocate Requests:</h4>
                     {request.requests.map(req => (
-                      <div key={req._id} className="las-request-subcard">
+                      <div key={req.id} className="las-request-subcard">
                         <div className="las-detail-item">
                           <span className="las-detail-label">Advocate:</span>
                           <span className="las-detail-value">{req.advocate_name}</span>
@@ -715,13 +661,13 @@ const LitigantAdvocateSearch = () => {
                         <div className="las-btn-group" style={{marginTop: '1rem'}}>
                           <button 
                             className="las-btn las-btn-success las-btn-sm"
-                            onClick={() => handleApproveRequest(request.case_id, req._id)}
+                            onClick={() => handleApproveRequest(request.case_id, req.id || req._id)}
                           >
                             Approve
                           </button>
                           <button 
                             className="las-btn las-btn-danger las-btn-sm"
-                            onClick={() => handleRejectRequest(request.case_id, req._id)}
+                            onClick={() => handleRejectRequest(request.case_id, req.id || req._id)}
                           >
                             Reject
                           </button>
@@ -746,18 +692,18 @@ const LitigantAdvocateSearch = () => {
           ) : (
             <div className="las-request-grid" style={{display: 'grid', gridTemplateColumns: '1fr', gap: '1rem'}}>
               {advocateChangeRequests.map(req => (
-                <div key={req._id} className="las-request-card" style={{borderLeft: `4px solid ${req.nocRequestStatus === 'Signed' ? '#22c55e' : req.nocRequestStatus === 'Declined' ? '#ef4444' : '#fbbf24'}`}}>
+                <div key={req.request_id || req.id} className="las-request-card" style={{borderLeft: `4px solid ${req.noc_request_status === 'Signed' ? '#22c55e' : req.noc_request_status === 'Declined' ? '#ef4444' : '#fbbf24'}`}}>
                   <div className="flex justify-between items-start mb-2">
-                    <h3 className="las-request-title">Case: {req.caseId?.case_num || 'Loading...'}</h3>
-                    <span className={`las-status-badge ${req.nocRequestStatus?.toLowerCase()}`} style={{
+                    <h3 className="las-request-title">Case: {req.case_id || 'N/A'}</h3>
+                    <span className={`las-status-badge ${(req.noc_request_status || 'none').toLowerCase()}`} style={{
                       padding: '4px 8px',
                       borderRadius: '4px',
                       fontSize: '0.75rem',
                       fontWeight: 'bold',
-                      background: req.nocRequestStatus === 'Signed' ? '#dcfce7' : req.nocRequestStatus === 'Declined' ? '#fee2e2' : '#fef3c7',
-                      color: req.nocRequestStatus === 'Signed' ? '#166534' : req.nocRequestStatus === 'Declined' ? '#991b1b' : '#92400e'
+                      background: req.noc_request_status === 'Signed' ? '#dcfce7' : req.noc_request_status === 'Declined' ? '#fee2e2' : '#fef3c7',
+                      color: req.noc_request_status === 'Signed' ? '#166534' : req.noc_request_status === 'Declined' ? '#991b1b' : '#92400e'
                     }}>
-                      NOC: {req.nocRequestStatus}
+                      NOC: {req.noc_request_status || 'None'}
                     </span>
                   </div>
                   
@@ -765,7 +711,7 @@ const LitigantAdvocateSearch = () => {
                     <div>
                       <div className="las-detail-item">
                         <span className="las-detail-label">Current Advocate:</span>
-                        <span className="las-detail-value">{req.currentAdvocateId}</span>
+                        <span className="las-detail-value">{req.existing_advocate_id}</span>
                       </div>
                       <div className="las-detail-item">
                         <span className="las-detail-label">Status:</span>
@@ -775,42 +721,95 @@ const LitigantAdvocateSearch = () => {
                     <div>
                       <div className="las-detail-item">
                         <span className="las-detail-label">Requested On:</span>
-                        <span className="las-detail-value">{new Date(req.createdAt).toLocaleDateString()}</span>
+                        <span className="las-detail-value">{req.created_at ? new Date(req.created_at).toLocaleDateString() : 'N/A'}</span>
                       </div>
-                      {req.nocRequestStatus === 'Declined' && (
+                      {req.noc_request_status === 'Declined' && (
                         <div className="las-detail-item" style={{color: '#ef4444'}}>
                           <span className="las-detail-label">Decline Reason:</span>
-                          <span className="las-detail-value">{req.nocDeclineReason}</span>
+                          <span className="las-detail-value">{req.noc_decline_reason}</span>
                         </div>
                       )}
                     </div>
                   </div>
                   
                   <div style={{marginTop: '1rem', padding: '10px', background: '#f9fafb', borderRadius: '4px', fontSize: '0.85rem'}}>
-                    {req.nocRequestStatus === 'Requested' && (
+                    {/* Pending NOC from advocate */}
+                    {req.noc_request_status === 'Requested' && req.status !== 'Approved' && req.status !== 'Rejected' && (
                       <p>⏳ Your request for NOC is pending with the advocate. Once signed, it will be automatically attached to your court application.</p>
                     )}
-                    {req.nocRequestStatus === 'Signed' && (
-                      <div style={{marginTop: '1rem'}}>
+
+                    {/* NOC Signed - show actions */}
+                    {req.noc_request_status === 'Signed' && (
+                      <div style={{marginTop: '0.5rem'}}>
                         <p style={{marginBottom: '10px'}}>✅ <strong>NOC Digitally Signed.</strong> The signature certificate has been generated.</p>
-                        <div style={{display: 'flex', gap: '8px'}}>
+                        <div style={{display: 'flex', gap: '8px', flexWrap: 'wrap'}}>
                           <button 
                             className="las-btn las-btn-success las-btn-sm"
-                            onClick={() => handleFinalSubmitToCourt(req._id)}
-                            disabled={req.status === 'Under Court Review' || req.status === 'Approved'}
+                            onClick={() => handleFinalSubmitToCourt(req.request_id || req.id)}
+                            disabled={req.status === 'Under Court Review' || req.status === 'Approved' || req.status === 'Rejected'}
                           >
-                            {req.status === 'Under Court Review' ? 'Submitted to Court' : 'Submit to Court'}
+                            {req.status === 'Approved' ? '✅ Approved by Court' : req.status === 'Under Court Review' ? '📤 Submitted to Court' : req.status === 'Rejected' ? '❌ Rejected by Court' : '📤 Submit to Court'}
                           </button>
                           <button 
                             className="las-btn las-btn-secondary las-btn-sm"
-                            onClick={() => window.open(`${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/api/advocate-change/generate-application/${req._id}`, '_blank')}
+                            onClick={async () => {
+                              try {
+                                const requestId = req.request_id || req.id || req._id;
+                                const { data } = await supabaseApi.get(`/api/advocate-change/generate-application/${requestId}`);
+                                if (data.html) {
+                                  const blob = new Blob([data.html], { type: 'text/html' });
+                                  const blobUrl = URL.createObjectURL(blob);
+                                  const printWindow = window.open(blobUrl, '_blank');
+                                  if (!printWindow) {
+                                    window.location.href = blobUrl;
+                                  }
+                                  setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
+                                }
+                              } catch (err) {
+                                console.error('Failed to generate application:', err);
+                                alert('Failed to generate application. Please allow popups for this site and try again.');
+                              }
+                            }}
                           >
-                            Print NOC
+                            🖨️ Print NOC
                           </button>
                         </div>
                       </div>
                     )}
-                    {req.nocRequestStatus === 'Declined' && (
+
+                    {/* Approved by Court */}
+                    {req.status === 'Approved' && (
+                      <div style={{marginTop: '0.5rem', padding: '12px', background: '#dcfce7', borderRadius: '6px', borderLeft: '4px solid #22c55e'}}>
+                        <p style={{margin: 0, fontWeight: 'bold', color: '#166534'}}>🎉 Advocate Change Approved by Court</p>
+                        <p style={{margin: '6px 0 0', color: '#15803d'}}>
+                          Your previous advocate has been formally discharged from this case. You may now engage a new advocate by going to <strong>"Find and Attach Advocate"</strong> and requesting a new lawyer for this case.
+                        </p>
+                        {req.review_remarks && (
+                          <p style={{margin: '8px 0 0', fontSize: '0.8rem', color: '#555'}}><strong>Court Remarks:</strong> {req.review_remarks}</p>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Rejected by Court */}
+                    {req.status === 'Rejected' && (
+                      <div style={{marginTop: '0.5rem', padding: '12px', background: '#fee2e2', borderRadius: '6px', borderLeft: '4px solid #ef4444'}}>
+                        <p style={{margin: 0, fontWeight: 'bold', color: '#991b1b'}}>❌ Advocate Change Rejected by Court</p>
+                        <p style={{margin: '6px 0 0', color: '#b91c1c'}}>
+                          The court has rejected your request to change advocate. Your current advocate remains assigned to this case. You may file a fresh application with additional justification if needed.
+                        </p>
+                        {req.review_remarks && (
+                          <p style={{margin: '8px 0 0', fontSize: '0.8rem', color: '#555'}}><strong>Court Remarks:</strong> {req.review_remarks}</p>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Under Court Review */}
+                    {req.status === 'Under Court Review' && req.noc_request_status !== 'Signed' && (
+                      <p>📋 Your application is currently under review by the court. You will be notified once a decision is made.</p>
+                    )}
+
+                    {/* NOC Declined by advocate */}
+                    {req.noc_request_status === 'Declined' && req.status !== 'Approved' && req.status !== 'Rejected' && (
                       <p>❌ <strong>NOC Declined.</strong> Your lawyer has refused to sign the NOC. You may need to provide additional justification to the court or resolve any pending dues.</p>
                     )}
                   </div>

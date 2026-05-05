@@ -169,26 +169,6 @@ const CaseManagement = () => {
 
             <div className="portal-card admin">
               <Settings size={48} className="portal-icon" />
-              <h3>Admin</h3>
-              <p>Manage users, system settings, and monitor performance.</p>
-              <div className="portal-stats">
-                <div className="stat">
-                  <span className="stat-number">Complete</span>
-                  <span className="stat-label">Control</span>
-                </div>
-                <div className="stat">
-                  <span className="stat-number">99.9%</span>
-                  <span className="stat-label">Uptime</span>
-                </div>
-              </div>
-              <a href="/clerk" className="portal-btn admin-btn">
-                Continue as Admin
-                <ArrowRight size={16} />
-              </a>
-            </div>
-            
-            <div className="portal-card clerk">
-              <Settings size={48} className="portal-icon" />
               <h3>Court-Room Clerk</h3>
               <p>Manage cases, schedules, and administrative tasks efficiently.</p>
               <div className="portal-stats">
@@ -201,8 +181,28 @@ const CaseManagement = () => {
                   <span className="stat-label">Access</span>
                 </div>
               </div>
-              <a href="/admin" className="portal-btn clerk-btn">
+              <a href="/clerk" className="portal-btn admin-btn">
                 Continue as Court Clerk
+                <ArrowRight size={16} />
+              </a>
+            </div>
+            
+            <div className="portal-card clerk">
+              <Settings size={48} className="portal-icon" />
+              <h3>Admin</h3>
+              <p>Manage users, system settings, and monitor performance.</p>
+              <div className="portal-stats">
+                <div className="stat">
+                  <span className="stat-number">Complete</span>
+                  <span className="stat-label">Control</span>
+                </div>
+                <div className="stat">
+                  <span className="stat-number">99.9%</span>
+                  <span className="stat-label">Uptime</span>
+                </div>
+              </div>
+              <a href="/admin" className="portal-btn clerk-btn">
+                Continue as Admin
                 <ArrowRight size={16} />
               </a>
             </div>

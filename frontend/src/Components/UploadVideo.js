@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import VideoRecorder from './Videoplead'; 
+import { supabase } from '../services/supabaseClient';
+import VideoRecorder from './Videoplead';
 import { useNavigate } from 'react-router-dom';
 
 const UploadVideoPleading = () => {
@@ -19,25 +19,24 @@ const UploadVideoPleading = () => {
       try {
         const storedToken = localStorage.getItem('token');
         setToken(storedToken);
-        
-        const response = await axios.get(
-            'https://nyaay-desk-app-backend.onrender.com/api/cases/litigant',
-            { headers: { Authorization: `Bearer ${storedToken}` } }
-        );
-        
-        setCases(response.data.cases);
+        const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+        const litigantId = userData.litigant_id || userData.party_id;
+        if (!litigantId) { setIsLoading(false); return; }
+        const { data, error } = await supabase
+          .from('legal_cases')
+          .select('case_num, case_type')
+          .or(`plaintiff_details->>party_id.eq.${litigantId},respondent_details->>party_id.eq.${litigantId}`);
+        if (error) throw error;
+        setCases(data || []);
       } catch (err) {
         console.error('Error fetching cases:', err);
-        setError(
-          err.response?.data?.message || 'Failed to load cases. Please try again.'
-        );
+        setError('Failed to load cases. Please try again.');
       } finally {
         setIsLoading(false);
       }
     };
-
     fetchData();
-  }, [navigate]);
+  }, []);
 
   // Handle case selection
   const handleCaseSelect = (e) => {
@@ -160,7 +159,7 @@ const UploadVideoPleading = () => {
         </div>
       </div>
 
-      <style jsx>{`
+      <style>{`
         /* Global Styles */
         * {
           margin: 0;

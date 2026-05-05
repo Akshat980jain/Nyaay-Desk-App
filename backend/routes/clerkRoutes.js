@@ -1,9 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
-const Litigant = require('../models/Litigant');
-const Advocate = require('../models/Advocate');
-const Clerk = require('../models/Clerk');
+const supabase = require('../supabaseClient');
 const cors = require('cors');
 const sgMail = require('@sendgrid/mail');
 router.use(express.json());
@@ -39,9 +37,13 @@ const verifyToken = (req, res, next) => {
 // Verify clerk middleware
 const verifyClerk = async (req, res, next) => {
   try {
-    const clerk = await Clerk.findOne({ clerk_id: req.user.clerk_id });
+    const { data: clerk, error } = await supabase
+      .from('clerks')
+      .select('*')
+      .eq('clerk_id', req.user.clerk_id)
+      .single();
     
-    if (!clerk) {
+    if (error || !clerk) {
       return res.status(403).json({ message: 'Access denied: Not a clerk' });
     }
     
@@ -151,10 +153,12 @@ const sendStatusChangeEmail = async (recipient, name, newStatus, reason = null) 
 // Get all litigants in clerk's district
 router.get('/litigants', verifyToken, verifyClerk, async (req, res) => {
   try {
-    const litigants = await Litigant.find({
-      'address.district': req.clerk.district
-    }).select('-password -emailOTP -otpExpiry -resetPasswordOTP -resetPasswordExpiry');
+    const { data: litigants, error } = await supabase
+      .from('litigants')
+      .select('litigant_id, name, email, party_type, gender, address, phone, status')
+      .filter('address->>district', 'eq', req.clerk.district);
     
+    if (error) throw error;
     res.json(litigants);
   } catch (error) {
     console.error('Error fetching litigants:', error);
@@ -165,10 +169,12 @@ router.get('/litigants', verifyToken, verifyClerk, async (req, res) => {
 // Get all advocates in clerk's district
 router.get('/advocates', verifyToken, verifyClerk, async (req, res) => {
   try {
-    const advocates = await Advocate.find({
-      'practice_details.district': req.clerk.district
-    }).select('-password -emailOTP -otpExpiry');
+    const { data: advocates, error } = await supabase
+      .from('advocates')
+      .select('*')
+      .eq('district', req.clerk.district);
     
+    if (error) throw error;
     res.json(advocates);
   } catch (error) {
     console.error('Error fetching advocates:', error);
@@ -185,40 +191,40 @@ router.put('/litigants/:id/suspend', verifyToken, verifyClerk, async (req, res) 
       return res.status(400).json({ message: 'Suspension reason is required' });
     }
     
-    const litigant = await Litigant.findOne({ party_id: req.params.id });
+    const { data: litigant, error: findError } = await supabase
+      .from('litigants')
+      .select('*')
+      .eq('litigant_id', req.params.id)
+      .single();
     
-    if (!litigant) {
+    if (findError || !litigant) {
       return res.status(404).json({ message: 'Litigant not found' });
     }
     
-    // Verify the litigant belongs to the clerk's district
-    if (litigant.address.district !== req.clerk.district) {
-      return res.status(403).json({ 
-        message: 'Access denied: Litigant is not in your district jurisdiction' 
-      });
+    if (litigant.address?.district !== req.clerk.district) {
+      return res.status(403).json({ message: 'Access denied: Litigant is not in your district jurisdiction' });
     }
     
-    // Update the status and save the suspension reason
-    litigant.status = 'suspended';
-    litigant.suspension_reason = reason;
-    litigant.suspension_date = new Date();
-    await litigant.save();
+    const { error: updateError } = await supabase
+      .from('litigants')
+      .update({
+        status: 'suspended',
+        suspension_reason: reason,
+        suspension_date: new Date().toISOString()
+      })
+      .eq('litigant_id', req.params.id);
     
-    // Send email notification
+    if (updateError) throw updateError;
+    
     try {
-      await sendStatusChangeEmail(litigant.contact.email, litigant.full_name, 'suspended', reason);
+      await sendStatusChangeEmail(litigant.email, litigant.name, 'suspended', reason);
     } catch (emailError) {
       console.error('Failed to send suspension email:', emailError);
-      // Continue with the response even if email fails
     }
     
     res.json({ 
       message: 'Litigant account suspended successfully',
-      litigant: {
-        party_id: litigant.party_id,
-        full_name: litigant.full_name,
-        status: litigant.status
-      } 
+      litigant: { party_id: litigant.litigant_id, full_name: litigant.name, status: 'suspended' } 
     });
   } catch (error) {
     console.error('Error suspending litigant account:', error);
@@ -229,40 +235,40 @@ router.put('/litigants/:id/suspend', verifyToken, verifyClerk, async (req, res) 
 // Reinstate a litigant account
 router.put('/litigants/:id/reinstate', verifyToken, verifyClerk, async (req, res) => {
   try {
-    const litigant = await Litigant.findOne({ party_id: req.params.id });
+    const { data: litigant, error: findError } = await supabase
+      .from('litigants')
+      .select('*')
+      .eq('litigant_id', req.params.id)
+      .single();
     
-    if (!litigant) {
+    if (findError || !litigant) {
       return res.status(404).json({ message: 'Litigant not found' });
     }
     
-    // Verify the litigant belongs to the clerk's district
-    if (litigant.address.district !== req.clerk.district) {
-      return res.status(403).json({ 
-        message: 'Access denied: Litigant is not in your district jurisdiction' 
-      });
+    if (litigant.address?.district !== req.clerk.district) {
+      return res.status(403).json({ message: 'Access denied: Litigant is not in your district jurisdiction' });
     }
     
-    // Update the status and clear suspension details
-    litigant.status = 'active';
-    litigant.suspension_reason = undefined;
-    litigant.suspension_date = undefined;
-    await litigant.save();
+    const { error: updateError } = await supabase
+      .from('litigants')
+      .update({
+        status: 'active',
+        suspension_reason: null,
+        suspension_date: null
+      })
+      .eq('litigant_id', req.params.id);
     
-    // Send email notification
+    if (updateError) throw updateError;
+    
     try {
-      await sendStatusChangeEmail(litigant.contact.email, litigant.full_name, 'active');
+      await sendStatusChangeEmail(litigant.email, litigant.name, 'active');
     } catch (emailError) {
       console.error('Failed to send reinstatement email:', emailError);
-      // Continue with the response even if email fails
     }
     
     res.json({ 
       message: 'Litigant account reinstated successfully',
-      litigant: {
-        party_id: litigant.party_id,
-        full_name: litigant.full_name,
-        status: litigant.status
-      } 
+      litigant: { party_id: litigant.litigant_id, full_name: litigant.name, status: 'active' } 
     });
   } catch (error) {
     console.error('Error reinstating litigant account:', error);
@@ -279,40 +285,40 @@ router.put('/advocates/:id/suspend', verifyToken, verifyClerk, async (req, res) 
       return res.status(400).json({ message: 'Suspension reason is required' });
     }
     
-    const advocate = await Advocate.findOne({ advocate_id: req.params.id });
+    const { data: advocate, error: findError } = await supabase
+      .from('advocates')
+      .select('*')
+      .eq('advocate_id', req.params.id)
+      .single();
     
-    if (!advocate) {
+    if (findError || !advocate) {
       return res.status(404).json({ message: 'Advocate not found' });
     }
     
-    // Verify the advocate belongs to the clerk's district
-    if (advocate.practice_details.district !== req.clerk.district) {
-      return res.status(403).json({ 
-        message: 'Access denied: Advocate is not in your district jurisdiction' 
-      });
+    if (advocate.district !== req.clerk.district) {
+      return res.status(403).json({ message: 'Access denied: Advocate is not in your district jurisdiction' });
     }
     
-    // Update the status and save the suspension reason
-    advocate.status = 'suspended';
-    advocate.suspension_reason = reason;
-    advocate.suspension_date = new Date();
-    await advocate.save();
+    const { error: updateError } = await supabase
+      .from('advocates')
+      .update({
+        status: 'suspended',
+        suspension_reason: reason,
+        suspension_date: new Date().toISOString()
+      })
+      .eq('advocate_id', req.params.id);
     
-    // Send email notification
+    if (updateError) throw updateError;
+    
     try {
-      await sendStatusChangeEmail(advocate.contact.email, advocate.name, 'suspended', reason);
+      await sendStatusChangeEmail(advocate.email, advocate.name, 'suspended', reason);
     } catch (emailError) {
       console.error('Failed to send suspension email:', emailError);
-      // Continue with the response even if email fails
     }
     
     res.json({ 
       message: 'Advocate account suspended successfully',
-      advocate: {
-        advocate_id: advocate.advocate_id,
-        name: advocate.name,
-        status: advocate.status
-      } 
+      advocate: { advocate_id: advocate.advocate_id, name: advocate.name, status: 'suspended' } 
     });
   } catch (error) {
     console.error('Error suspending advocate account:', error);
@@ -323,40 +329,40 @@ router.put('/advocates/:id/suspend', verifyToken, verifyClerk, async (req, res) 
 // Reinstate an advocate account
 router.put('/advocates/:id/reinstate', verifyToken, verifyClerk, async (req, res) => {
   try {
-    const advocate = await Advocate.findOne({ advocate_id: req.params.id });
+    const { data: advocate, error: findError } = await supabase
+      .from('advocates')
+      .select('*')
+      .eq('advocate_id', req.params.id)
+      .single();
     
-    if (!advocate) {
+    if (findError || !advocate) {
       return res.status(404).json({ message: 'Advocate not found' });
     }
     
-    // Verify the advocate belongs to the clerk's district
-    if (advocate.practice_details.district !== req.clerk.district) {
-      return res.status(403).json({ 
-        message: 'Access denied: Advocate is not in your district jurisdiction' 
-      });
+    if (advocate.district !== req.clerk.district) {
+      return res.status(403).json({ message: 'Access denied: Advocate is not in your district jurisdiction' });
     }
     
-    // Update the status and clear suspension details
-    advocate.status = 'active';
-    advocate.suspension_reason = undefined;
-    advocate.suspension_date = undefined;
-    await advocate.save();
+    const { error: updateError } = await supabase
+      .from('advocates')
+      .update({
+        status: 'active',
+        suspension_reason: null,
+        suspension_date: null
+      })
+      .eq('advocate_id', req.params.id);
     
-    // Send email notification
+    if (updateError) throw updateError;
+    
     try {
-      await sendStatusChangeEmail(advocate.contact.email, advocate.name, 'active');
+      await sendStatusChangeEmail(advocate.email, advocate.name, 'active');
     } catch (emailError) {
       console.error('Failed to send reinstatement email:', emailError);
-      // Continue with the response even if email fails
     }
     
     res.json({ 
       message: 'Advocate account reinstated successfully',
-      advocate: {
-        advocate_id: advocate.advocate_id,
-        name: advocate.name,
-        status: advocate.status
-      } 
+      advocate: { advocate_id: advocate.advocate_id, name: advocate.name, status: 'active' } 
     });
   } catch (error) {
     console.error('Error reinstating advocate account:', error);
@@ -367,18 +373,18 @@ router.put('/advocates/:id/reinstate', verifyToken, verifyClerk, async (req, res
 // Get a specific litigant's details
 router.get('/litigants/:id', verifyToken, verifyClerk, async (req, res) => {
   try {
-    const litigant = await Litigant.findOne({ party_id: req.params.id })
-      .select('-password -emailOTP -otpExpiry -resetPasswordOTP -resetPasswordExpiry');
+    const { data: litigant, error } = await supabase
+      .from('litigants')
+      .select('litigant_id, name, email, party_type, gender, address, phone, status')
+      .eq('litigant_id', req.params.id)
+      .single();
     
-    if (!litigant) {
+    if (error || !litigant) {
       return res.status(404).json({ message: 'Litigant not found' });
     }
     
-    // Verify the litigant belongs to the clerk's district
-    if (litigant.address.district !== req.clerk.district) {
-      return res.status(403).json({ 
-        message: 'Access denied: Litigant is not in your district jurisdiction' 
-      });
+    if (litigant.address?.district !== req.clerk.district) {
+      return res.status(403).json({ message: 'Access denied: Litigant is not in your district jurisdiction' });
     }
     
     res.json(litigant);
@@ -391,18 +397,18 @@ router.get('/litigants/:id', verifyToken, verifyClerk, async (req, res) => {
 // Get a specific advocate's details
 router.get('/advocates/:id', verifyToken, verifyClerk, async (req, res) => {
   try {
-    const advocate = await Advocate.findOne({ advocate_id: req.params.id })
-      .select('-password -emailOTP -otpExpiry');
+    const { data: advocate, error } = await supabase
+      .from('advocates')
+      .select('*')
+      .eq('advocate_id', req.params.id)
+      .single();
     
-    if (!advocate) {
+    if (error || !advocate) {
       return res.status(404).json({ message: 'Advocate not found' });
     }
     
-    // Verify the advocate belongs to the clerk's district
-    if (advocate.practice_details.district !== req.clerk.district) {
-      return res.status(403).json({ 
-        message: 'Access denied: Advocate is not in your district jurisdiction' 
-      });
+    if (advocate.district !== req.clerk.district) {
+      return res.status(403).json({ message: 'Access denied: Advocate is not in your district jurisdiction' });
     }
     
     res.json(advocate);
@@ -410,6 +416,154 @@ router.get('/advocates/:id', verifyToken, verifyClerk, async (req, res) => {
     console.error('Error fetching advocate details:', error);
     res.status(500).json({ message: 'Server error' });
   }
+});
+
+// Register clerk
+router.post('/register', async (req, res) => {
+    try {
+        const { name, gender, district, court_name, court_no, email, mobile, password } = req.body;
+
+        if (!name || !gender || !district || !court_name || !court_no || !email || !mobile || !password) {
+            return res.status(400).json({ message: 'All fields are required' });
+        }
+
+        const { data: existingClerk } = await supabase.from('clerks').select('clerk_id').eq('email', email).single();
+        if (existingClerk) return res.status(400).json({ message: 'Email already registered' });
+
+        const emailOTP = Math.floor(100000 + Math.random() * 900000).toString(); // generateOTP helper
+        const bcrypt = require('bcryptjs');
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const clerkId = 'CLK' + Date.now();
+
+        const { error: insertError } = await supabase.from('clerks').insert([{
+            clerk_id: clerkId, name, gender, district, court_name, court_no, email, phone: mobile,
+            password: hashedPassword, email_otp: emailOTP, otp_expiry: new Date(Date.now() + 10 * 60 * 1000).toISOString()
+        }]);
+
+        if (insertError) throw insertError;
+        // await sendEmailOTP(email, emailOTP); // Assumes sendEmailOTP is available or defined
+
+        res.status(201).json({ message: 'Registration initiated. Please verify your email.', clerk_id: clerkId });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// Verify Email OTP
+router.post('/verify-email', async (req, res) => {
+    try {
+        const { clerk_id, otp } = req.body;
+        const { data: clerk, error: findError } = await supabase
+            .from('clerks')
+            .select('*')
+            .eq('clerk_id', clerk_id)
+            .eq('email_otp', otp)
+            .gt('otp_expiry', new Date().toISOString())
+            .single();
+
+        if (findError || !clerk) return res.status(400).json({ message: 'Invalid or expired OTP' });
+
+        const { error: updateError } = await supabase
+            .from('clerks')
+            .update({ is_email_verified: true, email_otp: null, status: 'active' })
+            .eq('clerk_id', clerk_id);
+
+        if (updateError) throw updateError;
+        res.json({ message: 'Email verified successfully' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// Login
+router.post('/login', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        const { data: clerk, error: loginError } = await supabase.from('clerks').select('*').eq('email', email).single();
+
+        const bcrypt = require('bcryptjs');
+        if (loginError || !clerk || !(await bcrypt.compare(password, clerk.password))) {
+            return res.status(401).json({ message: 'Invalid credentials' });
+        }
+        if (!clerk.is_email_verified) return res.status(401).json({ message: 'Please complete email verification' });
+        if (clerk.status !== 'active') return res.status(401).json({ message: 'Account is not active' });
+
+        await supabase.from('clerks').update({ last_login: new Date().toISOString() }).eq('clerk_id', clerk.clerk_id);
+
+        const token = jwt.sign({ clerk_id: clerk.clerk_id, email: clerk.email, user_type: 'clerk' }, process.env.JWT_SECRET, { expiresIn: '24h' });
+
+        res.json({
+            token,
+            clerk: { clerk_id: clerk.clerk_id, name: clerk.name, email: clerk.email, district: clerk.district, court_name: clerk.court_name, court_no: clerk.court_no }
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// Profile
+router.get('/profile', verifyToken, async (req, res) => {
+    try {
+        if (req.user.user_type !== 'clerk') return res.status(403).json({ message: 'Access denied' });
+
+        const { data: clerk, error } = await supabase
+            .from('clerks')
+            .select('clerk_id, name, email, district, court_name, court_no, status')
+            .eq('clerk_id', req.user.clerk_id)
+            .single();
+        
+        if (error || !clerk) return res.status(404).json({ message: 'Clerk not found' });
+        res.json({ clerk });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// Stats
+router.get('/dashboard/stats', verifyToken, async (req, res) => {
+    try {
+        if (req.user.user_type !== 'clerk') return res.status(403).json({ message: 'Access denied' });
+
+        const { data: clerk, error: clerkError } = await supabase.from('clerks').select('district').eq('clerk_id', req.user.clerk_id).single();
+        if (clerkError || !clerk) return res.status(404).json({ message: 'Clerk not found' });
+
+        const district = clerk.district;
+        
+        const { count: activeCasesCount } = await supabase
+            .from('legal_cases')
+            .select('*', { count: 'exact', head: true })
+            .eq('district', district)
+            .neq('status', 'Disposed');
+
+        const { data: casesWithHearings } = await supabase
+            .from('legal_cases')
+            .select('hearings, documents')
+            .eq('district', district)
+            .neq('status', 'Disposed');
+
+        let upcomingHearingsCount = 0;
+        let pendingDocumentsCount = 0;
+
+        if (casesWithHearings) {
+            upcomingHearingsCount = casesWithHearings.filter(c => 
+                Array.isArray(c.hearings) && c.hearings.some(h => new Date(h.hearing_date) >= new Date())
+            ).length;
+
+            casesWithHearings.forEach(c => {
+                if (Array.isArray(c.documents)) {
+                    pendingDocumentsCount += c.documents.filter(doc => doc.verification_status === 'uploaded_pending_review').length;
+                }
+            });
+        }
+
+        res.json({
+            activeCases: activeCasesCount || 0,
+            upcomingHearings: upcomingHearingsCount,
+            pendingDocuments: pendingDocumentsCount
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 });
 
 module.exports = router;

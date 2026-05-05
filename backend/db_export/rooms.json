@@ -1,0 +1,238 @@
+[
+  {
+    "_id": "68598977944b653dfc35ab25",
+    "name": "hii",
+    "description": "",
+    "isPrivate": false,
+    "passcode": "",
+    "adminId": "681880c6ba051359c6aded22",
+    "adminModel": "Admin",
+    "hosts": [],
+    "isActive": false,
+    "maxParticipants": 100,
+    "participants": [],
+    "createdAt": "2025-06-23T17:05:59.500Z",
+    "updatedAt": "2025-06-24T05:36:12.270Z",
+    "__v": 0
+  },
+  {
+    "_id": "685a3768e1f4a09db5f0ca28",
+    "title": "hloo hii",
+    "description": "hii",
+    "createdBy": "685a362a591c89ef8ee56616",
+    "isActive": false,
+    "maxParticipants": 100,
+    "currentParticipants": 0,
+    "hosts": [
+      "685a362a591c89ef8ee56616"
+    ],
+    "roomSettings": {
+      "allowHandRaise": true,
+      "autoMuteNewJoins": true,
+      "requireApproval": true
+    },
+    "participants": [],
+    "handRaises": [],
+    "createdAt": "2025-06-24T05:28:08.670Z",
+    "updatedAt": "2025-06-24T05:35:51.605Z",
+    "__v": 0
+  },
+  {
+    "_id": "685a3964e1f4a09db5f0ca43",
+    "title": "hii",
+    "description": "ok",
+    "createdBy": "685a362a591c89ef8ee56616",
+    "isActive": false,
+    "maxParticipants": 100,
+    "currentParticipants": 0,
+    "hosts": [
+      "685a362a591c89ef8ee56616"
+    ],
+    "roomSettings": {
+      "allowHandRaise": true,
+      "autoMuteNewJoins": true,
+      "requireApproval": false
+    },
+    "participants": [],
+    "handRaises": [],
+    "createdAt": "2025-06-24T05:36:36.407Z",
+    "updatedAt": "2025-06-24T05:48:26.086Z",
+    "__v": 5
+  },
+  {
+    "_id": "685a3d7be1f4a09db5f0cb29",
+    "title": "hii",
+    "description": "",
+    "createdBy": "685a362a591c89ef8ee56616",
+    "isActive": false,
+    "maxParticipants": 100,
+    "currentParticipants": 1,
+    "hosts": [
+      "685a362a591c89ef8ee56616"
+    ],
+    "roomSettings": {
+      "allowHandRaise": true,
+      "autoMuteNewJoins": true,
+      "requireApproval": true
+    },
+    "participants": [
+      {
+        "user": "685a362a591c89ef8ee56616",
+        "isMuted": true,
+        "isHost": false,
+        "_id": "685a400170d6e8aec7c9e943",
+        "joinedAt": "2025-06-24T06:04:49.010Z"
+      }
+    ],
+    "handRaises": [],
+    "createdAt": "2025-06-24T05:54:03.756Z",
+    "updatedAt": "2025-06-24T06:08:37.254Z",
+    "__v": 5
+  },
+  {
+    "_id": "685a415c70d6e8aec7c9e965",
+    "title": "do ",
+    "description": "nothing",
+    "createdBy": "685a362a591c89ef8ee56616",
+    "isActive": false,
+    "maxParticipants": 100,
+    "currentParticipants": 2,
+    "hosts": [
+      "685a362a591c89ef8ee56616",
+      "685a41cf70d6e8aec7c9e9a0"
+    ],
+    "roomSettings": {
+      "allowHandRaise": true,
+      "autoMuteNewJoins": true,
+      "requireApproval": false
+    },
+    "participants": [
+      {
+        "user": "685a362a591c89ef8ee56616",
+        "isMuted": false,
+        "isHost": false,
+        "_id": "685a416f70d6e8aec7c9e97a",
+        "joinedAt": "2025-06-24T06:10:55.868Z"
+      },
+      {
+        "user": "685a41cf70d6e8aec7c9e9a0",
+        "isMuted": false,
+        "isHost": true,
+        "_id": "685a41d870d6e8aec7c9e9b1",
+        "joinedAt": "2025-06-24T06:12:40.509Z"
+      }
+    ],
+    "handRaises": [
+      {
+        "user": "685a41cf70d6e8aec7c9e9a0",
+        "_id": "685a41fe70d6e8aec7c9e9e5",
+        "raisedAt": "2025-06-24T06:13:18.594Z"
+      }
+    ],
+    "createdAt": "2025-06-24T06:10:36.630Z",
+    "updatedAt": "2025-06-24T06:14:52.687Z",
+    "__v": 4
+  },
+  {
+    "_id": "685a427570d6e8aec7c9ea51",
+    "title": "hii",
+    "description": "",
+    "createdBy": "685a362a591c89ef8ee56616",
+    "isActive": false,
+    "maxParticipants": 100,
+    "currentParticipants": 0,
+    "hosts": [
+      "685a362a591c89ef8ee56616"
+    ],
+    "roomSettings": {
+      "allowHandRaise": true,
+      "autoMuteNewJoins": true,
+      "requireApproval": false
+    },
+    "participants": [],
+    "handRaises": [],
+    "createdAt": "2025-06-24T06:15:17.776Z",
+    "updatedAt": "2025-06-24T06:15:27.347Z",
+    "__v": 0
+  },
+  {
+    "_id": "685a66dfe09fe88a6d2a6e8d",
+    "title": "hloo",
+    "description": "nothing",
+    "createdBy": "685a362a591c89ef8ee56616",
+    "isActive": false,
+    "maxParticipants": 100,
+    "currentParticipants": 2,
+    "hosts": [
+      "685a362a591c89ef8ee56616"
+    ],
+    "roomSettings": {
+      "allowHandRaise": true,
+      "autoMuteNewJoins": true,
+      "requireApproval": false
+    },
+    "participants": [
+      {
+        "user": "685a6748e09fe88a6d2a6ebb",
+        "isMuted": true,
+        "isHost": false,
+        "_id": "685a674ce09fe88a6d2a6ecc",
+        "joinedAt": "2025-06-24T08:52:28.882Z"
+      },
+      {
+        "user": "685a41cf70d6e8aec7c9e9a0",
+        "isMuted": true,
+        "isHost": false,
+        "_id": "685a6786e09fe88a6d2a6f34",
+        "joinedAt": "2025-06-24T08:53:26.455Z"
+      }
+    ],
+    "handRaises": [
+      {
+        "user": "685a41cf70d6e8aec7c9e9a0",
+        "_id": "685a679ee09fe88a6d2a6f52",
+        "raisedAt": "2025-06-24T08:53:50.538Z"
+      }
+    ],
+    "createdAt": "2025-06-24T08:50:39.028Z",
+    "updatedAt": "2025-06-24T09:04:55.092Z",
+    "__v": 5
+  },
+  {
+    "_id": "685a6a56e09fe88a6d2a6f9d",
+    "title": "hloo",
+    "description": "ok",
+    "createdBy": "685a362a591c89ef8ee56616",
+    "isActive": true,
+    "maxParticipants": 100,
+    "currentParticipants": 2,
+    "hosts": [
+      "685a362a591c89ef8ee56616"
+    ],
+    "roomSettings": {
+      "allowHandRaise": true,
+      "autoMuteNewJoins": true,
+      "requireApproval": false
+    },
+    "participants": [
+      {
+        "user": "685a6748e09fe88a6d2a6ebb",
+        "isMuted": false,
+        "isHost": false,
+        "_id": "685a6ddde09fe88a6d2a70fe",
+        "joinedAt": "2025-06-24T09:20:29.647Z"
+      },
+      {
+        "user": "685a41cf70d6e8aec7c9e9a0",
+        "isMuted": false,
+        "isHost": false,
+        "_id": "685a6de1e09fe88a6d2a710e",
+        "joinedAt": "2025-06-24T09:20:33.167Z"
+      }
+    ],
+    "handRaises": [],
+    "createdAt": "2025-06-24T09:05:26.855Z",
+    "updatedAt": "2025-06-24T09:21:04.171Z",
+    "__v": 8
+  }
+]

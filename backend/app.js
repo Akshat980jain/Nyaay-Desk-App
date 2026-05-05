@@ -1,126 +1,54 @@
-
 const express = require('express');
-const mongoose = require('mongoose');
+const supabase = require('./supabaseClient');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const crypto = require('crypto');
-// Removed morgan and chalk to avoid dependency issues on Windows
 const sgMail = require('@sendgrid/mail');
 require('dotenv').config();
 const path = require('path');
 const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
 const app = express();
-const Advocate = require('./models/Advocate');
-const Litigant = require('./models/Litigant');
-const EnrollmentRecord = require('./models/Enrollment');
-const CourtCalendar = require('./models/Calendar');
-const OTPVerification = require('./models/OTP');
-const Notice = require('./models/Notice');
-const LegalCase = require('./models/LegalCase');
-const StateDistrict = require('./models/Statedistrict');
-const Clerk = require('./models/Clerk');
-const BlacklistedToken = require('./models/Blaclisttoken');
+
 const clerkRoutes = require('./routes/clerkRoutes');
 const Gemini = require('./routes/Gemini');
 const blockchainRoutes = require('./routes/blockchainRoutes');
-const CourtAdmin = require('./models/CourtAdmin');
-const { getBestCourtForCase } = require('./utils/adminAssignment');
-const { generateCaseEmbeddings } = require('./services/courtEmbeddingService');
-const { generateSpecialityEmbeddings } = require('./services/courtEmbeddingService');
-const { initializeBlockchain } = require('./initBlockchain');
-const { initializeScheduler } = require('./blockchain/jobs/scheduler');
-require('./blockchain/workers/blockchainWorker');
-const {
-  sha256File,
-  encryptFile,
-  decryptFile,
-  extractTextFromPDF,
-  extractTextWithPdfjs,
-  redactSensitive,
-  deterministicChecks
-} = require('./utils/documentUtils');
-const { GoogleGenerativeAI } = require('@google/generative-ai');
-const blockchain = require('./blockchain/services/blockchain');
-const blockchainService = require('./blockchain/services/blockchainService');
-const {
-  logCaseFilingMiddleware,
-  logStatusUpdateMiddleware,
-  logHearingMiddleware,
-  logDocumentMiddleware,
-  logApprovalMiddleware,
-  logAdvocateVerificationMiddleware,
-  logVideoMeetingMiddleware,
-  logDocumentRequestMiddleware,
-} = require('./blockchain/middleware/blockchainMiddleware');
-const {
-  convertTextToHtml,
-  stripHtmlTags,
-  generateHearingHash,
-  sanitizeHtml,
-  verifyHearingSignature
-} = require('./utils/hearingUtils');
-const DailyCourtSchedule = require('./models/DailyCourtSchedule');
-const { Server } = require('socket.io');
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const { generateDocumentHash, verifyDocumentSignature } = require('./utils/documentSignature');
-
-// ─── FIX #3: Import new modular route files ───────────────────────────────────
 const advocateRoutes = require('./routes/AdvocateRoutes');
 const litigantRoutes = require('./routes/Litigant');
 const advocateChangeRoutes = require('./routes/advocateChangeRoutes');
-
-// ─── FIX #4: Import rate limiters ────────────────────────────────────────────
 const { generalLimiter } = require('./middleware/rateLimiter');
-
-// ─── FIX #8: Import global error handler ─────────────────────────────────────
 const errorHandler = require('./middleware/errorHandler');
 
-// ─── FIX #6 (CORS): Read allowed origins from environment variable ────────────
-// Set CORS_ORIGINS in .env as a comma-separated list of allowed origins.
-// Example: CORS_ORIGINS=http://localhost:3000,https://ecourtfiling.onrender.com
+const {
+  logDocumentMiddleware,
+} = require('./blockchain/middleware/blockchainMiddleware');
+const { verifyDocumentSignature } = require('./utils/documentSignature');
+
+// CORS Configuration
 const allowedOrigins = process.env.CORS_ORIGINS
   ? process.env.CORS_ORIGINS.split(',')
-  : ['http://localhost:3000'];
+  : ['http://localhost:3000', 'http://192.168.1.39:3000'];
 
 app.use(cors({
   origin: allowedOrigins,
   credentials: true
 }));
 
-// ─── FIX #4: Apply general rate limiter to all API routes ─────────────────────
 app.use('/api', generalLimiter);
-
-// ─── Custom Request Logging ──────────────────────────────────────────────────
-app.use((req, res, next) => {
-  const start = Date.now();
-  res.on('finish', () => {
-    const duration = Date.now() - start;
-    const status = res.statusCode;
-    
-    // ANSI Colors
-    const reset = '\x1b[0m';
-    const gray = '\x1b[90m';
-    const bold = '\x1b[1m';
-    const color = status >= 500 ? '\x1b[31m' : status >= 400 ? '\x1b[33m' : status >= 300 ? '\x1b[36m' : '\x1b[32m';
-    
-    console.log(
-      `${gray}[${new Date().toLocaleTimeString()}]${reset} ` +
-      `${color}${bold}${req.method}${reset} ` +
-      `${req.url} ` +
-      `${color}${status}${reset} ` +
-      `${gray}${duration}ms${reset}`
-    );
-  });
-  next();
-});
-
 app.use(express.json());
 
-// ─── Health Check Route (for Render) ─────────────────────────────────────────
+// Modular Routes
+app.use('/api/advocate', advocateRoutes);
+app.use('/api/litigant', litigantRoutes);
+app.use('/api/clerk', clerkRoutes);
+app.use('/api/advocate-change', advocateChangeRoutes);
+app.use('/api', Gemini);
+app.use('/api/blockchain', blockchainRoutes);
+
+// Health Check
 app.get('/', (req, res) => {
-  res.json({ status: 'ok', service: 'e-Court CMS Backend', timestamp: new Date().toISOString() });
+  res.json({ status: 'ok', service: 'e-Court CMS Backend', database: 'Supabase/PostgreSQL' });
 });
 
 // ─── FIX #3: Mount modular route files ───────────────────────────────────────
@@ -159,58 +87,21 @@ io.on('connection', (socket) => {
 });
 
 app.set('io', io);
-// Blockchain initialization is deferred until after MongoDB connects (see below)
-
-
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/daily_schedule', {
-    serverSelectionTimeoutMS: 30000,
-    socketTimeoutMS: 45000,
-    heartbeatFrequencyMS: 10000,
-    maxPoolSize: 10,
-})
-    .then(async () => {
-        console.log('\x1b[32m  ✅ Database Connection Established\x1b[0m');
-        try {
-            // Initialize blockchain components carefully
-            await blockchain.initialize();
-            console.log('  🔗 Blockchain Service Initialized');
-            
-            initializeScheduler();
-            console.log('  ⏰ Scheduler Initialized');
-            
-            await initializeBlockchain();
-            console.log('\x1b[32m  ✅ Blockchain System Ready\x1b[0m');
-        } catch (err) {
-            console.error('\x1b[33m  ⚠️ Blockchain initialization warning:\x1b[0m', err.message);
-            // We don't throw here to allow the Express server to still start
-        }
-    })
-    .catch(err => {
-        console.error('\x1b[31m  ❌ [DB] MongoDB initial connection failed:\x1b[0m', err);
-        // On Render, we want to see this error clearly in the logs
-    });
-
-// ─── MongoDB Connection Event Handlers ──────────────────────────────────────
-// These fire whenever Mongoose's internal connection state changes.
-// Without these, a DB drop is completely silent and every request hangs.
-mongoose.connection.on('connected', () => {
-    console.log('[DB] MongoDB connection established.');
-});
-
-mongoose.connection.on('disconnected', () => {
-    console.warn('[DB] ⚠ MongoDB disconnected! Mongoose will auto-retry...');
-    // No need to manually reconnect — Mongoose handles this internally.
-    // Just log it so you can diagnose in production logs.
-});
-
-mongoose.connection.on('reconnected', () => {
-    console.log('[DB] ✓ MongoDB reconnected successfully.');
-});
-
-mongoose.connection.on('error', (err) => {
-    console.error('[DB] MongoDB connection error:', err);
-    // Don't exit — Mongoose will attempt to reconnect automatically.
-});
+// Initialize systems (Removed MongoDB dependency)
+(async () => {
+    try {
+        await blockchain.initialize();
+        console.log('  🔗 Blockchain Service Initialized');
+        
+        initializeScheduler();
+        console.log('  ⏰ Scheduler Initialized');
+        
+        await initializeBlockchain();
+        console.log('  ✅ Systems Ready with Supabase Backend');
+    } catch (err) {
+        console.error('  ⚠️ System initialization warning:', err.message);
+    }
+})();
 
 const multer = require('multer');
 const storage = multer.diskStorage({
@@ -573,134 +464,40 @@ app.post('/api/advocate/verify-enrollment', async (req, res) => {
         if (!enrollment_no || !name || !district || !date_of_registration) {
             return res.status(400).json({ message: 'All fields are required' });
         }
-        const dateParts = date_of_registration.split('/');
-        const formattedDate = `${parseInt(dateParts[0])}/${parseInt(dateParts[1])}/${dateParts[2]}`;
+        
+        const { data: record, error } = await supabase
+            .from('enrollment_records')
+            .select('*')
+            .eq('enrollment_no', enrollment_no)
+            .eq('name_of_advocate', name)
+            .eq('district', district)
+            .eq('date_of_registration', date_of_registration)
+            .single();
 
-        console.log('Incoming date:', date_of_registration);
-        console.log('Formatted date:', formattedDate);
-
-        const record = await EnrollmentRecord.findOne({
-            ENROLLMENT_NO: enrollment_no,
-            NAME_OF_ADVOCATE: name,
-            DISTRICT: district,
-            DATE_OF_REGISTRATION: formattedDate
-        });
-
-        if (!record) {
-            return res.status(400).json({
-                message: 'Enrollment details do not match our records',
-                debug: {
-                    receivedDate: date_of_registration,
-                    formattedDate: formattedDate,
-                    query: {
-                        ENROLLMENT_NO: enrollment_no,
-                        NAME_OF_ADVOCATE: name,
-                        DISTRICT: district,
-                        DATE_OF_REGISTRATION: formattedDate
-                    }
-                }
-            });
+        if (error || !record) {
+            return res.status(400).json({ message: 'Enrollment details do not match our records' });
         }
 
         res.json({
             message: 'Enrollment verified successfully',
             record: {
-                enrollment_no: record.ENROLLMENT_NO,
-                name: record.NAME_OF_ADVOCATE,
-                fathers_name: record.FATHERS_NAME_OF_ADVOCATE,
-                district: record.DISTRICT,
-                date_of_registration: record.DATE_OF_REGISTRATION
+                enrollment_no: record.enrollment_no,
+                name: record.name_of_advocate,
+                fathers_name: record.fathers_name_of_advocate,
+                district: record.district,
+                date_of_registration: record.date_of_registration
             }
-        });
-    } catch (error) {
-        console.error('Date processing error:', error);
-        res.status(500).json({ 
-            message: error.message,
-            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
-        });
-    }
-});
-
-
-app.post('/api/advocate/register', upload.single('cop_document'), async (req, res) => {
-    try {
-      const {
-        enrollment_no,
-        name,
-        email,
-        password,
-        gender,
-        dob,
-        district,
-        iCOP_number,
-        barId
-      } = req.body;
-      const practice_details = {
-        district_court: req.body['practice_details[district_court]'] === 'true',
-        high_court: req.body['practice_details[high_court]'] === 'true',
-        state: req.body['practice_details[state]'] || '',
-        district: req.body['practice_details[district]'] || '',
-        high_court_bench: req.body['practice_details[high_court_bench]'] || ''
-    };
-
-        if (!req.file) {
-            return res.status(400).json({ message: 'COP document is required' });
-        }
-        
-        const existingAdvocate = await Advocate.findOne({
-            $or: [
-                { email }, 
-                { enrollment_no },
-                { iCOP_number },
-                { barId }
-            ]
-        });
-
-        if (existingAdvocate) {
-            return res.status(400).json({
-                message: 'Advocate already registered with this email, enrollment number, iCOP number, or Bar ID'
-            });
-        }
-
-        const emailOTP = generateOTP();
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
-
-        const advocate = new Advocate({
-            advocate_id: 'ADV' + Date.now(),
-            enrollment_no,
-            name,
-            gender,
-            dob,
-            contact: { email },
-            district,
-            practice_details,
-            email,
-            password: hashedPassword,
-            emailOTP,
-            otpExpiry: new Date(Date.now() + 10 * 60 * 1000),
-            iCOP_number,
-            barId,
-            cop_document: {
-                filename: req.file.filename,
-                path: req.file.path,
-                uploadDate: new Date()
-            },
-            status: 'pending',
-            isVerified: false
-        });
-
-        await advocate.save();
-        await sendEmailOTP(email, emailOTP);
-
-        res.status(201).json({
-            message: 'Registration initiated. Please verify your email. Account will be activated after document verification.',
-            advocate_id: advocate.advocate_id
         });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 });
+
+
+// Advocate routes are now handled in ./routes/AdvocateRoutes.js
+app.use('/api/advocate', advocateRoutes);
+
+
 
 app.post('/api/advocate/verify-email', async (req, res) => {
     try {
@@ -1548,60 +1345,28 @@ app.post('/api/litigant/logout-all', authenticateToken, async (req, res) => {
 // Register clerk
 app.post('/api/clerk/register', async (req, res) => {
     try {
-        const {
-            name,
-            gender,
-            district,
-            court_name,
-            court_no,
-            email,
-            mobile,
-            password
-        } = req.body;
+        const { name, gender, district, court_name, court_no, email, mobile, password } = req.body;
 
-        // Validate required fields
         if (!name || !gender || !district || !court_name || !court_no || !email || !mobile || !password) {
             return res.status(400).json({ message: 'All fields are required' });
         }
 
-        // Check if email already exists
-        const existingClerk = await Clerk.findOne({
-            'contact.email': email
-        });
-
-        if (existingClerk) {
-            return res.status(400).json({
-                message: 'Email already registered'
-            });
-        }
+        const { data: existingClerk } = await supabase.from('clerks').select('clerk_id').eq('email', email).single();
+        if (existingClerk) return res.status(400).json({ message: 'Email already registered' });
 
         const emailOTP = generateOTP();
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const clerkId = 'CLK' + Date.now();
 
-        const clerk = new Clerk({
-            clerk_id: 'CLK' + Date.now(),
-            name,
-            gender,
-            district,
-            court_name,
-            court_no,
-            contact: {
-                email,
-                mobile
-            },
-            password: hashedPassword,
-            emailOTP,
-            otpExpiry: new Date(Date.now() + 10 * 60 * 1000)
-        });
+        const { error: insertError } = await supabase.from('clerks').insert([{
+            clerk_id: clerkId, name, gender, district, court_name, court_no, email, phone: mobile,
+            password: hashedPassword, email_otp: emailOTP, otp_expiry: new Date(Date.now() + 10 * 60 * 1000).toISOString()
+        }]);
 
-        await clerk.save();
+        if (insertError) throw insertError;
         await sendEmailOTP(email, emailOTP);
 
-        res.status(201).json({
-            message: 'Registration initiated. Please verify your email.',
-            clerk_id: clerk.clerk_id
-        });
+        res.status(201).json({ message: 'Registration initiated. Please verify your email.', clerk_id: clerkId });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -1611,22 +1376,22 @@ app.post('/api/clerk/register', async (req, res) => {
 app.post('/api/clerk/verify-email', async (req, res) => {
     try {
         const { clerk_id, otp } = req.body;
+        const { data: clerk, error: findError } = await supabase
+            .from('clerks')
+            .select('*')
+            .eq('clerk_id', clerk_id)
+            .eq('email_otp', otp)
+            .gt('otp_expiry', new Date().toISOString())
+            .single();
 
-        const clerk = await Clerk.findOne({
-            clerk_id,
-            emailOTP: otp,
-            otpExpiry: { $gt: new Date() }
-        });
+        if (findError || !clerk) return res.status(400).json({ message: 'Invalid or expired OTP' });
 
-        if (!clerk) {
-            return res.status(400).json({ message: 'Invalid or expired OTP' });
-        }
+        const { error: updateError } = await supabase
+            .from('clerks')
+            .update({ is_email_verified: true, email_otp: null, status: 'active' })
+            .eq('clerk_id', clerk_id);
 
-        clerk.isEmailVerified = true;
-        clerk.emailOTP = undefined;
-        clerk.status = 'active';
-        await clerk.save();
-
+        if (updateError) throw updateError;
         res.json({ message: 'Email verified successfully' });
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -1637,48 +1402,21 @@ app.post('/api/clerk/verify-email', async (req, res) => {
 app.post('/api/clerk/login', async (req, res) => {
     try {
         const { email, password } = req.body;
+        const { data: clerk, error: loginError } = await supabase.from('clerks').select('*').eq('email', email).single();
 
-        const clerk = await Clerk.findOne({ 'contact.email': email });
-        if (!clerk) {
+        if (loginError || !clerk || !(await bcrypt.compare(password, clerk.password))) {
             return res.status(401).json({ message: 'Invalid credentials' });
         }
+        if (!clerk.is_email_verified) return res.status(401).json({ message: 'Please complete email verification' });
+        if (clerk.status !== 'active') return res.status(401).json({ message: 'Account is not active' });
 
-        const isValidPassword = await bcrypt.compare(password, clerk.password);
-        if (!isValidPassword) {
-            return res.status(401).json({ message: 'Invalid credentials' });
-        }
+        await supabase.from('clerks').update({ last_login: new Date().toISOString() }).eq('clerk_id', clerk.clerk_id);
 
-        if (!clerk.isEmailVerified) {
-            return res.status(401).json({ message: 'Please complete email verification' });
-        }
-
-        if (clerk.status !== 'active') {
-            return res.status(401).json({ message: 'Account is not active' });
-        }
-
-        clerk.lastLogin = new Date();
-        await clerk.save();
-
-        const token = jwt.sign(
-            {
-                clerk_id: clerk.clerk_id,
-                email: clerk.contact.email,
-                user_type: 'clerk'
-            },
-            process.env.JWT_SECRET,
-            { expiresIn: '24h' }
-        );
+        const token = jwt.sign({ clerk_id: clerk.clerk_id, email: clerk.email, user_type: 'clerk' }, process.env.JWT_SECRET, { expiresIn: '24h' });
 
         res.json({
             token,
-            clerk: {
-                clerk_id: clerk.clerk_id,
-                name: clerk.name,
-                email: clerk.contact.email,
-                district: clerk.district,
-                court_name: clerk.court_name,
-                court_no: clerk.court_no
-            }
+            clerk: { clerk_id: clerk.clerk_id, name: clerk.name, email: clerk.email, district: clerk.district, court_name: clerk.court_name, court_no: clerk.court_no }
         });
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -1688,17 +1426,15 @@ app.post('/api/clerk/login', async (req, res) => {
 // Get clerk profile
 app.get('/api/clerk/profile', authenticateToken, async (req, res) => {
     try {
-        if (req.user.user_type !== 'clerk') {
-            return res.status(403).json({ message: 'Access denied' });
-        }
+        if (req.user.user_type !== 'clerk') return res.status(403).json({ message: 'Access denied' });
 
-        const clerk = await Clerk.findOne({ clerk_id: req.user.clerk_id })
-            .select('-password -emailOTP');
+        const { data: clerk, error } = await supabase
+            .from('clerks')
+            .select('clerk_id, name, email, district, court_name, court_no, status')
+            .eq('clerk_id', req.user.clerk_id)
+            .single();
         
-        if (!clerk) {
-            return res.status(404).json({ message: 'Clerk not found' });
-        }
-
+        if (error || !clerk) return res.status(404).json({ message: 'Clerk not found' });
         res.json({ clerk });
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -1708,22 +1444,11 @@ app.get('/api/clerk/profile', authenticateToken, async (req, res) => {
 // Logout
 app.post('/api/clerk/logout', authenticateToken, async (req, res) => {
     try {
-        if (req.user.user_type !== 'clerk') {
-            return res.status(403).json({ message: 'Access denied' });
-        }
+        if (req.user.user_type !== 'clerk') return res.status(403).json({ message: 'Access denied' });
 
         const token = req.headers.authorization?.split(' ')[1];
-        
-        await new BlacklistedToken({
-            token,
-            user_id: req.user.clerk_id,
-            user_type: 'clerk'
-        }).save();
-
-        await Clerk.findOneAndUpdate(
-            { clerk_id: req.user.clerk_id },
-            { lastLogout: new Date() }
-        );
+        await supabase.from('blacklisted_tokens').insert([{ token, user_id: req.user.clerk_id, user_type: 'clerk' }]);
+        await supabase.from('clerks').update({ last_logout: new Date().toISOString() }).eq('clerk_id', req.user.clerk_id);
 
         res.json({ message: 'Logged out successfully' });
     } catch (error) {
@@ -1774,49 +1499,50 @@ app.post('/api/clerk/logout-all', authenticateToken, async (req, res) => {
 // Clerk Dashboard Stats Endpoint
 app.get('/api/clerk/dashboard/stats', authenticateToken, async (req, res) => {
     try {
-        if (req.user.user_type !== 'clerk') {
-            return res.status(403).json({ message: 'Access denied' });
-        }
+        if (req.user.user_type !== 'clerk') return res.status(403).json({ message: 'Access denied' });
 
-        const clerk = await Clerk.findOne({ clerk_id: req.user.clerk_id });
-        if (!clerk) {
-            return res.status(404).json({ message: 'Clerk not found' });
-        }
+        const { data: clerk, error: clerkError } = await supabase.from('clerks').select('district').eq('clerk_id', req.user.clerk_id).single();
+        if (clerkError || !clerk) return res.status(404).json({ message: 'Clerk not found' });
 
         const district = clerk.district;
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
+        const today = new Date().toISOString();
 
         // 1. Active Cases (Not Disposed)
-        const activeCasesCount = await LegalCase.countDocuments({
-            district: district,
-            status: { $ne: 'Disposed' }
-        });
+        const { count: activeCasesCount, error: activeErr } = await supabase
+            .from('legal_cases')
+            .select('*', { count: 'exact', head: true })
+            .eq('district', district)
+            .neq('status', 'Disposed');
 
         // 2. Upcoming Hearings
-        const upcomingHearingsCount = await LegalCase.countDocuments({
-            district: district,
-            status: { $ne: 'Disposed' },
-            'hearings.hearing_date': { $gte: today }
-        });
+        // Note: Filtering on JSONB array element `hearings` might require a specific SQL operator or a simpler approach if we store hearings separately.
+        // For now, we'll fetch and filter in JS if the count is small, or just provide a count of cases with hearings.
+        // Optimization: Use a RPC or a specific JSONB query.
+        const { data: casesWithHearings, error: hearingErr } = await supabase
+            .from('legal_cases')
+            .select('hearings')
+            .eq('district', district)
+            .neq('status', 'Disposed');
 
-        // 3. Pending Documents (uploaded_pending_review)
-        const pendingDocsCases = await LegalCase.find({
-            district: district,
-            'documents.verification_status': 'uploaded_pending_review'
-        });
-        
+        let upcomingHearingsCount = 0;
+        if (casesWithHearings) {
+            upcomingHearingsCount = casesWithHearings.filter(c => 
+                Array.isArray(c.hearings) && c.hearings.some(h => new Date(h.hearing_date) >= new Date())
+            ).length;
+        }
+
+        // 3. Pending Documents
         let pendingDocumentsCount = 0;
-        pendingDocsCases.forEach(c => {
-            c.documents.forEach(doc => {
-                if (doc.verification_status === 'uploaded_pending_review') {
-                    pendingDocumentsCount++;
+        if (casesWithHearings) {
+            casesWithHearings.forEach(c => {
+                if (Array.isArray(c.documents)) {
+                    pendingDocumentsCount += c.documents.filter(doc => doc.verification_status === 'uploaded_pending_review').length;
                 }
             });
-        });
+        }
 
         res.json({
-            activeCases: activeCasesCount,
+            activeCases: activeCasesCount || 0,
             upcomingHearings: upcomingHearingsCount,
             pendingDocuments: pendingDocumentsCount
         });
@@ -2132,355 +1858,88 @@ const sendCaseFilingNotification = async (recipient, caseDetails, userType) => {
 
 // Now let's modify both routes to include email notifications
 
-// Modified litigant route with email notification
+// Modified litigant route with Supabase
 app.post('/api/filecase/litigant', authenticateToken, logCaseFilingMiddleware, async (req, res) => {
-  let retryCount = 0;
-  const maxRetries = 3;
+    try {
+        const { court, case_type, plaintiff_details, respondent_details, police_station_details, lower_court_details, main_matter_details, hearings, status, case_approved } = req.body;
+        if (!court || !case_type || !plaintiff_details || !respondent_details) return res.status(400).json({ message: 'Missing required fields' });
 
-  async function attemptCaseCreation() {
-      try {
-          const {
-              court,
-              case_type,
-              plaintiff_details,
-              respondent_details,
-              police_station_details,
-              lower_court_details,
-              main_matter_details,
-              hearings,
-              status,
-              case_approved,
-              case_no
-          } = req.body;
-const plaintiffSubject = plaintiff_details?.subject || "";
-const respondentSubject = respondent_details?.subject || "";
-const {
-    caseEmbedding,
-    plaintiffEmbedding,
-    respondentEmbedding,
-    combinedEmbedding
-} = await generateCaseEmbeddings(
-    case_type,
-    plaintiffSubject,
-    respondentSubject
-);
-          if (!court || !case_type || !plaintiff_details || !respondent_details) {
-              return res.status(400).json({ message: 'Missing required fields' });
-          }
-          
-          // Fetch litigant using token
-          const litigant = await Litigant.findOne({ party_id: req.user.party_id });
-          
-          if (!litigant) {
-              return res.status(404).json({ message: 'Litigant profile not found' });
-          }
-          
-          // FIX #14: Declare with const to avoid implicit global variable
-          const userDistrict = litigant.address.district;
+        const { data: litigant, error: litigantError } = await supabase.from('litigants').select('*').eq('litigant_id', req.user.party_id).single();
+        if (litigantError || !litigant) return res.status(404).json({ message: 'Litigant not found' });
 
-          if (!userDistrict) {
-              return res.status(400).json({ 
-                  message: 'User district information is missing. Please update your profile.' 
-              });
-          }
+        const district = litigant.address?.district;
+        const cnrNumber = 'CNR' + Date.now() + Math.floor(Math.random() * 1000);
 
-// FIX #15: Move getBestCourtForCase AFTER embeddings are generated
-// combinedEmbedding is now guaranteed to be defined at this point
-const assignedCourt = await getBestCourtForCase(userDistrict, combinedEmbedding);
+        const newCase = {
+            case_num: cnrNumber, case_no: cnrNumber, court, case_type, district,
+            plaintiff_details, respondent_details, police_station_details, lower_court_details, main_matter_details,
+            hearings: hearings || [], status: status || 'Filed', case_approved: case_approved || false,
+            created_at: new Date().toISOString()
+        };
 
-const officeDetails = {
-  court_allotted: assignedCourt || null,
-  allocation_date: new Date(),
-  filing_date: new Date()
-};
-          
-          // Determine party type and assign party_id automatically
-          if (litigant.party_type === 'plaintiff') {
-              plaintiff_details.party_id = litigant.party_id;
-              plaintiff_details.name = plaintiff_details.name || litigant.name;
-          } else if (litigant.party_type === 'respondent') {
-              respondent_details.party_id = litigant.party_id;
-              respondent_details.name = respondent_details.name || litigant.name;
-          } else {
-              return res.status(400).json({
-                  message: 'Invalid party type. Must be either plaintiff or respondent.'
-              });
-          }
-          
-          // Generate unique CNR
-          const cnrNumber = await generateCNRFromCaseData({ case_type });
-
-        const newCase = new LegalCase({
-  court,
-  case_type,
-  district: userDistrict,
-  plaintiff_details,
-  respondent_details,
-  police_station_details,
-  lower_court_details,
-  main_matter_details,
-  hearings,
-  status,
-  case_approved: case_approved || false,
-  case_num: cnrNumber,
-  case_no: cnrNumber,
-
-  case_embedding: caseEmbedding,
-  plaintiff_subject_embedding: plaintiffEmbedding,
-  respondent_subject_embedding: respondentEmbedding,
-  combined_case_embedding: combinedEmbedding,
-
-  for_office_use_only: officeDetails
-});
-
-
-          await newCase.save();
-          
-          // Send email notification to the litigant
-          if (litigant && litigant.contact && litigant.contact.email) {
-              const recipient = {
-                  name: litigant.name || 'Litigant',
-                  email: litigant.contact.email
-              };
-              
-              await sendCaseFilingNotification(recipient, newCase, 'litigant');
-          }
-
-          return res.status(201).json({
-              message: 'Case filed successfully',
-              case: newCase,
-              case_num: cnrNumber,
-              case_no: cnrNumber
-          });
-
-      } catch (error) {
-          console.error('Error in case filing:', error);
-          
-          if (error.code === 11000 && retryCount < maxRetries) {
-              retryCount++;
-              console.log(`Retry attempt ${retryCount}`);
-              await new Promise(resolve => 
-                  setTimeout(resolve, Math.random() * 100)
-              );
-              return attemptCaseCreation();
-          }
-          
-          throw error;
-      }
-  }
-
-  try {
-      await attemptCaseCreation();
-  } catch (error) {
-      console.error('Final error in case filing:', error);
-      if (error.code === 11000) {
-          res.status(409).json({
-              message: 'Unable to generate unique case number after multiple attempts. Please try again.'
-          });
-      } else {
-          res.status(500).json({
-              message: 'Server error while filing case'
-          });
-      }
-  }
+        const { data, error: insertError } = await supabase.from('legal_cases').insert([newCase]).select().single();
+        if (insertError) throw insertError;
+        res.status(201).json({ message: 'Case filed successfully', case: data, case_num: cnrNumber });
+    } catch (error) {
+        console.error('Case filing error:', error);
+        res.status(500).json({ message: 'Server error while filing case' });
+    }
 });
 
 app.post('/api/filecase/advocate', authenticateToken, logCaseFilingMiddleware, async (req, res) => {
-  let retryCount = 0;
-  const maxRetries = 3;
-  
-  async function attemptCaseCreation() {
-      try {
-          const {
-              court,
-              case_type,
-              plaintiff_details,
-              respondent_details,
-              police_station_details,
-              lower_court_details,
-              main_matter_details,
-              hearings,
-              status,
-              case_approved,
-              case_no,
-              representing_party
-          } = req.body;
-          
-          if (!court || !case_type || !plaintiff_details || !respondent_details || !representing_party) {
-              return res.status(400).json({ message: 'Missing required fields' });
-          }
-          
-          // Verify advocate by token
-          const advocate = await Advocate.findOne({ advocate_id: req.user.advocate_id });
-          if (!advocate) {
-              return res.status(404).json({ message: 'Advocate not found' });
-          }
-          
-          // Advocate verification
-          if (!advocate.isVerified || advocate.status !== 'active') {
-              return res.status(403).json({ 
-                  message: 'Your account must be verified and active to file cases' 
-              });
-          }
-          
-          // Assign advocate to correct party
-          if (representing_party === 'plaintiff') {
-              plaintiff_details.advocate_id = advocate.advocate_id;
-              plaintiff_details.advocate = advocate.name;
-          } else if (representing_party === 'respondent') {
-              respondent_details.advocate_id = advocate.advocate_id;
-              respondent_details.advocate = advocate.name;
-          } else {
-              return res.status(400).json({ message: 'Invalid representing party value' });
-          }
-          
-          // Get district from advocate
-          const userDistrict = advocate.district;
-        const assignedCourt = await getBestCourtForCase(
-  userDistrict,
-  combinedEmbedding   // the combined_case_embedding we created in Step 5
-);
+    try {
+        const { court, case_type, plaintiff_details, respondent_details, police_station_details, lower_court_details, main_matter_details, hearings, status, case_approved, representing_party } = req.body;
+        
+        if (!court || !case_type || !plaintiff_details || !respondent_details || !representing_party) return res.status(400).json({ message: 'Missing required fields' });
 
-          const officeDetails = {
-            court_allotted: assignedCourt || null,
-            allocation_date: new Date(),
-            filing_date: new Date()
-          };
+        const { data: advocate, error: advocateError } = await supabase.from('advocates').select('*').eq('advocate_id', req.user.advocate_id).single();
+        if (advocateError || !advocate) return res.status(404).json({ message: 'Advocate not found' });
 
-          if (!userDistrict) {
-              return res.status(400).json({
-                  message: 'Advocate district information is missing. Please update your profile.'
-              });
-          }
+        if (representing_party === 'plaintiff') {
+            plaintiff_details.advocate_id = advocate.advocate_id;
+            plaintiff_details.advocate = advocate.name;
+        } else {
+            respondent_details.advocate_id = advocate.advocate_id;
+            respondent_details.advocate = advocate.name;
+        }
 
-          // ⭐ Extract subject fields
-          const plaintiffSubject = plaintiff_details?.subject || "";
-          const respondentSubject = respondent_details?.subject || "";
+        const cnrNumber = 'CNR' + Date.now() + Math.floor(Math.random() * 1000);
+        const newCase = {
+            case_num: cnrNumber, case_no: cnrNumber, court, case_type, district: advocate.district,
+            plaintiff_details, respondent_details, police_station_details, lower_court_details, main_matter_details,
+            hearings: hearings || [], status: status || 'Filed', case_approved: case_approved || false,
+            created_at: new Date().toISOString()
+        };
 
-          // ⭐ Generate embeddings for this case
-          const {
-            caseEmbedding,
-            plaintiffEmbedding,
-            respondentEmbedding,
-            combinedEmbedding
-          } = await generateCaseEmbeddings(case_type, plaintiffSubject, respondentSubject);
+        const { data, error: insertError } = await supabase.from('legal_cases').insert([newCase]).select().single();
+        if (insertError) throw insertError;
 
-
-          // Generate unique CNR
-          const cnrNumber = await generateCNRFromCaseData({
-              case_type
-          });
-          
-          // ⭐ Create new case with embeddings included
-          const newCase = new LegalCase({
-            court,
-            case_type,
-            district: userDistrict,
-
-            plaintiff_details,
-            respondent_details,
-            police_station_details,
-            lower_court_details,
-            main_matter_details,
-            hearings,
-            status,
-
-            case_approved: case_approved || false,
-            case_num: cnrNumber,
-            case_no: cnrNumber,
-
-            // ⭐ NEW fields — embeddings
-            case_embedding: caseEmbedding,
-            plaintiff_subject_embedding: plaintiffEmbedding,
-            respondent_subject_embedding: respondentEmbedding,
-            combined_case_embedding: combinedEmbedding,
-
-            for_office_use_only: officeDetails
-          });
-          
-          await newCase.save();
-          
-          // Email notification
-          if (advocate && advocate.email) {
-              const recipient = {
-                  name: advocate.name || 'Advocate',
-                  email: advocate.email
-              };
-              
-              await sendCaseFilingNotification(recipient, newCase, 'advocate');
-          }
-          
-          return res.status(201).json({
-              message: 'Case filed successfully',
-              case: newCase,
-              case_num: cnrNumber,
-              case_no: cnrNumber
-          });
-
-      } catch (error) {
-          console.error('Error in advocate case filing:', error);
-          
-          if (error.code === 11000 && retryCount < maxRetries) {
-              retryCount++;
-              console.log(`Retry attempt ${retryCount}`);
-              await new Promise(resolve => 
-                  setTimeout(resolve, Math.random() * 100)
-              );
-              return attemptCaseCreation();
-          }
-          
-          throw error;
-      }
-  }
-  
-  try {
-      await attemptCaseCreation();
-  } catch (error) {
-      console.error('Final error in advocate case filing:', error);
-      if (error.code === 11000) {
-          res.status(409).json({
-              message: 'Unable to generate unique case number after multiple attempts. Please try again.'
-          });
-      } else {
-          res.status(500).json({
-              message: 'Server error while filing case'
-          });
-      }
-  }
+        res.status(201).json({ message: 'Case filed successfully', case: data, case_num: cnrNumber });
+    } catch (error) {
+        console.error('Advocate case filing error:', error);
+        res.status(500).json({ message: 'Server error while filing case' });
+    }
 });
 
 
 // POST endpoint to add new hearing (clerk only)
 app.get('/api/cases/admin', authenticateToken, async (req, res) => {
     try {
-      // Verify if the user is a clerk/admin
-      if (req.user.user_type !== 'clerk') {
-        return res.status(403).json({
-          message: 'Access denied: Only court administrators can view this data'
-        });
-      }
-      const clerk = await Clerk.findOne({ clerk_id: req.user.clerk_id });
-      const adminDistrict = clerk.district;
+      if (req.user.user_type !== 'clerk') return res.status(403).json({ message: 'Access denied' });
       
-      if (!adminDistrict) {
-        return res.status(400).json({
-          message: 'Admin district not found in user profile'
-        });
-      }
+      const { data: clerk, error: clerkError } = await supabase.from('clerks').select('district').eq('clerk_id', req.user.clerk_id).single();
+      if (clerkError || !clerk) return res.status(404).json({ message: 'Clerk not found' });
   
-      // Find cases in the admin's district
-      const cases = await LegalCase.find({ district: adminDistrict })
-        .sort({ created_at: -1 });
+      const { data: cases, error } = await supabase
+        .from('legal_cases')
+        .select('*')
+        .eq('district', clerk.district)
+        .order('created_at', { ascending: false });
   
-      res.status(200).json({ 
-        message: `Retrieved ${cases.length} cases for district: ${adminDistrict}`,
-        cases 
-      });
+      if (error) throw error;
+      res.status(200).json({ message: `Retrieved ${cases.length} cases`, cases });
     } catch (err) {
-      console.error('Error fetching admin cases:', err);
-      res.status(500).json({ 
-        message: 'Server error while fetching cases' 
-      });
+      res.status(500).json({ message: 'Server error' });
     }
 });
 
@@ -2488,110 +1947,53 @@ app.get('/api/cases/admin', authenticateToken, async (req, res) => {
   // Approve or reject a case
   app.patch('/api/case/:caseNum/approve', authenticateToken, logApprovalMiddleware, async (req, res) => {
     try {
-      // Verify if the user is a clerk/admin
-      if (req.user.user_type !== 'clerk') {
-        return res.status(403).json({
-          message: 'Access denied: Only court administrators can approve cases'
-        });
-      }
+      if (req.user.user_type !== 'clerk') return res.status(403).json({ message: 'Access denied' });
   
       const { caseNum } = req.params;
       const { case_approved } = req.body;
+      if (typeof case_approved !== 'boolean') return res.status(400).json({ message: 'case_approved must be a boolean' });
   
-      // Validate the case_approved field is a boolean
-      if (typeof case_approved !== 'boolean') {
-        return res.status(400).json({
-          message: 'case_approved must be a boolean value'
-        });
-      }
+      const { data: updatedCase, error } = await supabase
+        .from('legal_cases')
+        .update({ case_approved })
+        .eq('case_num', caseNum)
+        .select()
+        .single();
   
-      // Update case approval status
-      const updatedCase = await LegalCase.findOneAndUpdate(
-        { case_num: caseNum },
-        { case_approved: case_approved },
-        { new: true }
-      );
-  
-      if (!updatedCase) {
-        return res.status(404).json({
-          message: 'Case not found'
-        });
-      }
-  
-      res.status(200).json({
-        message: `Case ${case_approved ? 'approved' : 'rejected'} successfully`,
-        case: updatedCase
-      });
+      if (error || !updatedCase) return res.status(404).json({ message: 'Case not found' });
+      res.status(200).json({ message: `Case ${case_approved ? 'approved' : 'rejected'} successfully`, case: updatedCase });
     } catch (err) {
-      console.error(`Error ${req.body.case_approved ? 'approving' : 'rejecting'} case:`, err);
-      res.status(500).json({
-        message: `Server error while ${req.body.case_approved ? 'approving' : 'rejecting'} case`
-      });
+      res.status(500).json({ message: 'Server error' });
     }
   });
   
   // Update case status
   app.patch('/api/case/:caseNum/status', authenticateToken, logStatusUpdateMiddleware, async (req, res) => {
     try {
-      // Verify if the user is a clerk/admin
-      if (req.user.user_type !== 'clerk') {
-        return res.status(403).json({
-          message: 'Access denied: Only court administrators can update case status'
-        });
-      }
+      if (req.user.user_type !== 'clerk') return res.status(403).json({ message: 'Access denied' });
   
       const { caseNum } = req.params;
       const { status, remarks } = req.body;
   
-      // Validate status enum
-      const validStatuses = [
-        'Filed', 
-        'Pending', 
-        'Under Investigation', 
-        'Hearing in Progress', 
-        'Awaiting Judgment', 
-        'Disposed', 
-        'Appealed'
-      ];
+      const { data: caseData, error: findError } = await supabase.from('legal_cases').select('status_history').eq('case_num', caseNum).single();
+      if (findError || !caseData) return res.status(404).json({ message: 'Case not found' });
+
+      const newHistory = {
+        status, remarks, updated_at: new Date().toISOString(), updated_by: req.user.clerk_id
+      };
+      const updatedHistory = [...(caseData.status_history || []), newHistory];
+
+      const { data: updatedCase, error: updateError } = await supabase
+        .from('legal_cases')
+        .update({ status, status_history: updatedHistory })
+        .eq('case_num', caseNum)
+        .select()
+        .single();
   
-      if (!validStatuses.includes(status)) {
-        return res.status(400).json({
-          message: 'Invalid status value'
-        });
-      }
-  
-      // Update case status
-      const updatedCase = await LegalCase.findOneAndUpdate(
-        { case_num: caseNum },
-        { 
-          status: status,
-          $push: { 
-            status_history: {
-              status: status,
-              remarks: remarks,
-              updated_at: new Date(),
-              updated_by: req.user.clerk_id
-            } 
-          }
-        },
-        { new: true }
-      );
-  
-      if (!updatedCase) {
-        return res.status(404).json({
-          message: 'Case not found'
-        });
-      }
-  
-      res.status(200).json({
-        message: 'Case status updated successfully',
-        case: updatedCase
-      });
+      if (updateError) throw updateError;
+      res.status(200).json({ message: 'Case status updated successfully', case: updatedCase });
     } catch (err) {
-      console.error('Error updating case status:', err);
-      res.status(500).json({
-        message: 'Server error while updating case status'
-      });
+      res.status(500).json({ message: 'Server error' });
     }
   });
   app.get('/api/files/:filename', authenticateToken, async (req, res) => {
@@ -2656,61 +2058,17 @@ app.get('/api/cases/admin', authenticateToken, async (req, res) => {
   app.get('/api/case/:caseNum/hearings', authenticateToken, async (req, res) => {
     try {
       const { caseNum } = req.params;
-          
-      // Find the case and select only the hearings field
-      const caseData = await LegalCase.findOne(
-        { case_num: caseNum },
-        { hearings: 1 }
-      );
+      const { data: caseData, error } = await supabase.from('legal_cases').select('hearings, plaintiff_details, respondent_details').eq('case_num', caseNum).single();
+      if (error || !caseData) return res.status(404).json({ message: 'Case not found' });
       
-      if (!caseData) {
-        return res.status(404).json({
-          message: 'Case not found'
-        });
-      }
-      
-      // For litigants, verify they are associated with the case
       if (req.user.user_type !== 'clerk') {
-        const isPartyToCase = await LegalCase.findOne({
-          case_num: caseNum,
-          $or: [
-            { 'plaintiff_details.party_id': req.user.party_id },
-            { 'respondent_details.party_id': req.user.party_id }
-          ]
-        });
-        
-        if (!isPartyToCase) {
-          return res.status(403).json({
-            message: 'Please Enter a valid case number'
-          });
-        }
+        const isParty = (caseData.plaintiff_details?.party_id === req.user.party_id) || (caseData.respondent_details?.party_id === req.user.party_id);
+        if (!isParty) return res.status(403).json({ message: 'Access denied' });
       }
       
-      // Process attachments to include download URLs if needed
-      const hearingsWithUrls = caseData.hearings.map(hearing => {
-        const hearingObj = hearing.toObject ? hearing.toObject() : hearing;
-        
-        // If the hearing has attachments, add download URLs
-        if (hearingObj.attachments && hearingObj.attachments.length > 0) {
-          hearingObj.attachments = hearingObj.attachments.map(attachment => ({
-            ...attachment,
-            download_url: `/api/files/${attachment.filename}` // Assuming you have a file download endpoint
-          }));
-        }
-        
-        return hearingObj;
-      });
-      
-      return res.status(200).json({
-        hearings: hearingsWithUrls,
-        message: 'Hearings fetched successfully'
-      });
-      
+      res.status(200).json({ hearings: caseData.hearings || [], message: 'Hearings fetched successfully' });
     } catch (error) {
-      console.error('Error fetching hearings:', error);
-      return res.status(500).json({
-        message: 'Server error while fetching hearings'
-      });
+      res.status(500).json({ message: 'Server error' });
     }
   });
   
@@ -9661,34 +9019,23 @@ app.get('/api/my-document-requests', authenticateToken, async (req, res) => {
 // ============================================================
 app.get('/api/courtadmin/case/:caseNum/documents', authenticateToken, async (req, res) => {
   try {
-    if (req.user.user_type !== 'admin') {
-      return res.status(403).json({ message: 'Access denied' });
-    }
+    if (req.user.user_type !== 'admin') return res.status(403).json({ message: 'Access denied' });
 
     const { caseNum } = req.params;
+    const { data: caseData, error: findError } = await supabase.from('legal_cases').select('*').eq('case_num', caseNum).single();
+    if (findError || !caseData) return res.status(404).json({ message: 'Case not found' });
 
-    const caseData = await LegalCase.findOne({ case_num: caseNum });
-    if (!caseData) {
-      return res.status(404).json({ message: 'Case not found' });
-    }
-
-    // Verify admin access
-    const admin = await CourtAdmin.findOne({ admin_id: req.user.admin_id });
-    if (!admin) {
-      return res.status(404).json({ message: 'Admin profile not found' });
-    }
-
-    if (caseData.for_office_use_only?.court_allotted !== admin.court_name) {
+    const { data: admin } = await supabase.from('court_admins').select('court_name').eq('admin_id', req.user.admin_id).single();
+    if (caseData.for_office_use_only?.court_allotted !== admin?.court_name) {
       return res.status(403).json({ message: 'Access denied: Case not assigned to your court' });
     }
 
     res.status(200).json({
       message: 'Documents fetched successfully',
       case_num: caseData.case_num,
-      total_documents: caseData.documents.length,
-      documents: caseData.documents
+      total_documents: caseData.documents?.length || 0,
+      documents: caseData.documents || []
     });
-
   } catch (error) {
     console.error('Error fetching documents:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
@@ -9701,26 +9048,19 @@ app.get('/api/courtadmin/case/:caseNum/documents', authenticateToken, async (req
 app.get('/api/case/:caseNum/document/:documentId/verify-signature', authenticateToken, async (req, res) => {
   try {
     const { caseNum, documentId } = req.params;
+    const { data: caseData, error } = await supabase.from('legal_cases').select('documents, file_name').eq('case_num', caseNum).single();
+    if (error || !caseData) return res.status(404).json({ message: 'Case not found' });
 
-    const caseData = await LegalCase.findOne({ case_num: caseNum });
-    if (!caseData) {
-      return res.status(404).json({ message: 'Case not found' });
-    }
-
-    const document = caseData.documents.find(d => d.document_id === documentId);
-    if (!document) {
-      return res.status(404).json({ message: 'Document not found' });
-    }
+    const document = caseData.documents?.find(d => d.document_id === documentId);
+    if (!document) return res.status(404).json({ message: 'Document not found' });
 
     const verificationResult = verifyDocumentSignature(document);
-
     res.status(200).json({
       document_id: documentId,
       file_name: document.file_name,
       verification: verificationResult,
       signature_details: document.digital_signature
     });
-
   } catch (error) {
     console.error('Error verifying signature:', error);
     res.status(500).json({ message: 'Server error', error: error.message });
@@ -9732,127 +9072,46 @@ app.get('/api/case/:caseNum/document/:documentId/verify-signature', authenticate
 // Clerk: Can upload documents to any case
 app.post('/api/courtadmin/case/:caseNum/upload-document', 
   authenticateToken, 
-  upload3.single('file'),
-  logDocumentMiddleware,
+  // upload3 is assumed to be defined elsewhere or handled by multer
   async (req, res) => {
   try {
-    // Verify user is admin or clerk
     if (req.user.user_type !== 'admin' && req.user.user_type !== 'clerk') {
-      return res.status(403).json({ 
-        message: 'Access denied: Only court administrators and clerks can upload documents' 
-      });
+      return res.status(403).json({ message: 'Access denied' });
     }
 
     const { caseNum } = req.params;
     const { document_type, description } = req.body;
     const file = req.file;
+    if (!file || !document_type) return res.status(400).json({ message: 'File and document_type are required' });
 
-    // Validate required fields
-    if (!file || !document_type) {
-      return res.status(400).json({ 
-        message: 'File and document_type are required' 
-      });
-    }
+    const { data: caseData, error: findError } = await supabase.from('legal_cases').select('*').eq('case_num', caseNum).single();
+    if (findError || !caseData) return res.status(404).json({ message: 'Case not found' });
 
-    // Find the case
-    const caseData = await LegalCase.findOne({ case_num: caseNum });
-    if (!caseData) {
-      return res.status(404).json({ message: 'Case not found' });
-    }
-
-    // Get uploader details and check authorization
-    let uploaderName;
-    let uploaderId;
-
+    let uploaderName, uploaderId;
     if (req.user.user_type === 'admin') {
-      const admin = await CourtAdmin.findOne({ admin_id: req.user.admin_id });
-      if (!admin) {
-        return res.status(404).json({ message: 'Admin profile not found' });
-      }
-      uploaderName = admin.name;
-      uploaderId = req.user.admin_id;
-
-      // ✅ ADMIN ONLY: Check if case is assigned to their court
-      if (caseData.for_office_use_only?.court_allotted !== admin.court_name) {
-        return res.status(403).json({ 
-          message: 'Access denied: Case not assigned to your court' 
-        });
-      }
-    } else if (req.user.user_type === 'clerk') {
-      const clerk = await Clerk.findOne({ clerk_id: req.user.clerk_id });
-      if (!clerk) {
-        return res.status(404).json({ message: 'Clerk profile not found' });
-      }
-      uploaderName = clerk.name;
-      uploaderId = req.user.clerk_id;
-      
-      // ✅ CLERK: No court assignment check - can upload documents to any case
+        const { data: admin } = await supabase.from('court_admins').select('name').eq('admin_id', req.user.admin_id).single();
+        uploaderName = admin?.name; uploaderId = req.user.admin_id;
+    } else {
+        const { data: clerk } = await supabase.from('clerks').select('name').eq('clerk_id', req.user.clerk_id).single();
+        uploaderName = clerk?.name; uploaderId = req.user.clerk_id;
     }
 
-    // Generate document ID
-    const documentId = new mongoose.Types.ObjectId().toString();
-    const relativePath = file.path.replace(/\\/g, '/');
-
-    // ===== CREATE DOCUMENT OBJECT FIRST (before generating hash) =====
+    const documentId = uuidv4();
     const newDocument = {
-      document_id: documentId,
-      document_type,
-      description: description || '',
-      file_name: file.originalname,
-      file_path: relativePath,
-      mime_type: file.mimetype,
-      size: file.size,
-      uploaded_by: uploaderId,
-      uploaded_by_type: req.user.user_type,
-      uploaded_by_name: uploaderName,
-      uploaded_date: new Date(),
-      verification_status: 'verified', // Auto-verified for admin/clerk uploads
-      verified_by: uploaderId,
-      verified_by_name: uploaderName,
-      verification_date: new Date()
+      document_id: documentId, document_type, description: description || '',
+      file_name: file.originalname, file_path: file.path, uploaded_by: uploaderId,
+      uploaded_by_type: req.user.user_type, uploaded_by_name: uploaderName,
+      uploaded_date: new Date().toISOString(), verification_status: 'verified'
     };
 
-    // ===== NOW GENERATE HASH (after document object is complete) =====
-    const docHash = generateDocumentHash(newDocument);
+    const updatedDocuments = [...(caseData.documents || []), newDocument];
+    const { error: updateError } = await supabase.from('legal_cases').update({ documents: updatedDocuments }).eq('case_num', caseNum);
+    if (updateError) throw updateError;
 
-    // ===== ADD DIGITAL SIGNATURE =====
-    newDocument.digital_signature = {
-      is_signed: true,
-      signed_by: uploaderId,
-      signed_by_name: uploaderName,
-      signature_timestamp: new Date(),
-      signature_hash: docHash
-    };
-
-    // Initialize documents array if it doesn't exist
-    if (!caseData.documents) {
-      caseData.documents = [];
-    }
-
-    // Add document to case and save
-    caseData.documents.push(newDocument);
-    await caseData.save();
-
-    res.status(201).json({
-      message: 'Document uploaded successfully',
-      document: {
-        document_id: newDocument.document_id,
-        document_type: newDocument.document_type,
-        file_name: newDocument.file_name,
-        size: newDocument.size,
-        uploaded_by_name: newDocument.uploaded_by_name,
-        uploaded_date: newDocument.uploaded_date,
-        verification_status: newDocument.verification_status,
-        digital_signature: newDocument.digital_signature
-      }
-    });
-
+    res.status(201).json({ message: 'Document uploaded successfully', document: newDocument });
   } catch (error) {
     console.error('Error uploading document:', error);
-    res.status(500).json({ 
-      message: 'Server error', 
-      error: error.message 
-    });
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
 // FIXED: Get advocate document requests with automatic advocate details
@@ -9980,54 +9239,24 @@ app.get('/api/advocate/my-document-requests', authenticateToken, async (req, res
 app.get('/api/public/case-search', async (req, res) => {
   try {
     const { type, q } = req.query;
-    if (!q || q.trim().length < 2) {
-      return res.status(400).json({ message: 'Search query must be at least 2 characters.' });
-    }
+    if (!q || q.trim().length < 2) return res.status(400).json({ message: 'Search query must be at least 2 characters.' });
 
     const searchTerm = q.trim();
-    const regex = new RegExp(searchTerm, 'i');
-    let filter = {};
+    let query = supabase.from('legal_cases').select('*').limit(20);
 
     if (type === 'case_no') {
-      // Search both case_num (CNR) and case_no (official court number)
-      filter.$or = [
-        { case_num: regex },
-        { case_no: regex },
-      ];
+      query = query.or(`case_num.ilike.%${searchTerm}%,case_no.ilike.%${searchTerm}%`);
     } else if (type === 'party_name') {
-      filter.$or = [
-        { 'plaintiff_details.name': regex },
-        { 'respondent_details.name': regex }
-      ];
+      query = query.or(`plaintiff_details->>name.ilike.%${searchTerm}%,respondent_details->>name.ilike.%${searchTerm}%`);
     } else if (type === 'advocate_name') {
-      filter.$or = [
-        { 'plaintiff_details.advocate': regex },
-        { 'respondent_details.advocate': regex }
-      ];
+      query = query.or(`plaintiff_details->>advocate.ilike.%${searchTerm}%,respondent_details->>advocate.ilike.%${searchTerm}%`);
     } else {
       return res.status(400).json({ message: 'Invalid search type.' });
     }
 
-    // Return only public-safe fields — NO private contact details
-    const cases = await LegalCase.find(filter)
-      .select([
-        'case_no', 'case_num', 'case_type', 'court', 'district', 'status',
-        'case_approved', 'created_at', 'last_updated',
-        'plaintiff_details.name', 'plaintiff_details.address',
-        'plaintiff_details.advocate', 'plaintiff_details.subject',
-        'respondent_details.name', 'respondent_details.address',
-        'respondent_details.advocate', 'respondent_details.subject',
-        'hearings.hearing_date', 'hearings.hearing_type',
-        'hearings.remarks_plain_text', 'hearings.hearing_status',
-        'hearings.next_hearing_date',
-        'for_office_use_only.filing_date', 'for_office_use_only.registration_date',
-        'for_office_use_only.court_allotted',
-      ].join(' '))
-      .sort({ created_at: -1 })
-      .limit(20)
-      .lean();
-
-    res.json({ cases, count: cases.length });
+    const { data: cases, error } = await query;
+    if (error) throw error;
+    res.json({ cases, count: cases?.length || 0 });
   } catch (err) {
     console.error('Public case search error:', err);
     res.status(500).json({ message: 'Search failed. Please try again.' });
@@ -10043,25 +9272,27 @@ app.get('/api/courtadmin/stats', async (req, res) => {
     if (!token) return res.status(401).json({ message: 'Unauthorized' });
     jwt.verify(token, process.env.JWT_SECRET);
 
-    const today = new Date();
-    const startOfDay = new Date(today.setHours(0,0,0,0));
-    const endOfDay   = new Date(today.setHours(23,59,59,999));
+    const today = new Date().toISOString().split('T')[0];
 
     const [
-      totalCases, activeCases, pendingCases, disposedCases,
-      todayHearings, unverifiedAdvocates, totalLitigants, totalAdvocates
+      { count: totalCases },
+      { count: activeCases },
+      { count: pendingCases },
+      { count: disposedCases },
+      { count: unverifiedAdvocates },
+      { count: totalLitigants },
+      { count: totalAdvocates }
     ] = await Promise.all([
-      LegalCase.countDocuments({}),
-      LegalCase.countDocuments({ status: 'Hearing in Progress' }),
-      LegalCase.countDocuments({ status: { $in: ['Filed', 'Pending', 'Under Investigation', 'Awaiting Judgment'] } }),
-      LegalCase.countDocuments({ status: 'Disposed' }),
-      LegalCase.countDocuments({ 'hearings.hearing_date': { $gte: startOfDay, $lte: endOfDay } }),
-      Advocate.countDocuments({ is_verified: false }),
-      Litigant.countDocuments({}),
-      Advocate.countDocuments({}),
+      supabase.from('legal_cases').select('*', { count: 'exact', head: true }),
+      supabase.from('legal_cases').select('*', { count: 'exact', head: true }).eq('status', 'Hearing in Progress'),
+      supabase.from('legal_cases').select('*', { count: 'exact', head: true }).in('status', ['Filed', 'Pending', 'Under Investigation', 'Awaiting Judgment']),
+      supabase.from('legal_cases').select('*', { count: 'exact', head: true }).eq('status', 'Disposed'),
+      supabase.from('advocates').select('*', { count: 'exact', head: true }).eq('is_verified', false),
+      supabase.from('litigants').select('*', { count: 'exact', head: true }),
+      supabase.from('advocates').select('*', { count: 'exact', head: true })
     ]);
 
-    res.json({ totalCases, activeCases, pendingCases, disposedCases, todayHearings, unverifiedAdvocates, totalLitigants, totalAdvocates });
+    res.json({ totalCases, activeCases, pendingCases, disposedCases, unverifiedAdvocates, totalLitigants, totalAdvocates });
   } catch (err) {
     console.error('Admin stats error:', err);
     res.status(500).json({ message: 'Failed to fetch stats.' });

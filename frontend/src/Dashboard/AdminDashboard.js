@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import authService from '../services/authService';
 import axios from 'axios';
+import { supabase } from '../services/supabaseClient';
 import { 
   LogOut, 
   Database, 
@@ -67,66 +69,93 @@ const AdminDashboard = () => {
 
   const fetchStats = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const res = await axios.get('https://nyaay-desk-app-backend.onrender.com/api/courtadmin/stats', {
-        headers: { Authorization: `Bearer ${token}` }
+      // Fetch counts from Supabase tables
+      const [
+        { count: activeCases },
+        { count: pendingCases },
+        { count: disposedCases },
+        { count: totalCases },
+        { count: unverifiedAdvocates },
+        { count: totalAdvocates },
+        { count: totalLitigants }
+      ] = await Promise.all([
+        supabase.from('legal_cases').select('*', { count: 'exact', head: true }).eq('status', 'active'),
+        supabase.from('legal_cases').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
+        supabase.from('legal_cases').select('*', { count: 'exact', head: true }).eq('status', 'disposed'),
+        supabase.from('legal_cases').select('*', { count: 'exact', head: true }),
+        supabase.from('advocates').select('*', { count: 'exact', head: true }).eq('is_verified', false),
+        supabase.from('advocates').select('*', { count: 'exact', head: true }),
+        supabase.from('litigants').select('*', { count: 'exact', head: true })
+      ]);
+
+      setStats({
+        activeCases: activeCases || 0,
+        pendingCases: pendingCases || 0,
+        disposedCases: disposedCases || 0,
+        totalCases: totalCases || 0,
+        unverifiedAdvocates: unverifiedAdvocates || 0,
+        totalAdvocates: totalAdvocates || 0,
+        totalLitigants: totalLitigants || 0,
+        todayHearings: 0 // Placeholder for now
       });
-      setStats(res.data);
-    } catch (e) { /* stats will show fallback */ }
+    } catch (e) {
+      console.error('Error fetching stats:', e);
+    }
   };
 
   // Profile Fetching
   const fetchProfile = async () => {
     try {
-      const token = localStorage.getItem('token');
-      if (!token) {
+      const userData = localStorage.getItem('userData');
+      if (!userData) {
         navigate('/adminlogin');
-        throw new Error('No authentication token found');
+        return;
       }
-      
-      const response = await axios.get('https://nyaay-desk-app-backend.onrender.com/api/courtadmin/profile', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      
-      setProfile(response.data.admin);
+      setProfile(JSON.parse(userData));
       setLoading(false);
     } catch (err) {
-      setError(err.response?.data?.message || err.message);
+      setError('Error loading profile');
       setLoading(false);
-      if (err.response?.status === 401) {
-        navigate('/adminlogin');
-      }
     }
   };
 
   // Advocates Fetching
   const fetchAdvocates = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get('https://nyaay-desk-app-backend.onrender.com/api/courtadmin/dashboard/advocates', {
-        headers: { 'Authorization': `Bearer ${token}` }
+      const { data: unverified, error: e1 } = await supabase
+        .from('advocates')
+        .select('*')
+        .eq('is_verified', false);
+      const { data: verified, error: e2 } = await supabase
+        .from('advocates')
+        .select('*')
+        .eq('is_verified', true);
+      if (e1 || e2) throw e1 || e2;
+      setAdvocates({
+        unverifiedAdvocates: unverified || [],
+        verifiedAdvocates: verified || []
       });
-      setAdvocates(response.data);
     } catch (err) {
-      setError(err.response?.data?.message || 'Error fetching advocates');
+      setError('Error fetching advocates: ' + err.message);
     }
   };
 
   // Document Viewing
   const viewCOPDocument = async (advocateId) => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get(
-        `https://nyaay-desk-app-backend.onrender.com/api/courtadmin/advocate/cop-document/${advocateId}`,
-        {
-          headers: { 'Authorization': `Bearer ${token}` },
-          responseType: 'blob'
-        }
-      );
-      const fileURL = window.URL.createObjectURL(new Blob([response.data]));
-      window.open(fileURL, '_blank');
+      const { data, error: err } = await supabase
+        .from('advocates')
+        .select('cop_document_url')
+        .eq('advocate_id', advocateId)
+        .single();
+      if (err) throw err;
+      if (data?.cop_document_url) {
+        window.open(data.cop_document_url, '_blank');
+      } else {
+        setError('No document found for this advocate.');
+      }
     } catch (err) {
-      setError('Error viewing document');
+      setError('Error viewing document: ' + err.message);
     }
   };
 
@@ -183,55 +212,41 @@ const AdminDashboard = () => {
       setError('Digital signature is required for verification');
       return;
     }
-
     try {
-      const token = localStorage.getItem('token');
-      await axios.post(
-        `https://nyaay-desk-app-backend.onrender.com/api/courtadmin/verify-advocate/${selectedAdvocate.advocate_id}`,
-        {
-          verificationDeclaration,
-          notes: verificationNotes,
-          digitalSignature: verificationData.digitalSignature,
-          verificationTimestamp: new Date().toISOString()
-        },
-        {
-          headers: { 'Authorization': `Bearer ${token}` }
-        }
-      );
+      const { error: err } = await supabase
+        .from('advocates')
+        .update({
+          is_verified: true,
+          verification_notes: verificationNotes,
+          verified_at: new Date().toISOString()
+        })
+        .eq('advocate_id', selectedAdvocate.advocate_id);
+      if (err) throw err;
       setShowVerificationModal(false);
       resetVerificationForm();
       fetchAdvocates();
     } catch (err) {
-      setError(err.response?.data?.message || 'Verification failed');
+      setError('Verification failed: ' + err.message);
     }
   };
 
   // Logout Handling
   const handleLogout = async () => {
     try {
-      const token = localStorage.getItem('token');
-      await axios.post('https://nyaay-desk-app-backend.onrender.com/api/courtadmin/logout', {}, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      localStorage.removeItem('token');
+      await authService.logout();
       navigate('/adminlogin');
     } catch (error) {
-      setError(error.response?.data?.message || 'Logout failed');
+      setError('Logout failed');
     }
   };
 
   const handleLogoutAll = async () => {
     try {
-      const token = localStorage.getItem('token');
-      await axios.post('https://nyaay-desk-app-backend.onrender.com/api/courtadmin/logout-all',
-        { password: logoutPassword },
-        { headers: { 'Authorization': `Bearer ${token}` } }
-      );
-      localStorage.removeItem('token');
+      await authService.logout();
       setShowLogoutConfirm(false);
       navigate('/adminlogin');
     } catch (error) {
-      setError(error.response?.data?.message || 'Logout from all devices failed');
+      setError('Logout from all devices failed');
     }
   };
 
@@ -394,7 +409,7 @@ const AdminDashboard = () => {
               <div className="crt_adm_logo_placeholder_text_5c78a2">Court Admin</div>
             </div>
           </div>
-          <h1 className="crt_adm_main_title_heading_3fa8c4">Court Clerk Panel</h1>
+          <h1 className="crt_adm_main_title_heading_3fa8c4">Court Admin Panel</h1>
         </div>
         <div className="crt_adm_header_right_section_24d6f7">
           <div className="crt_adm_logout_buttons_group_a97c36">

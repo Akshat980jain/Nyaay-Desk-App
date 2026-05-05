@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { supabase } from '../services/supabaseClient';
 import { format } from 'date-fns';
 import '../ComponentsCSS/NoticeBoard.css';
 import aadiImage from "../images/aadiimage4.svg";
@@ -15,20 +15,19 @@ const NoticeBoard = () => {
     const fetchNotices = async () => {
       setIsLoading(true);
       try {
-        const token = localStorage.getItem('token');
-        const response = await axios.get('https://nyaay-desk-app-backend.onrender.com/api/notices', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        setNotices(response.data.notices);
-        // Add a small delay before fade-in animation
+        const { data, error: err } = await supabase
+          .from('notices')
+          .select('*')
+          .order('created_at', { ascending: false });
+        if (err) throw err;
+        setNotices(data || []);
         setTimeout(() => setFadeIn(true), 100);
       } catch (err) {
-        setError(err.response?.data?.message || 'Failed to fetch notices');
+        setError(err.message || 'Failed to fetch notices');
       } finally {
         setIsLoading(false);
       }
     };
-
     fetchNotices();
   }, []);
 
@@ -50,60 +49,21 @@ const NoticeBoard = () => {
 
   const handleAttachmentClick = async (noticeId) => {
     try {
-      // Get the authentication token
-      const token = localStorage.getItem('token');
-      
-      // Make an authenticated request for the attachment
-      const response = await axios({
-        url: `https://nyaay-desk-app-backend.onrender.com/api/notices/${noticeId}/attachment`,
-        method: 'GET',
-        headers: { 
-          Authorization: `Bearer ${token}`
-        },
-        responseType: 'blob' // Important for file downloads
-      });
-      
-      // Get content type from response
-      const contentType = response.headers['content-type'];
-      
-      // Create a blob with the correct content type
-      const blob = new Blob([response.data], { type: contentType });
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      
-      // Extract filename from content-disposition header
-      let filename = 'attachment';
-      const contentDisposition = response.headers['content-disposition'];
-      
-      if (contentDisposition) {
-        const filenameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
-        if (filenameMatch && filenameMatch[1]) {
-          // Remove quotes if present
-          filename = filenameMatch[1].replace(/['"]/g, '');
-        }
+      // Fetch the attachment_url from Supabase
+      const { data, error: err } = await supabase
+        .from('notices')
+        .select('attachment_url')
+        .eq('id', noticeId)
+        .single();
+      if (err) throw err;
+      if (data?.attachment_url) {
+        window.open(data.attachment_url, '_blank');
+      } else {
+        alert('No attachment found for this notice.');
       }
-      
-      // If no extension in filename and we have content type, add appropriate extension
-      if (!filename.includes('.') && contentType) {
-        const extension = getFileExtensionFromMimeType(contentType);
-        if (extension) {
-          filename = `${filename}.${extension}`;
-        }
-      }
-      
-      link.href = url;
-      link.setAttribute('download', filename);
-      document.body.appendChild(link);
-      link.click();
-      
-      // Clean up
-      setTimeout(() => {
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(link);
-      }, 100);
     } catch (err) {
-      console.error('Error downloading attachment:', err);
-      alert('Failed to download attachment. Please try again.');
+      console.error('Error getting attachment:', err);
+      alert('Failed to load attachment. Please try again.');
     }
   };
 
@@ -206,10 +166,10 @@ const NoticeBoard = () => {
                       <line x1="8" y1="2" x2="8" y2="6"></line>
                       <line x1="3" y1="10" x2="21" y2="10"></line>
                     </svg>
-                    <span>Published: {format(new Date(selectedNotice.published_date), 'MMMM dd, yyyy')}</span>
+                    <span>Published: {selectedNotice.created_at ? format(new Date(selectedNotice.created_at), 'MMMM dd, yyyy') : 'N/A'}</span>
                   </div>
                   
-                  {selectedNotice.expiry_date && (
+                  {selectedNotice.expiry_date && new Date(selectedNotice.expiry_date).toString() !== 'Invalid Date' && (
                     <div className="meta-item">
                       <svg xmlns="http://www.w3.org/2000/svg" className="meta-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <circle cx="12" cy="12" r="10"></circle>
@@ -224,7 +184,7 @@ const NoticeBoard = () => {
                       <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                       <circle cx="12" cy="7" r="4"></circle>
                     </svg>
-                    <span>By: {selectedNotice.published_by.admin_name}</span>
+                    <span>By: {selectedNotice.created_by || 'Court Administration'}</span>
                   </div>
                 </div>
               </div>
@@ -274,7 +234,7 @@ const NoticeBoard = () => {
           
           <div className="notice-grid">
             {notices.map((notice) => (
-              <div key={notice.notice_id} className="notice-card">
+              <div key={notice.id} className="notice-card">
                 <div className="card-pin"></div>
                 <div className="card-content">
                   <div className="notice-card-header">
@@ -296,7 +256,7 @@ const NoticeBoard = () => {
                       <line x1="8" y1="2" x2="8" y2="6"></line>
                       <line x1="3" y1="10" x2="21" y2="10"></line>
                     </svg>
-                    <span>{format(new Date(notice.published_date), 'MMMM dd, yyyy')}</span>
+                    <span>{notice.created_at ? format(new Date(notice.created_at), 'MMMM dd, yyyy') : 'N/A'}</span>
                   </div>
                   
                   <p className="notice-excerpt">

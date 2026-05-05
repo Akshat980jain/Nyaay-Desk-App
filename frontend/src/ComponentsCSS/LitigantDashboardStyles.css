@@ -1931,3 +1931,106 @@
     text-align: left;
   }
 }
+
+/* Documents Table Styles */
+.litigantdash-documents-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 16px;
+  background-color: #fff;
+  border: 1px solid var(--color-gray-200);
+}
+
+.litigantdash-documents-table th {
+  background-color: var(--color-black);
+  color: #fff;
+  text-align: left;
+  padding: 14px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.litigantdash-documents-table td {
+  padding: 16px;
+  font-size: 14px;
+  color: var(--color-gray-800);
+  border-bottom: 1px solid var(--color-gray-100);
+  vertical-align: middle;
+}
+
+.litigantdash-documents-table tr:hover {
+  background-color: var(--color-gray-50);
+}
+
+/* Status Badges */
+.litigantdash-doc-status-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.litigantdash-doc-status-badge.pending_upload {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.litigantdash-doc-status-badge.uploaded_pending_review {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.litigantdash-doc-status-badge.verified {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.litigantdash-doc-status-badge.rejected {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+/* Download Button Beautification */
+.litigantdash-download-doc-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  color: #fff;
+  border: none;
+  padding: 8px 20px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.litigantdash-download-doc-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.25);
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  color: #fbbf24; /* Gold accent on hover */
+}
+
+.litigantdash-download-doc-button:active {
+  transform: translateY(0);
+}
+
+.litigantdash-btn-icon {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.2s ease;
+}
+
+.litigantdash-download-doc-button:hover .litigantdash-btn-icon {
+  transform: translateY(2px);
+}

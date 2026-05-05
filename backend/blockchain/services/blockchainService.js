@@ -5,7 +5,7 @@ const {
   verifyBlockComplete,
   detectTamperingPatterns 
 } = require('../utils/verification');
-const Block = require('../models/Block');
+const supabase = require('../../supabaseClient');
 
 const logCaseFiling = async (caseData, userId, userType) => {
   const blockData = {
@@ -16,7 +16,7 @@ const logCaseFiling = async (caseData, userId, userType) => {
     court: caseData.court,
     plaintiff: caseData.plaintiff_details.name,
     respondent: caseData.respondent_details.name,
-    filed_at: new Date()
+    filed_at: new Date().toISOString()
   };
 
   return await blockchain.mineBlock(
@@ -35,7 +35,7 @@ const logCaseStatusUpdate = async (caseNum, oldStatus, newStatus, remarks, userI
     old_status: oldStatus,
     new_status: newStatus,
     remarks,
-    updated_at: new Date()
+    updated_at: new Date().toISOString()
   };
 
   return await blockchain.mineBlock(
@@ -54,7 +54,7 @@ const logHearingAdded = async (caseNum, hearingData, userId, userType) => {
     hearing_date: hearingData.hearing_date,
     hearing_type: hearingData.hearing_type,
     remarks: hearingData.remarks,
-    added_at: new Date()
+    added_at: new Date().toISOString()
   };
 
   return await blockchain.mineBlock(
@@ -74,7 +74,7 @@ const logDocumentUpload = async (caseNum, documentData, userId, userType) => {
     document_type: documentData.document_type,
     file_name: documentData.file_name,
     file_size: documentData.size,
-    uploaded_at: new Date()
+    uploaded_at: new Date().toISOString()
   };
 
   return await blockchain.mineBlock(
@@ -91,7 +91,7 @@ const logCaseApproval = async (caseNum, approved, userId) => {
     action: 'case_approval',
     case_num: caseNum,
     approved,
-    approved_at: new Date()
+    approved_at: new Date().toISOString()
   };
 
   return await blockchain.mineBlock(
@@ -108,7 +108,7 @@ const logAdvocateVerification = async (advocateId, verified, userId) => {
     action: 'advocate_verification',
     advocate_id: advocateId,
     verified,
-    verified_at: new Date()
+    verified_at: new Date().toISOString()
   };
 
   return await blockchain.mineBlock(
@@ -119,14 +119,9 @@ const logAdvocateVerification = async (advocateId, verified, userId) => {
     'clerk'
   );
 };
-// Add after line 87 in blockchainService.js
-
-// Line 124-143 - Replace the entire logDocumentRequested function:
 
 const logDocumentRequested = async (caseNum, documentData, requestedFrom, requestedFromType, userId, userType) => {
-  // ✅ Use documentData AS-IS from middleware (already has all fields)
   const blockData = documentData;
-
   return await blockchain.mineBlock(
     blockData,
     'document_requested',
@@ -135,6 +130,7 @@ const logDocumentRequested = async (caseNum, documentData, requestedFrom, reques
     userType
   );
 };
+
 const logDocumentVerified = async (caseNum, documentData, userId, userType) => {
   const blockData = {
     action: 'document_verified',
@@ -144,7 +140,7 @@ const logDocumentVerified = async (caseNum, documentData, userId, userType) => {
     file_name: documentData.file_name,
     verified_by: documentData.verified_by_name,
     signature_hash: documentData.digital_signature?.signature_hash,
-    verified_at: new Date()
+    verified_at: new Date().toISOString()
   };
 
   return await blockchain.mineBlock(
@@ -165,7 +161,7 @@ const logDocumentRejected = async (caseNum, documentData, rejectionReason, userI
     file_name: documentData.file_name,
     rejection_reason: rejectionReason,
     rejected_by: documentData.verified_by_name,
-    rejected_at: new Date()
+    rejected_at: new Date().toISOString()
   };
 
   return await blockchain.mineBlock(
@@ -176,6 +172,7 @@ const logDocumentRejected = async (caseNum, documentData, rejectionReason, userI
     userType
   );
 };
+
 const logVideoMeetingScheduled = async (caseNum, meetingData, userId, userType) => {
   const blockData = {
     action: 'video_meeting_scheduled',
@@ -183,7 +180,7 @@ const logVideoMeetingScheduled = async (caseNum, meetingData, userId, userType) 
     meeting_link: meetingData.meetingLink,
     start_time: meetingData.startDateTime,
     end_time: meetingData.endDateTime,
-    scheduled_at: new Date()
+    scheduled_at: new Date().toISOString()
   };
 
   return await blockchain.mineBlock(
@@ -195,45 +192,30 @@ const logVideoMeetingScheduled = async (caseNum, meetingData, userId, userType) 
   );
 };
 
-/**
- * 🆕 GET CASE HISTORY WITH VERIFICATION
- * Returns blockchain history with verification status
- */
 const getCaseHistory = async (caseNum) => {
   const blocks = await blockchain.getBlocksByEntity(caseNum);
-  
-  // Add verification status to each block
-  const allBlocks = await Block.find().sort({ index: 1 });
+  const { data: allBlocks } = await supabase.from('blockchain_blocks').select('*').order('index', { ascending: true });
   
   const historyWithVerification = [];
-  
   for (const block of blocks) {
     const previousBlock = allBlocks.find(b => b.index === block.index - 1);
-    
     let verification = { overall: true, note: 'Genesis or standalone block' };
     
     if (previousBlock) {
       verification = await verifyBlockComplete(
-        block,
-        previousBlock,
+        { ...block, previousHash: block.previous_hash },
+        { ...previousBlock, hash: previousBlock.hash },
         process.env.BLOCKCHAIN_SECRET,
         parseInt(process.env.BLOCKCHAIN_DIFFICULTY)
       );
     }
     
-    historyWithVerification.push({
-      ...block.toObject(),
-      verification
-    });
+    historyWithVerification.push({ ...block, verification });
   }
   
   return historyWithVerification;
 };
 
-/**
- * 🆕 VERIFY BLOCKCHAIN INTEGRITY
- * Comprehensive multi-layer verification
- */
 const verifyBlockchainIntegrity = async () => {
   return await verifyChain(
     process.env.BLOCKCHAIN_SECRET,
@@ -241,17 +223,10 @@ const verifyBlockchainIntegrity = async () => {
   );
 };
 
-/**
- * 🆕 VERIFY CASE HISTORY WITH TAMPERING DETECTION
- * Enhanced verification with pattern detection
- */
 const verifyCaseHistory = async (caseNum) => {
   const verification = await verifyEntityHistory(caseNum);
-  
-  // Detect tampering patterns for failed blocks
   if (!verification.valid) {
     verification.tamperingPatterns = [];
-    
     for (const historyItem of verification.history) {
       if (!historyItem.verification.overall) {
         const patterns = detectTamperingPatterns(historyItem.verification);
@@ -266,17 +241,11 @@ const verifyCaseHistory = async (caseNum) => {
       }
     }
   }
-  
   return verification;
 };
 
-/**
- * 🆕 GET BLOCKCHAIN STATS WITH SECURITY METRICS
- */
 const getBlockchainStats = async () => {
   const stats = await blockchain.getChainStats();
-  
-  // Add verification summary
   const verificationResult = await verifyBlockchainIntegrity();
   
   stats.verification = {
@@ -290,70 +259,29 @@ const getBlockchainStats = async () => {
   return stats;
 };
 
-/**
- * 🆕 VERIFY SPECIFIC BLOCK
- * Deep verification of a single block
- */
 const verifySpecificBlock = async (blockIndex) => {
-  const block = await Block.findOne({ index: blockIndex });
-  if (!block) {
-    return {
-      valid: false,
-      error: 'Block not found'
-    };
-  }
+  const { data: block } = await supabase.from('blockchain_blocks').select('*').eq('index', blockIndex).single();
+  if (!block) return { valid: false, error: 'Block not found' };
   
-  const previousBlock = await Block.findOne({ index: blockIndex - 1 });
-  if (!previousBlock && blockIndex !== 0) {
-    return {
-      valid: false,
-      error: 'Previous block not found - chain broken'
-    };
-  }
+  const { data: previousBlock } = await supabase.from('blockchain_blocks').select('*').eq('index', blockIndex - 1).single();
+  if (!previousBlock && blockIndex !== 0) return { valid: false, error: 'Previous block not found - chain broken' };
   
-  if (blockIndex === 0) {
-    return {
-      valid: true,
-      note: 'Genesis block',
-      block: block.toObject()
-    };
-  }
+  if (blockIndex === 0) return { valid: true, note: 'Genesis block', block };
   
   const verification = await verifyBlockComplete(
-    block,
-    previousBlock,
+    { ...block, previousHash: block.previous_hash },
+    { ...previousBlock, hash: previousBlock.hash },
     process.env.BLOCKCHAIN_SECRET,
     parseInt(process.env.BLOCKCHAIN_DIFFICULTY)
   );
   
-  // Detect tampering patterns
   const patterns = detectTamperingPatterns(verification);
-  
-  return {
-    ...verification,
-    tamperingPatterns: patterns,
-    block: block.toObject(),
-    previousBlock: {
-      index: previousBlock.index,
-      hash: previousBlock.hash
-    }
-  };
+  return { ...verification, tamperingPatterns: patterns, block, previousBlock: { index: previousBlock.index, hash: previousBlock.hash } };
 };
 
-/**
- * 🆕 GET TAMPERED BLOCKS
- * Find all blocks that fail verification
- */
 const getTamperedBlocks = async () => {
   const verificationResult = await verifyBlockchainIntegrity();
-  
-  if (verificationResult.valid) {
-    return {
-      tamperedBlocks: [],
-      count: 0,
-      message: 'No tampering detected'
-    };
-  }
+  if (verificationResult.valid) return { tamperedBlocks: [], count: 0, message: 'No tampering detected' };
   
   const tamperedBlocks = verificationResult.blockResults
     .filter(result => !result.overall)
@@ -374,161 +302,45 @@ const getTamperedBlocks = async () => {
     message: `${tamperedBlocks.length} tampered block(s) detected`
   };
 };
-// FIXED: The frontend code that calls the tampering investigation
-// This needs to be corrected in your React/frontend component
-
-// BACKEND FIX - Update blockchainService.js
-// Replace the verifyDatabaseBlockchainSync function completely:
 
 const verifyDatabaseBlockchainSync = async (caseNum) => {
-  const LegalCase = require('../models/LegalCase');
-  const case_ = await LegalCase.findOne({ case_num: caseNum });
-  
-  if (!case_) {
-    return { valid: false, error: 'Case not found in database' };
-  }
+  const { data: case_ } = await supabase.from('legal_cases').select('*').eq('case_num', caseNum).single();
+  if (!case_) return { valid: false, error: 'Case not found in database' };
 
   const blocks = await blockchain.getBlocksByEntity(caseNum);
-  if (blocks.length === 0) {
-    return { valid: false, error: 'No blockchain records found' };
-  }
+  if (blocks.length === 0) return { valid: false, error: 'No blockchain records found' };
 
   const discrepancies = [];
-
-  // ✅ FIX 1: Only compare IMMUTABLE fields from filing block
-  const filingBlock = blocks.find(b => b.dataType === 'case_filing');
+  const filingBlock = blocks.find(b => b.data_type === 'case_filing');
   if (filingBlock) {
-    // Plaintiff (should NEVER change)
     if (filingBlock.data.plaintiff !== case_.plaintiff_details.name) {
-      discrepancies.push({
-        field: 'plaintiff_name',
-        blockchain_value: filingBlock.data.plaintiff,
-        database_value: case_.plaintiff_details.name,
-        severity: 'CRITICAL',
-        block_index: filingBlock.index,
-        reason: 'Plaintiff name is immutable'
-      });
+      discrepancies.push({ field: 'plaintiff_name', blockchain_value: filingBlock.data.plaintiff, database_value: case_.plaintiff_details.name, severity: 'CRITICAL', block_index: filingBlock.index, reason: 'Plaintiff name is immutable' });
     }
-
-    // Respondent (should NEVER change)
     if (filingBlock.data.respondent !== case_.respondent_details.name) {
-      discrepancies.push({
-        field: 'respondent_name',
-        blockchain_value: filingBlock.data.respondent,
-        database_value: case_.respondent_details.name,
-        severity: 'CRITICAL',
-        block_index: filingBlock.index,
-        reason: 'Respondent name is immutable'
-      });
+      discrepancies.push({ field: 'respondent_name', blockchain_value: filingBlock.data.respondent, database_value: case_.respondent_details.name, severity: 'CRITICAL', block_index: filingBlock.index, reason: 'Respondent name is immutable' });
     }
-
-    // Case type (should NEVER change)
     if (filingBlock.data.case_type !== case_.case_type) {
-      discrepancies.push({
-        field: 'case_type',
-        blockchain_value: filingBlock.data.case_type,
-        database_value: case_.case_type,
-        severity: 'HIGH',
-        block_index: filingBlock.index,
-        reason: 'Case type is immutable'
-      });
+      discrepancies.push({ field: 'case_type', blockchain_value: filingBlock.data.case_type, database_value: case_.case_type, severity: 'HIGH', block_index: filingBlock.index, reason: 'Case type is immutable' });
     }
   }
 
-  // ✅ FIX 2: Get LATEST status from status update blocks
-  const statusBlocks = blocks
-    .filter(b => b.dataType === 'case_status_update')
-    .sort((a, b) => b.index - a.index); // Sort by block index (most recent first)
-  
-  let expectedStatus = 'Filed'; // Default from filing
-  
+  const statusBlocks = blocks.filter(b => b.data_type === 'case_status_update').sort((a, b) => b.index - a.index);
+  let expectedStatus = filingBlock?.data?.case_type ? 'Filed' : 'Filed';
   if (statusBlocks.length > 0) {
-    // Get the most recent status from blockchain
     expectedStatus = statusBlocks[0].data.new_status;
-    
-    // Compare with database
     if (expectedStatus !== case_.status) {
-      discrepancies.push({
-        field: 'status',
-        blockchain_value: expectedStatus,
-        database_value: case_.status,
-        severity: 'CRITICAL',
-        block_index: statusBlocks[0].index,
-        blockchain_timestamp: statusBlocks[0].timestamp,
-        reason: 'Current status does not match latest blockchain entry'
-      });
-    }
-  } else if (filingBlock) {
-    // No status updates, should be "Filed"
-    if (case_.status !== 'Filed') {
-      discrepancies.push({
-        field: 'status',
-        blockchain_value: 'Filed',
-        database_value: case_.status,
-        severity: 'CRITICAL',
-        block_index: filingBlock.index,
-        reason: 'Status changed without blockchain record'
-      });
+      discrepancies.push({ field: 'status', blockchain_value: expectedStatus, database_value: case_.status, severity: 'CRITICAL', block_index: statusBlocks[0].index, reason: 'Current status does not match latest blockchain entry' });
     }
   }
 
-  // ✅ FIX 3: Get LATEST approval status
-  const approvalBlocks = blocks
-    .filter(b => b.dataType === 'case_approval')
-    .sort((a, b) => b.index - a.index);
-  
+  const approvalBlocks = blocks.filter(b => b.data_type === 'case_approval').sort((a, b) => b.index - a.index);
   if (approvalBlocks.length > 0) {
-    const latestApproval = approvalBlocks[0];
-    if (latestApproval.data.approved !== case_.case_approved) {
-      discrepancies.push({
-        field: 'case_approved',
-        blockchain_value: latestApproval.data.approved,
-        database_value: case_.case_approved,
-        severity: 'CRITICAL',
-        block_index: latestApproval.index,
-        blockchain_timestamp: latestApproval.timestamp,
-        reason: 'Approval status does not match latest blockchain entry'
-      });
+    if (approvalBlocks[0].data.approved !== case_.case_approved) {
+      discrepancies.push({ field: 'case_approved', blockchain_value: approvalBlocks[0].data.approved, database_value: case_.case_approved, severity: 'CRITICAL', block_index: approvalBlocks[0].index, reason: 'Approval status does not match latest blockchain entry' });
     }
   }
 
-  // Document count verification
-  const documentBlocks = blocks.filter(b => b.dataType === 'document_upload');
-  const currentDocCount = case_.documents?.length || 0;
-  
-  if (documentBlocks.length > currentDocCount) {
-    discrepancies.push({
-      field: 'document_count',
-      blockchain_value: documentBlocks.length,
-      database_value: currentDocCount,
-      severity: 'HIGH',
-      block_index: 'N/A',
-      message: `${documentBlocks.length - currentDocCount} document(s) deleted without blockchain record`
-    });
-  }
-
-  // Hearing count verification
-  const hearingBlocks = blocks.filter(b => b.dataType === 'hearing_added');
-  const currentHearingCount = case_.hearings?.length || 0;
-  
-  if (hearingBlocks.length > currentHearingCount) {
-    discrepancies.push({
-      field: 'hearing_count',
-      blockchain_value: hearingBlocks.length,
-      database_value: currentHearingCount,
-      severity: 'MEDIUM',
-      block_index: 'N/A',
-      message: `${hearingBlocks.length - currentHearingCount} hearing(s) deleted without blockchain record`
-    });
-  }
-
-  // ✅ Determine overall status
-  const criticalDiscrepancies = discrepancies.filter(d => d.severity === 'CRITICAL');
-  const status = criticalDiscrepancies.length > 0 
-    ? 'CRITICAL_DATABASE_TAMPERING'
-    : discrepancies.length > 0 
-      ? 'MINOR_DISCREPANCIES'
-      : 'VERIFIED';
+  const status = discrepancies.some(d => d.severity === 'CRITICAL') ? 'CRITICAL_DATABASE_TAMPERING' : (discrepancies.length > 0 ? 'MINOR_DISCREPANCIES' : 'VERIFIED');
 
   return {
     valid: discrepancies.length === 0,
@@ -537,16 +349,14 @@ const verifyDatabaseBlockchainSync = async (caseNum) => {
     total_blockchain_entries: blocks.length,
     discrepancies,
     last_blockchain_update: blocks[blocks.length - 1]?.timestamp,
-    database_last_modified: case_.updatedAt,
+    database_last_modified: case_.updated_at,
     blockchain_state: {
       latest_status: expectedStatus,
       latest_approval: approvalBlocks.length > 0 ? approvalBlocks[0].data.approved : null,
-      total_status_updates: statusBlocks.length,
-      total_approvals: approvalBlocks.length
     }
   };
 };
-// REPLACE the existing module.exports (around line 500+) with:
+
 module.exports = {
   logCaseFiling,
   logCaseStatusUpdate,

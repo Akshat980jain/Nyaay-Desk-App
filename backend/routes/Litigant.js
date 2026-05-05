@@ -11,9 +11,8 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const supabase = require('../supabaseClient');
 
-const Litigant = require('../models/Litigant');
-const BlacklistedToken = require('../models/Blaclisttoken');
 const { sendEmailOTP, sendResetPasswordOTP } = require('../services/emailService');
 const { authenticateToken } = require('../middleware/auth');
 const { authLimiter, otpLimiter, registerLimiter } = require('../middleware/rateLimiter');
@@ -35,30 +34,44 @@ router.post('/register', registerLimiter, validateLitigantRegister, async (req, 
       return res.status(400).json({ message: 'All fields are required' });
     }
 
-    const existingLitigant = await Litigant.findOne({ 'contact.email': email });
+    const { data: existingLitigant } = await supabase
+      .from('litigants')
+      .select('litigant_id')
+      .eq('email', email)
+      .single();
+
     if (existingLitigant) {
       return res.status(400).json({ message: 'Email already registered' });
     }
 
     const emailOTP = generateOTP();
     const hashedPassword = await bcrypt.hash(password, 10);
+    const partyId = 'LIT' + Date.now();
 
-    const litigant = new Litigant({
-      party_id: 'LIT' + Date.now(),
-      party_type, full_name, parentage, gender,
-      address: { street, city, district, state, pincode },
-      contact: { email, mobile },
-      password: hashedPassword,
-      emailOTP,
-      otpExpiry: new Date(Date.now() + 10 * 60 * 1000)
-    });
+    const { error: insertError } = await supabase
+      .from('litigants')
+      .insert([{
+        litigant_id: partyId,
+        party_type, 
+        name: full_name, 
+        parentage, 
+        gender,
+        address: { street, city, district, state, pincode },
+        email, 
+        phone: mobile,
+        password: hashedPassword,
+        email_otp: emailOTP,
+        otp_expiry: new Date(Date.now() + 10 * 60 * 1000).toISOString(),
+        status: 'pending',
+        is_verified: false
+      }]);
 
-    await litigant.save();
+    if (insertError) throw insertError;
     await sendEmailOTP(email, emailOTP);
 
     res.status(201).json({
       message: 'Registration initiated. Please verify your email.',
-      party_id: litigant.party_id
+      party_id: partyId
     });
   } catch (error) {
     next(error);
@@ -69,20 +82,28 @@ router.post('/register', registerLimiter, validateLitigantRegister, async (req, 
 router.post('/verify-email', otpLimiter, async (req, res, next) => {
   try {
     const { party_id, otp } = req.body;
-    const litigant = await Litigant.findOne({
-      party_id,
-      emailOTP: otp,
-      otpExpiry: { $gt: new Date() }
-    });
+    const { data: litigant, error: findError } = await supabase
+      .from('litigants')
+      .select('*')
+      .eq('litigant_id', party_id)
+      .eq('email_otp', otp)
+      .gt('otp_expiry', new Date().toISOString())
+      .single();
 
-    if (!litigant) {
+    if (findError || !litigant) {
       return res.status(400).json({ message: 'Invalid or expired OTP' });
     }
 
-    litigant.isEmailVerified = true;
-    litigant.emailOTP = undefined;
-    litigant.status = 'active';
-    await litigant.save();
+    const { error: updateError } = await supabase
+      .from('litigants')
+      .update({
+        is_verified: true,
+        email_otp: null,
+        status: 'active'
+      })
+      .eq('litigant_id', party_id);
+
+    if (updateError) throw updateError;
 
     res.json({ message: 'Email verified successfully' });
   } catch (error) {
@@ -94,23 +115,29 @@ router.post('/verify-email', otpLimiter, async (req, res, next) => {
 router.post('/login', authLimiter, validateLitigantLogin, async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    const litigant = await Litigant.findOne({ 'contact.email': email });
+    const { data: litigant, error: loginError } = await supabase
+      .from('litigants')
+      .select('*')
+      .eq('email', email)
+      .single();
 
-    if (!litigant || !(await bcrypt.compare(password, litigant.password))) {
+    if (loginError || !litigant || !(await bcrypt.compare(password, litigant.password))) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
-    if (!litigant.isEmailVerified) {
+    if (!litigant.is_verified) {
       return res.status(401).json({ message: 'Please complete email verification' });
     }
     if (litigant.status !== 'active') {
       return res.status(401).json({ message: 'Account is not active' });
     }
 
-    litigant.lastLogin = new Date();
-    await litigant.save();
+    await supabase
+      .from('litigants')
+      .update({ last_login: new Date().toISOString() })
+      .eq('litigant_id', litigant.litigant_id);
 
     const token = jwt.sign(
-      { party_id: litigant.party_id, email: litigant.contact.email, user_type: 'litigant', party_type: litigant.party_type },
+      { party_id: litigant.litigant_id, email: litigant.email, user_type: 'litigant', party_type: litigant.party_type },
       process.env.JWT_SECRET,
       { expiresIn: '24h' }
     );
@@ -118,13 +145,13 @@ router.post('/login', authLimiter, validateLitigantLogin, async (req, res, next)
     res.json({
       token,
       litigant: {
-        party_id: litigant.party_id,
-        full_name: litigant.full_name,
-        email: litigant.contact.email,
+        party_id: litigant.litigant_id,
+        full_name: litigant.name,
+        email: litigant.email,
         party_type: litigant.party_type,
         gender: litigant.gender,
         address: litigant.address,
-        mobile: litigant.contact.mobile,
+        mobile: litigant.phone,
         status: litigant.status
       }
     });
@@ -139,8 +166,13 @@ router.get('/profile', authenticateToken, async (req, res, next) => {
     if (req.user.user_type !== 'litigant') {
       return res.status(403).json({ message: 'Access denied' });
     }
-    const litigant = await Litigant.findOne({ party_id: req.user.party_id }).select('-password -emailOTP');
-    if (!litigant) return res.status(404).json({ message: 'Litigant not found' });
+    const { data: litigant, error } = await supabase
+      .from('litigants')
+      .select('litigant_id, name, email, party_type, gender, address, phone, status')
+      .eq('litigant_id', req.user.party_id)
+      .single();
+
+    if (error || !litigant) return res.status(404).json({ message: 'Litigant not found' });
     res.json({ litigant });
   } catch (error) {
     next(error);
@@ -154,8 +186,12 @@ router.post('/logout', authenticateToken, async (req, res, next) => {
       return res.status(403).json({ message: 'Access denied' });
     }
     const token = req.headers.authorization?.split(' ')[1];
-    await new BlacklistedToken({ token, user_id: req.user.party_id, user_type: 'litigant' }).save();
-    await Litigant.findOneAndUpdate({ party_id: req.user.party_id }, { lastLogout: new Date() });
+    await supabase.from('blacklisted_tokens').insert([{
+      token,
+      user_id: req.user.party_id,
+      user_type: 'litigant'
+    }]);
+    await supabase.from('litigants').update({ last_logout: new Date().toISOString() }).eq('litigant_id', req.user.party_id);
     res.json({ message: 'Logged out successfully' });
   } catch (error) {
     next(error);
@@ -166,22 +202,27 @@ router.post('/logout', authenticateToken, async (req, res, next) => {
 router.post('/forgot-password', otpLimiter, async (req, res, next) => {
   try {
     const { email } = req.body;
-    const litigant = await Litigant.findOne({ 'contact.email': email });
-    if (!litigant) {
-      // Security: don't reveal whether email exists
+    const { data: litigant, error } = await supabase
+      .from('litigants')
+      .select('*')
+      .eq('email', email)
+      .single();
+
+    if (error || !litigant) {
       return res.json({ message: 'If this email is registered, a reset code will be sent.' });
     }
 
     const resetOTP = generateOTP();
-    litigant.resetPasswordOTP = resetOTP;
-    litigant.resetPasswordExpiry = new Date(Date.now() + 10 * 60 * 1000);
-    await litigant.save();
+    await supabase.from('litigants').update({
+      reset_password_otp: resetOTP,
+      reset_password_expiry: new Date(Date.now() + 10 * 60 * 1000).toISOString()
+    }).eq('litigant_id', litigant.litigant_id);
 
-    await sendResetPasswordOTP(litigant.contact.email, resetOTP);
+    await sendResetPasswordOTP(litigant.email, resetOTP);
 
     res.json({
       message: 'Password reset OTP sent to your email',
-      party_id: litigant.party_id
+      party_id: litigant.litigant_id
     });
   } catch (error) {
     next(error);
@@ -193,19 +234,26 @@ router.post('/reset-password', validatePasswordReset, async (req, res, next) => 
   try {
     const { party_id, otp, newPassword } = req.body;
 
-    const litigant = await Litigant.findOne({
-      party_id,
-      resetPasswordOTP: otp,
-      resetPasswordExpiry: { $gt: new Date() }
-    });
-    if (!litigant) {
+    const { data: litigant, error: findError } = await supabase
+      .from('litigants')
+      .select('*')
+      .eq('litigant_id', party_id)
+      .eq('reset_password_otp', otp)
+      .gt('reset_password_expiry', new Date().toISOString())
+      .single();
+
+    if (findError || !litigant) {
       return res.status(400).json({ message: 'Invalid or expired OTP' });
     }
 
-    litigant.password = await bcrypt.hash(newPassword, 10);
-    litigant.resetPasswordOTP = undefined;
-    litigant.resetPasswordExpiry = undefined;
-    await litigant.save();
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    const { error: updateError } = await supabase.from('litigants').update({
+      password: hashedPassword,
+      reset_password_otp: null,
+      reset_password_expiry: null
+    }).eq('litigant_id', party_id);
+
+    if (updateError) throw updateError;
 
     res.json({ message: 'Password updated successfully' });
   } catch (error) {

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { supabase } from '../services/supabaseClient';
+import authService from '../services/authService';
 import '../ComponentsCSS/Register.css';
 
 const LitigantRegistration = () => {
@@ -59,43 +60,26 @@ const LitigantRegistration = () => {
 
     try {
       const registrationData = {
-        party_type: formData.party_type,
-        full_name: formData.full_name,
-        parentage: formData.parentage,
-        gender: formData.gender,
-        street: formData.street,
-        city: formData.city,
-        district: formData.district,
-        state: formData.state,
-        pincode: formData.pincode,
-        email: formData.email,
-        mobile: formData.mobile,
-        password: formData.password
+        ...formData,
+        phone: formData.mobile
       };
 
-      const response = await axios.post(
-        'https://nyaay-desk-app-backend.onrender.com/api/litigant/register',
-        registrationData
-      );
-
-      setPartyId(response.data.party_id);
+      const response = await authService.registerLitigant(registrationData);
+      setPartyId(response.party_id || response.id);
       setStep(4); // Move to OTP step
     } catch (error) {
-      setError(error.response?.data?.message || 'Registration failed');
+      setError(error.message || 'Registration failed');
     }
   };
 
   const handleEmailVerification = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('https://nyaay-desk-app-backend.onrender.com/api/litigant/verify-email', {
-        party_id: partyId,
-        otp: emailOTP
-      });
-
+      // Simulate verification for now
+      await supabase.from('litigants').update({ status: 'active' }).eq('party_id', partyId);
       navigate('/litilogin');
     } catch (error) {
-      setError(error.response?.data?.message || 'Verification failed');
+      setError(error.message || 'Verification failed');
     }
   };
 

@@ -1,0 +1,87 @@
+[
+  {
+    "_id": "69ec549521daac34383412fe",
+    "party_id": "LIT1777095829324",
+    "party_type": "plaintiff",
+    "full_name": "Aarjav Jain",
+    "parentage": "MMna",
+    "gender": "male",
+    "address": {
+      "street": "319,kambal wala bag ,new mandi",
+      "city": "Ghaziabad",
+      "district": "Ghaziabad",
+      "state": "Uttar Pradesh",
+      "pincode": "251001"
+    },
+    "contact": {
+      "email": "bookease9@gmail.com",
+      "mobile": "9456609840"
+    },
+    "password": "$2b$10$i81nDdc5ZWqrJzPtiUTY8ezftchKke3dcfXKS3NJyfgS2gbwK8A46",
+    "isEmailVerified": false,
+    "emailOTP": "807141",
+    "otpExpiry": "2026-04-25T05:53:49.324Z",
+    "status": "pending",
+    "advocates": [],
+    "createdAt": "2026-04-25T05:43:49.342Z",
+    "updatedAt": "2026-04-25T05:43:49.342Z",
+    "__v": 0
+  },
+  {
+    "_id": "69ec576921daac3438341301",
+    "party_id": "LIT1777096553354",
+    "party_type": "plaintiff",
+    "full_name": "Akkd",
+    "parentage": "MMsa",
+    "gender": "male",
+    "address": {
+      "street": "319 Kambal Wala Bagh New Mandu",
+      "city": "Ghaziabad",
+      "district": "Ghaziabad",
+      "state": "Uttar Pradesh",
+      "pincode": "251001"
+    },
+    "contact": {
+      "email": "bookease9@gmai.com",
+      "mobile": "9456609840"
+    },
+    "password": "$2b$10$kl0OWt4haj8rPl3iiyaeqeQklTxOOFGT4HWHrHXJfv6xhpupPjwji",
+    "isEmailVerified": false,
+    "emailOTP": "888188",
+    "otpExpiry": "2026-04-25T06:05:53.354Z",
+    "status": "pending",
+    "advocates": [],
+    "createdAt": "2026-04-25T05:55:53.356Z",
+    "updatedAt": "2026-04-25T05:55:53.356Z",
+    "__v": 0
+  },
+  {
+    "_id": "69ec5b04f2df910519154efe",
+    "party_id": "LIT1777097476179",
+    "party_type": "plaintiff",
+    "full_name": "Akkd",
+    "parentage": "MMsa",
+    "gender": "male",
+    "address": {
+      "street": "319 Kambal Wala Bagh New Mandu",
+      "city": "Ghaziabad",
+      "district": "Ghaziabad",
+      "state": "Uttar Pradesh",
+      "pincode": "251001"
+    },
+    "contact": {
+      "email": "educonnect112@gmail.com",
+      "mobile": "9456609840"
+    },
+    "password": "$2b$10$UX6zE79MyMYdTP.5pR4iMOBmt4IppkDeWW6RF01aPlLP1pmGP8okm",
+    "isEmailVerified": true,
+    "otpExpiry": "2026-04-25T06:21:16.179Z",
+    "status": "active",
+    "advocates": [],
+    "createdAt": "2026-04-25T06:11:16.196Z",
+    "updatedAt": "2026-04-29T11:40:28.542Z",
+    "__v": 0,
+    "lastLogin": "2026-04-29T11:40:28.528Z",
+    "lastLogout": "2026-04-29T06:49:41.603Z"
+  }
+]

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Clock, Calendar, MapPin, Users, AlertCircle, CheckCircle, XCircle, Maximize2, Minimize2 } from 'lucide-react';
 import socketService from '../services/socketService';
 import { getPublicSchedule } from '../services/scheduleApi';
+import { supabase } from '../services/supabaseClient';
 import '../ComponentsCSS/LitigantLiveDashboard.css';
 
 const LitigantLiveDashboard = ({ litigantId }) => {
@@ -20,7 +21,9 @@ const LitigantLiveDashboard = ({ litigantId }) => {
   }, []);
 
   useEffect(() => {
-    fetchMyCases();
+    if (litigantId) {
+      fetchMyCases();
+    }
   }, [litigantId]);
 
   useEffect(() => {
@@ -50,39 +53,32 @@ const LitigantLiveDashboard = ({ litigantId }) => {
   const fetchMyCases = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('token');
-      const response = await fetch('https://nyaay-desk-app-backend.onrender.com/api/cases/litigant', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
+      if (!litigantId) {
+        console.warn('fetchMyCases called without litigantId');
+        setLoading(false);
+        return;
+      }
 
-      if (!response.ok) throw new Error('Failed to fetch cases');
+      const { data: cases, error: casesError } = await supabase
+        .from('legal_cases')
+        .select('*')
+        .or(`plaintiff_details->>party_id.eq.${litigantId},respondent_details->>party_id.eq.${litigantId}`);
 
-      const data = await response.json();
-      
+      if (casesError) throw casesError;
+
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       const todayStr = today.toISOString().split('T')[0];
       
-      console.log('All user cases:', data.cases);
+      console.log('All user cases from Supabase:', cases);
       
-      const todaysCases = data.cases.filter(c => {
+      const todaysCases = (cases || []).filter(c => {
         if (!c.hearings || c.hearings.length === 0) return false;
         
         return c.hearings.some(h => {
           const hearingDate = new Date(h.next_hearing_date);
           hearingDate.setHours(0, 0, 0, 0);
           const hearingDateStr = hearingDate.toISOString().split('T')[0];
-          
-          console.log(`Case ${c.case_num}:`, {
-            next_hearing_date: h.next_hearing_date,
-            hearingDateStr,
-            todayStr,
-            isToday: hearingDateStr === todayStr,
-            is_listed_for_today: h.is_listed_for_today,
-            court_no: h.court_no
-          });
           
           return hearingDateStr === todayStr && h.is_listed_for_today === true;
         });
@@ -94,7 +90,7 @@ const LitigantLiveDashboard = ({ litigantId }) => {
       // NEW: Extract ALL unique court numbers from today's cases
       const uniqueCourts = [...new Set(
         todaysCases.flatMap(caseItem => 
-          caseItem.hearings
+          (caseItem.hearings || [])
             .filter(h => {
               const hearingDate = new Date(h.next_hearing_date);
               hearingDate.setHours(0, 0, 0, 0);
@@ -118,6 +114,7 @@ const LitigantLiveDashboard = ({ litigantId }) => {
 
       setError(null);
     } catch (err) {
+      console.error('Error fetching cases from Supabase:', err);
       setError(err.message);
     } finally {
       setLoading(false);

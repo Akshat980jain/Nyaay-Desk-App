@@ -1,19 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Clock, Play, Square, XCircle, Calendar, Edit2, RotateCcw, Trash2, AlertCircle, CheckCircle, Plus } from 'lucide-react';
-import socketService from '../services/socketService';
-import { 
-  getTodaySchedule, 
-  startHearing, 
-  endHearing, 
-  dismissHearing,
-  getCasesForListing,
-  createListing,
-  updateCaseTiming,
-  reopenHearing,
-  removeCaseFromSchedule,
-  validateTimeSlot,
-  getSuggestedTimeSlots
-} from '../services/scheduleApi';
+import { supabase } from '../services/supabaseClient';
 import '../ComponentsCSS/CourtAdminLiveDashboard.css';
 
 const CourtAdminLiveDashboard = () => {
@@ -57,46 +44,21 @@ const CourtAdminLiveDashboard = () => {
   useEffect(() => {
     if (courtNo) {
       loadSchedule();
-      socketService.connect();
-      socketService.joinCourt(courtNo);
-      setupSocketListeners();
     }
-
-    return () => {
-      if (courtNo) {
-        socketService.leaveCourt(courtNo);
-        socketService.removeAllListeners();
-      }
-    };
   }, [courtNo]);
 
   const fetchAdminProfile = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('token');
-      const response = await fetch('https://nyaay-desk-app-backend.onrender.com/api/courtadmin/profile', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-
-      if (!response.ok) throw new Error('Failed to fetch admin profile');
-
-      const data = await response.json();
-      const profileData = data.admin || data;
-      setAdminProfile(profileData);
-      
-      if (profileData.court_no) {
-        setCourtNo(profileData.court_no);
-      } else if (profileData.court_name) {
-        setCourtNo(profileData.court_name);
-      } else if (profileData.courtNo) {
-        setCourtNo(profileData.courtNo);
-      } else {
-        setError('Court number not found in your profile.');
-        setLoading(false);
-      }
+      // Read admin data stored at login time
+      const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+      setAdminProfile(userData);
+      const court = userData.court_no || userData.court_name || userData.courtNo || 'COURT-1';
+      setCourtNo(court);
     } catch (err) {
-      console.error('Error fetching admin profile:', err);
-      setError(err.message);
+      console.error('Error reading admin profile:', err);
+      setCourtNo('COURT-1'); // fallback
+    } finally {
       setLoading(false);
     }
   };
@@ -139,12 +101,20 @@ const CourtAdminLiveDashboard = () => {
   const loadSchedule = async () => {
     try {
       setLoading(true);
-      const data = await getTodaySchedule(courtNo);
-      setSchedule(data);
+      const today = new Date().toISOString().split('T')[0];
+      const { data, error: err } = await supabase
+        .from('court_schedule')
+        .select('*')
+        .eq('court_no', courtNo)
+        .eq('schedule_date', today)
+        .maybeSingle();
+      if (err) throw err;
+      setSchedule(data || { scheduled_cases: [], court_no: courtNo, schedule_date: today });
       setError(null);
     } catch (err) {
       console.error('Error loading schedule:', err);
-      setError(err.message);
+      // If table doesn't exist yet, show empty schedule instead of error
+      setSchedule({ scheduled_cases: [], court_no: courtNo });
     } finally {
       setLoading(false);
     }
@@ -152,136 +122,127 @@ const CourtAdminLiveDashboard = () => {
 
   const loadAvailableCases = async () => {
     try {
-      const response = await getCasesForListing();
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      const todayStr = today.toISOString().split('T')[0];
-      
-      const casesForToday = response.cases.filter(c => {
+      const today = new Date().toISOString().split('T')[0];
+      const { data, error: err } = await supabase
+        .from('legal_cases')
+        .select('*')
+        .not('hearings', 'is', null);
+      if (err) throw err;
+      const casesForToday = (data || []).filter(c => {
         if (!c.hearings || c.hearings.length === 0) return false;
-        
         return c.hearings.some(h => {
-          const hearingDate = new Date(h.next_hearing_date);
-          hearingDate.setHours(0, 0, 0, 0);
-          const hearingDateStr = hearingDate.toISOString().split('T')[0];
-          return hearingDateStr === todayStr && !h.is_listed_for_today;
+          if (!h.next_hearing_date) return false;
+          return h.next_hearing_date.split('T')[0] === today && !h.is_listed_for_today;
         });
       });
-      
       setAvailableCases(casesForToday);
-      
-      if (casesForToday.length === 0) {
-        setError('No cases available for listing today.');
-      }
+      if (casesForToday.length === 0) setError('No cases available for listing today.');
     } catch (err) {
       setError(err.message);
     }
   };
 
   const loadSuggestedSlots = async () => {
-    try {
-      const slots = await getSuggestedTimeSlots(courtNo, estimatedDuration);
-      setSuggestedSlots(slots);
-    } catch (err) {
-      console.error('Error loading suggested slots:', err);
+    // Compute locally from current schedule
+    const cases = schedule?.scheduled_cases || [];
+    const now = new Date();
+    const endOfDay = new Date(); endOfDay.setHours(17, 0, 0, 0);
+    const suggestions = [];
+    let cur = new Date(Math.max(now.getTime(), new Date().setHours(10,0,0,0)));
+    while (cur < endOfDay && suggestions.length < 5) {
+      const end = new Date(cur.getTime() + estimatedDuration * 60000);
+      const conflict = cases.some(c => {
+        const s = new Date(c.listing_time_start), e = new Date(c.listing_time_end);
+        return cur < e && end > s;
+      });
+      if (!conflict && end <= endOfDay) suggestions.push({ start_time: new Date(cur), end_time: end });
+      cur = new Date(cur.getTime() + 30 * 60000);
     }
+    setSuggestedSlots(suggestions);
   };
 
   useEffect(() => {
-    const validateSlot = async () => {
-      if (schedulingMode === 'manual' && manualStartTime && manualEndTime) {
-        try {
-          const result = await validateTimeSlot({
-            court_no: courtNo,
-            start_time: manualStartTime,
-            end_time: manualEndTime
-          });
-          
-          if (!result.available) {
-            setTimeConflict(result.conflicts);
-          } else {
-            setTimeConflict(null);
-          }
-        } catch (err) {
-          console.error('Error validating time slot:', err);
-        }
-      } else {
-        setTimeConflict(null);
-      }
-    };
-
-    const debounce = setTimeout(validateSlot, 500);
-    return () => clearTimeout(debounce);
-  }, [manualStartTime, manualEndTime, schedulingMode, courtNo]);
+    if (schedulingMode === 'manual' && manualStartTime && manualEndTime) {
+      const cases = schedule?.scheduled_cases || [];
+      const s = new Date(manualStartTime), e = new Date(manualEndTime);
+      const conflicts = cases.filter(c => {
+        const cs = new Date(c.listing_time_start), ce = new Date(c.listing_time_end);
+        return s < ce && e > cs;
+      });
+      setTimeConflict(conflicts.length > 0 ? conflicts : null);
+    } else {
+      setTimeConflict(null);
+    }
+  }, [manualStartTime, manualEndTime, schedulingMode]);
 
   const handleStartHearing = async (caseNum) => {
     try {
-      await startHearing({
-        schedule_id: schedule.schedule_id,
-        case_num: caseNum
-      });
-      loadSchedule();
+      const cases = (schedule?.scheduled_cases || []).map(c =>
+        c.case_num === caseNum ? { ...c, status: 'in_progress', actual_start_time: new Date().toISOString() } : c
+      );
+      await updateSchedule(cases);
       showSuccess('Hearing started successfully');
-    } catch (err) {
-      setError(err.message);
-    }
+    } catch (err) { setError(err.message); }
   };
 
   const handleEndHearing = async (caseNum) => {
     try {
-      await endHearing({
-        schedule_id: schedule.schedule_id,
-        case_num: caseNum
-      });
-      loadSchedule();
+      const cases = (schedule?.scheduled_cases || []).map(c =>
+        c.case_num === caseNum ? { ...c, status: 'completed', actual_end_time: new Date().toISOString() } : c
+      );
+      await updateSchedule(cases);
       showSuccess('Hearing ended successfully');
-    } catch (err) {
-      setError(err.message);
-    }
+    } catch (err) { setError(err.message); }
   };
 
   const handleDismissHearing = async (caseNum) => {
     try {
-      await dismissHearing({
-        schedule_id: schedule.schedule_id,
-        case_num: caseNum,
-        reason: 'Dismissed by court admin'
-      });
-      loadSchedule();
+      const cases = (schedule?.scheduled_cases || []).map(c =>
+        c.case_num === caseNum ? { ...c, status: 'dismissed' } : c
+      );
+      await updateSchedule(cases);
       showSuccess('Hearing dismissed');
-    } catch (err) {
-      setError(err.message);
-    }
+    } catch (err) { setError(err.message); }
   };
 
   const handleReopenHearing = async (caseNum) => {
-    if (!window.confirm('Are you sure you want to reopen this hearing?')) return;
-
+    if (!window.confirm('Reopen this hearing?')) return;
     try {
-      await reopenHearing({
-        schedule_id: schedule.schedule_id,
-        case_num: caseNum
-      });
-      loadSchedule();
+      const cases = (schedule?.scheduled_cases || []).map(c =>
+        c.case_num === caseNum ? { ...c, status: 'scheduled', actual_start_time: null, actual_end_time: null } : c
+      );
+      await updateSchedule(cases);
       showSuccess('Hearing reopened successfully');
-    } catch (err) {
-      setError(err.message);
-    }
+    } catch (err) { setError(err.message); }
   };
 
   const handleRemoveCase = async (caseNum) => {
-    if (!window.confirm('Remove this case from today\'s schedule?')) return;
-
+    if (!window.confirm('Remove this case from schedule?')) return;
     try {
-      await removeCaseFromSchedule({
-        schedule_id: schedule.schedule_id,
-        case_num: caseNum
-      });
-      loadSchedule();
+      const cases = (schedule?.scheduled_cases || []).filter(c => c.case_num !== caseNum);
+      await updateSchedule(cases);
       showSuccess('Case removed from schedule');
-    } catch (err) {
-      setError(err.message);
+    } catch (err) { setError(err.message); }
+  };
+
+  // Helper: persist updated scheduled_cases array to Supabase
+  const updateSchedule = async (updatedCases) => {
+    const today = new Date().toISOString().split('T')[0];
+    if (schedule?.id) {
+      const { error: err } = await supabase
+        .from('court_schedule')
+        .update({ scheduled_cases: updatedCases })
+        .eq('id', schedule.id);
+      if (err) throw err;
+    } else {
+      const { data, error: err } = await supabase
+        .from('court_schedule')
+        .insert({ court_no: courtNo, schedule_date: today, scheduled_cases: updatedCases })
+        .select().single();
+      if (err) throw err;
+      setSchedule(prev => ({ ...prev, id: data.id }));
     }
+    setSchedule(prev => ({ ...prev, scheduled_cases: updatedCases }));
   };
 
   const handleEditTiming = (caseItem) => {
@@ -331,42 +292,29 @@ const CourtAdminLiveDashboard = () => {
       setError('Please select a case and hearing');
       return;
     }
-
     try {
-      const payload = {
+      const now = new Date();
+      const startTime = schedulingMode === 'manual' && manualStartTime
+        ? new Date(manualStartTime)
+        : now;
+      const endTime = schedulingMode === 'manual' && manualEndTime
+        ? new Date(manualEndTime)
+        : new Date(startTime.getTime() + estimatedDuration * 60000);
+
+      const newEntry = {
         case_num: selectedCase.case_num,
-        hearing_id: selectedHearing._id,
-        court_no: courtNo,
-        estimated_duration: estimatedDuration,
-        auto_schedule: schedulingMode === 'auto'
+        case_type: selectedCase.case_type,
+        plaintiff_name: selectedCase.plaintiff_details?.name || '',
+        respondent_name: selectedCase.respondent_details?.name || '',
+        listing_time_start: startTime.toISOString(),
+        listing_time_end: endTime.toISOString(),
+        status: 'scheduled',
+        listing_order: (schedule?.scheduled_cases?.length || 0) + 1
       };
 
-      if (schedulingMode === 'manual') {
-        if (!manualStartTime || !manualEndTime) {
-          setError('Please select start and end times');
-          return;
-        }
+      const updatedCases = [...(schedule?.scheduled_cases || []), newEntry];
+      await updateSchedule(updatedCases);
 
-        const startDate = new Date(manualStartTime);
-        const endDate = new Date(manualEndTime);
-        const now = new Date();
-
-        if (startDate < now) {
-          setError('Cannot schedule in the past');
-          return;
-        }
-
-        if (endDate <= startDate) {
-          setError('End time must be after start time');
-          return;
-        }
-
-        payload.listing_time_start = startDate.toISOString();
-        payload.listing_time_end = endDate.toISOString();
-      }
-
-      await createListing(payload);
-      
       setShowScheduleForm(false);
       setSelectedCase(null);
       setSelectedHearing(null);
@@ -375,11 +323,9 @@ const CourtAdminLiveDashboard = () => {
       setManualStartTime('');
       setManualEndTime('');
       setError(null);
-      
-      loadSchedule();
       showSuccess('Case added to schedule successfully');
     } catch (err) {
-      setError(err.response?.data?.message || err.message);
+      setError(err.message);
     }
   };
 

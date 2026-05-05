@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { supabase } from '../services/supabaseClient';
 import '../ComponentsCSS/AccountManagement.css';
 
 const AccountManagement = () => {
@@ -18,14 +18,6 @@ const AccountManagement = () => {
   const [suspensionReason, setSuspensionReason] = useState('');
   const [currentActionId, setCurrentActionId] = useState(null);
 
-  // Set up axios with token from localStorage
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    }
-  }, []);
-
   // Load data when component mounts or tab changes
   useEffect(() => {
     fetchData();
@@ -35,18 +27,22 @@ const AccountManagement = () => {
     setIsLoading(true);
     setMessage({ text: '', type: '' });
     try {
-      const endpoint = `https://nyaay-desk-app-backend.onrender.com/api/clerk/${activeTab}`;
-      const response = await axios.get(endpoint);
+      const { data, error } = await supabase
+        .from(activeTab)
+        .select('*')
+        .order('created_at', { ascending: false });
+      
+      if (error) throw error;
       
       if (activeTab === 'litigants') {
-        setLitigants(response.data);
+        setLitigants(data);
       } else {
-        setAdvocates(response.data);
+        setAdvocates(data);
       }
     } catch (err) {
       console.error(`Error fetching ${activeTab}:`, err);
       setMessage({ 
-        text: err.response?.data?.message || `Failed to load ${activeTab}`,
+        text: err.message || `Failed to load ${activeTab}`,
         type: 'error'
       });
     } finally {
@@ -60,13 +56,19 @@ const AccountManagement = () => {
     setMessage({ text: '', type: '' });
     
     try {
-      const endpoint = `https://nyaay-desk-app-backend.onrender.com/api/clerk/${activeTab}/${id}`;
-      const response = await axios.get(endpoint);
-      setSelectedUser(response.data);
+      const idField = activeTab === 'litigants' ? 'party_id' : 'advocate_id';
+      const { data, error } = await supabase
+        .from(activeTab)
+        .select('*')
+        .eq(idField, id)
+        .single();
+      
+      if (error) throw error;
+      setSelectedUser(data);
     } catch (err) {
       console.error('Error fetching details:', err);
       setMessage({ 
-        text: err.response?.data?.message || 'Failed to fetch details',
+        text: err.message || 'Failed to fetch details',
         type: 'error'
       });
     } finally {
@@ -95,21 +97,27 @@ const AccountManagement = () => {
     setSuspensionReason('');
   };
 
-  // Handle suspend submission
   const handleSuspend = async () => {
     if (!suspensionReason.trim()) {
       setMessage({ text: 'Please provide a reason for suspension', type: 'error' });
       return;
     }
   
-    console.log("Suspension reason:", suspensionReason);
     setIsLoading(true);
     setMessage({ text: '', type: '' });
     
     try {
-      const endpoint = `https://nyaay-desk-app-backend.onrender.com/api/clerk/${activeTab}/${currentActionId}/suspend`;
-      console.log("Sending request to:", endpoint, "with data:", { reason: suspensionReason });
-      await axios.put(endpoint, { reason: suspensionReason });
+      const idField = activeTab === 'litigants' ? 'party_id' : 'advocate_id';
+      const { error } = await supabase
+        .from(activeTab)
+        .update({ 
+          status: 'suspended', 
+          suspension_reason: suspensionReason,
+          suspension_date: new Date().toISOString()
+        })
+        .eq(idField, currentActionId);
+      
+      if (error) throw error;
       
       if (activeTab === 'litigants') {
         setLitigants(litigants.map(litigant => 
@@ -117,20 +125,16 @@ const AccountManagement = () => {
             ? {...litigant, status: 'suspended'} 
             : litigant
         ));
-        
-        if (selectedUser && selectedUser.party_id === currentActionId) {
-          setSelectedUser({...selectedUser, status: 'suspended', suspension_reason: suspensionReason });
-        }
       } else {
         setAdvocates(advocates.map(advocate => 
           advocate.advocate_id === currentActionId 
             ? {...advocate, status: 'suspended'} 
             : advocate
         ));
-        
-        if (selectedUser && selectedUser.advocate_id === currentActionId) {
-          setSelectedUser({...selectedUser, status: 'suspended', suspension_reason: suspensionReason });
-        }
+      }
+      
+      if (selectedUser && (selectedUser.party_id === currentActionId || selectedUser.advocate_id === currentActionId)) {
+        setSelectedUser({...selectedUser, status: 'suspended', suspension_reason: suspensionReason });
       }
       
       setMessage({ text: 'Account suspended successfully', type: 'success' });
@@ -138,7 +142,7 @@ const AccountManagement = () => {
     } catch (err) {
       console.error('Error suspending account:', err);
       setMessage({ 
-        text: err.response?.data?.message || 'Failed to suspend account',
+        text: err.message || 'Failed to suspend account',
         type: 'error'
       });
     } finally {
@@ -146,14 +150,23 @@ const AccountManagement = () => {
     }
   };
 
-  // Handle reinstate submission
   const handleReinstate = async () => {
     setIsLoading(true);
     setMessage({ text: '', type: '' });
     
     try {
-      const endpoint = `https://nyaay-desk-app-backend.onrender.com/api/clerk/${activeTab}/${currentActionId}/reinstate`;
-      await axios.put(endpoint);
+      const idField = activeTab === 'litigants' ? 'party_id' : 'advocate_id';
+      const { error } = await supabase
+        .from(activeTab)
+        .update({ 
+          status: 'active', 
+          suspension_reason: null,
+          suspension_date: null,
+          is_verified: true // Automatically verify when reinstating if needed
+        })
+        .eq(idField, currentActionId);
+      
+      if (error) throw error;
       
       if (activeTab === 'litigants') {
         setLitigants(litigants.map(litigant => 
@@ -161,20 +174,16 @@ const AccountManagement = () => {
             ? {...litigant, status: 'active'} 
             : litigant
         ));
-        
-        if (selectedUser && selectedUser.party_id === currentActionId) {
-          setSelectedUser({...selectedUser, status: 'active', suspension_reason: undefined });
-        }
       } else {
         setAdvocates(advocates.map(advocate => 
           advocate.advocate_id === currentActionId 
             ? {...advocate, status: 'active'} 
             : advocate
         ));
-        
-        if (selectedUser && selectedUser.advocate_id === currentActionId) {
-          setSelectedUser({...selectedUser, status: 'active', suspension_reason: undefined });
-        }
+      }
+
+      if (selectedUser && (selectedUser.party_id === currentActionId || selectedUser.advocate_id === currentActionId)) {
+        setSelectedUser({...selectedUser, status: 'active', suspension_reason: undefined });
       }
       
       setMessage({ text: 'Account reinstated successfully', type: 'success' });
@@ -182,7 +191,7 @@ const AccountManagement = () => {
     } catch (err) {
       console.error('Error reinstating account:', err);
       setMessage({ 
-        text: err.response?.data?.message || 'Failed to reinstate account',
+        text: err.message || 'Failed to reinstate account',
         type: 'error'
       });
     } finally {

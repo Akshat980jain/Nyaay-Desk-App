@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import axios from 'axios';
+import supabaseApi from '../services/supabaseApi';
+import { supabase } from '../services/supabaseClient';
 import { useNavigate } from 'react-router-dom';
 import { LogOut, FileText, Calendar, Database, Info, Book, Users, X } from 'lucide-react';
 import '../ComponentsCSS/AdvocateDashboard.css';
@@ -320,15 +322,16 @@ const [isHearingDetailsOpen, setIsHearingDetailsOpen] = useState(false);
           navigate('/advlogin');
           throw new Error('No authentication token found');
         }
-        const response = await axios.get('https://nyaay-desk-app-backend.onrender.com/api/advocate/profile', {
-          headers: { 'Authorization': `Bearer ${token}` },
-        });
+        const response = await supabaseApi.get('/api/advocate/profile');
         setProfile(response.data.advocate);
-        if (response.data.advocate.profilePicture) {
-          setProfilePicture(
-            `https://nyaay-desk-app-backend.onrender.com/api/advocate/profile-picture/${response.data.advocate.profilePicture}`
-          );
-        }
+          // Profile picture is now served from Supabase Storage (if set)
+          if (response.data.advocate.profile_picture_url) {
+            setProfilePicture(response.data.advocate.profile_picture_url);
+          } else if (response.data.advocate.profilePicture) {
+            setProfilePicture(
+              `https://nyaay-desk-app-backend.onrender.com/api/advocate/profile-picture/${response.data.advocate.profilePicture}`
+            );
+          }
         setLoading(false);
       } catch (err) {
         setError(err.response?.data?.message || err.message);
@@ -341,12 +344,17 @@ const [isHearingDetailsOpen, setIsHearingDetailsOpen] = useState(false);
     fetchProfile();
   }, [navigate]);
 
-  // Fetch advocate cases
+  // Sequentialized initial data fetch once profile is loaded to avoid 429 Too Many Requests
   useEffect(() => {
-    if (!loading && profile) {
-      fetchCases();
-    }
-  }, [loading, profile]);
+    const loadData = async () => {
+      if (!loading && profile) {
+        await fetchCases();
+        await fetchJoinRequests();
+        await fetchNocRequests();
+      }
+    };
+    loadData();
+  }, [loading, !!profile]);
 
   // Restore documents if a case was selected before refresh
   useEffect(() => {
@@ -362,9 +370,7 @@ useEffect(() => {
     try {
       const token = localStorage.getItem('token');
       // Changed endpoint from '/api/my-document-requests' to advocate-specific route
-      const response = await axios.get('https://nyaay-desk-app-backend.onrender.com/api/advocate/my-document-requests', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await supabaseApi.get('/api/advocate/my-document-requests');
       setDocumentRequests(response.data.requests || []);
     } catch (error) {
       console.error('Error fetching document requests:', error);
@@ -381,9 +387,7 @@ useEffect(() => {
     setCasesLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('https://nyaay-desk-app-backend.onrender.com/api/cases/advocate', {
-        headers: { 'Authorization': `Bearer ${token}` },
-      });
+      const response = await supabaseApi.get('/api/cases/advocate');
       setCases(response.data.cases || []);
     } catch (err) {
       console.error('Error fetching cases:', err);
@@ -396,9 +400,7 @@ useEffect(() => {
     setJoinRequestsLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('https://nyaay-desk-app-backend.onrender.com/advocate/pending-requests', {
-        headers: { 'Authorization': `Bearer ${token}` },
-      });
+      const response = await supabaseApi.get('/api/advocate/pending-requests');
       setJoinRequests(response.data.pendingRequests || []);
     } catch (err) {
       console.error('Error fetching join requests:', err);
@@ -407,22 +409,14 @@ useEffect(() => {
     }
   };
 
-  // Fetch join requests on component mount
-  useEffect(() => {
-    if (!loading && profile) {
-      fetchJoinRequests();
-      fetchNocRequests();
-    }
-  }, [loading, profile]);
+  // Initial data fetch consolidated above
 
   const fetchNocRequests = async () => {
     if (!profile) return;
     setNocRequestsLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`https://nyaay-desk-app-backend.onrender.com/api/advocate-change/advocate-requests/${profile.advocate_id}`, {
-        headers: { 'Authorization': `Bearer ${token}` },
-      });
+      const response = await supabaseApi.get(`/api/advocate-change/advocate-requests/${profile.advocate_id}`);
       setNocRequests(response.data || []);
     } catch (err) {
       console.error('Error fetching NOC requests:', err);
@@ -449,12 +443,11 @@ useEffect(() => {
       const token = localStorage.getItem('token');
       const formData = new FormData();
       formData.append('profilePicture', file);
-      const response = await axios.post(
-        'https://nyaay-desk-app-backend.onrender.com/api/advocate/profile-picture',
+      const response = await api.post(
+        '/api/advocate/profile-picture',
         formData,
         {
           headers: {
-            'Authorization': `Bearer ${token}`,
             'Content-Type': 'multipart/form-data',
           },
         }
@@ -485,34 +478,48 @@ const handleRequestedDocumentUpload = async (e, documentId, caseNum) => {
   }
 
   try {
-    const token = localStorage.getItem('token');
-    const formData = new FormData();
-    formData.append('file', documentFile);
+    const timestamp = Date.now();
+    const ext = documentFile.name.split('.').pop();
+    const filePath = `${caseNum}/requested/${documentId}-${timestamp}.${ext}`;
 
-    await axios.post(
-      `https://nyaay-desk-app-backend.onrender.com/api/case/${caseNum}/upload-requested-document/${documentId}`,
-      formData,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data',
-        },
-      }
-    );
+    // 1. Upload to Supabase Storage
+    const { data: uploadData, error: uploadError } = await supabase.storage
+      .from('video-pleadings') // Reusing bucket
+      .upload(filePath, documentFile);
+
+    if (uploadError) throw uploadError;
+
+    // 2. Get Public URL
+    const { data: { publicUrl } } = supabase.storage
+      .from('video-pleadings')
+      .getPublicUrl(filePath);
+
+    // 3. Update the document request in document_requests table
+    const { error: updateError } = await supabase
+      .from('document_requests')
+      .update({
+        status: 'fulfilled',
+        file_path: publicUrl,
+        uploaded_at: new Date().toISOString()
+      })
+      .eq('document_id', documentId);
+
+    if (updateError) throw updateError;
 
     setDocumentSuccess('Requested document uploaded successfully. Pending admin verification.');
     setDocumentFile(null);
     setSelectedDocumentRequest(null);
-    document.getElementById('advocat-requested-doc-file-input').value = '';
+    if (document.getElementById('advocat-requested-doc-file-input')) {
+      document.getElementById('advocat-requested-doc-file-input').value = '';
+    }
     
-    // Refresh document requests - CHANGED THIS LINE
-    const response = await axios.get('https://nyaay-desk-app-backend.onrender.com/api/advocate/my-document-requests', {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    // Refresh document requests
+    const response = await supabaseApi.get('/api/advocate/my-document-requests');
     setDocumentRequests(response.data.requests || []);
     
   } catch (error) {
-    setDocumentError(error.response?.data?.message || 'Failed to upload requested document');
+    console.error('Error uploading requested document:', error);
+    setDocumentError(error.message || 'Failed to upload requested document');
   } finally {
     setUploadingRequestedDoc(false);
   }
@@ -523,12 +530,7 @@ const handleRequestedDocumentUpload = async (e, documentId, caseNum) => {
     setHearingsError(null);
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(
-        `https://nyaay-desk-app-backend.onrender.com/api/case/${searchCaseNum}/hearings/advocate`,
-        {
-          headers: { 'Authorization': `Bearer ${token}` },
-        }
-      );
+      const response = await supabaseApi.get(`/api/case/${searchCaseNum}/hearings/advocate`);
       setSearchedHearings(response.data.hearings || []);
       setHearingsLoading(false);
     } catch (err) {
@@ -542,12 +544,7 @@ const handleRequestedDocumentUpload = async (e, documentId, caseNum) => {
     setDocumentError(null);
     try {
       const token = localStorage.getItem('token');
-      const caseResponse = await axios.get(
-        `https://nyaay-desk-app-backend.onrender.com/api/case/${caseNum}/documents/advocate`,
-        {
-          headers: { 'Authorization': `Bearer ${token}` },
-        }
-      );
+      const caseResponse = await supabaseApi.get(`/api/case/${caseNum}/documents/advocate`);
       const selectedCase = cases.find((c) => c.case_num === caseNum);
       setSelectedCaseForDocuments(selectedCase);
       setDocuments(caseResponse.data.documents || []);
@@ -572,29 +569,58 @@ const handleRequestedDocumentUpload = async (e, documentId, caseNum) => {
     setDocumentError(null);
     setDocumentSuccess(null);
     try {
-      const token = localStorage.getItem('token');
-      const formData = new FormData();
-      formData.append('file', documentFile);
-      formData.append('document_type', documentType);
-      formData.append('description', documentDescription);
-      await axios.post(
-        `https://nyaay-desk-app-backend.onrender.com/api/case/${selectedCaseForDocuments.case_num}/document/advocate`,
-        formData,
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data',
-          },
-        }
-      );
+      const timestamp = Date.now();
+      const ext = documentFile.name.split('.').pop();
+      const filePath = `${selectedCaseForDocuments.case_num}/advocate/${timestamp}.${ext}`;
+
+      // 1. Upload to Supabase Storage
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('video-pleadings')
+        .upload(filePath, documentFile);
+
+      if (uploadError) throw uploadError;
+
+      // 2. Get Public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('video-pleadings')
+        .getPublicUrl(filePath);
+
+      // 3. Update legal_cases table
+      const newDoc = {
+        document_id: `DOC-${timestamp}`,
+        document_type: documentType,
+        description: documentDescription,
+        file_name: documentFile.name,
+        file_path: publicUrl,
+        upload_date: new Date().toISOString(),
+        uploaded_by_role: 'advocate',
+        uploaded_by_name: profile?.name || 'Advocate'
+      };
+
+      const updatedDocs = [...(selectedCaseForDocuments.documents || []), newDoc];
+
+      const { error: updateError } = await supabase
+        .from('legal_cases')
+        .update({ documents: updatedDocs })
+        .eq('case_num', selectedCaseForDocuments.case_num);
+
+      if (updateError) throw updateError;
+
       setDocumentSuccess('Document uploaded successfully');
-      fetchDocuments(selectedCaseForDocuments.case_num);
+      
+      // Update local state
+      setDocuments(updatedDocs);
+      setSelectedCaseForDocuments({ ...selectedCaseForDocuments, documents: updatedDocs });
+      
       setDocumentType('');
       setDocumentDescription('');
       setDocumentFile(null);
-      document.getElementById('advocat-document-file-input').value = '';
+      if (document.getElementById('advocat-document-file-input')) {
+        document.getElementById('advocat-document-file-input').value = '';
+      }
     } catch (err) {
-      setDocumentError(err.response?.data?.message || 'Error uploading document');
+      console.error('Error uploading document:', err);
+      setDocumentError(err.message || 'Error uploading document');
     } finally {
       setDocumentsLoading(false);
     }
@@ -602,21 +628,20 @@ const handleRequestedDocumentUpload = async (e, documentId, caseNum) => {
 
   const downloadDocument = async (documentId, fileName) => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get(
-        `https://nyaay-desk-app-backend.onrender.com/api/document/${documentId}/download/advocate`,
-        {
-          headers: { 'Authorization': `Bearer ${token}` },
-          responseType: 'blob',
-        }
-      );
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', fileName);
-      document.body.appendChild(link);
-      link.click();
-      link.parentNode.removeChild(link);
+      // Find the document in the current documents list
+      const doc = documents.find(d => d.document_id === documentId);
+      
+      // If it's a direct Supabase URL, open it in a new tab
+      if (doc && doc.file_path && (doc.file_path.startsWith('http') || doc.file_path.startsWith('https'))) {
+        window.open(doc.file_path, '_blank');
+        return;
+      }
+
+      // Documents are fetched from Supabase Storage via signed URLs in the edge function
+      const response = await supabaseApi.get(`/api/document/${documentId}/download/advocate`);
+      if (response.data?.url) {
+        window.open(response.data.url, '_blank');
+      }
     } catch (err) {
       console.error('Error downloading document:', err);
     }
@@ -625,17 +650,11 @@ const handleRequestedDocumentUpload = async (e, documentId, caseNum) => {
   const downloadAttachment = async (filename, originalname) => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`https://nyaay-desk-app-backend.onrender.com/api/files/${filename}`, {
-        headers: { 'Authorization': `Bearer ${token}` },
-        responseType: 'blob',
-      });
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', originalname);
-      document.body.appendChild(link);
-      link.click();
-      link.parentNode.removeChild(link);
+      // Attachments served from Supabase Storage
+      const response = await supabaseApi.get(`/api/files/${filename}`);
+      if (response.data?.url) {
+        window.open(response.data.url, '_blank');
+      }
     } catch (err) {
       console.error('Error downloading attachment:', err);
     }
@@ -763,38 +782,28 @@ const handleRequestedDocumentUpload = async (e, documentId, caseNum) => {
 
   const handleLogout = async () => {
     try {
-      const token = localStorage.getItem('token');
-      await axios.post(
-        'https://nyaay-desk-app-backend.onrender.com/api/advocate/logout',
-        {},
-        {
-          headers: { 'Authorization': `Bearer ${token}` },
-        }
-      );
+      await supabase.auth.signOut();
       localStorage.removeItem('token');
+      localStorage.removeItem('userType');
+      localStorage.removeItem('userData');
       sessionStorage.clear();
       navigate('/advlogin');
     } catch (error) {
-      setError(error.response?.data?.message || 'Logout failed');
+      setError('Logout failed');
     }
   };
 
   const handleLogoutAll = async () => {
     try {
-      const token = localStorage.getItem('token');
-      await axios.post(
-        'https://nyaay-desk-app-backend.onrender.com/api/advocate/logout-all',
-        { password: logoutPassword },
-        {
-          headers: { 'Authorization': `Bearer ${token}` },
-        }
-      );
+      await supabase.auth.signOut();
       localStorage.removeItem('token');
+      localStorage.removeItem('userType');
+      localStorage.removeItem('userData');
       sessionStorage.clear();
       setShowLogoutConfirm(false);
       navigate('/advlogin');
     } catch (error) {
-      setError(error.response?.data?.message || 'Logout from all devices failed');
+      setError('Logout from all devices failed');
     }
   };
 
@@ -875,7 +884,7 @@ const handleRequestedDocumentUpload = async (e, documentId, caseNum) => {
             </thead>
             <tbody>
               {cases.map((legalCase) => (
-                <tr key={legalCase._id}>
+                <tr key={legalCase.id || legalCase.case_num}>
                   <td>{legalCase.case_num}</td>
                   <td>{legalCase.case_type}</td>
                   <td>{legalCase.court}</td>
@@ -1385,7 +1394,7 @@ const renderDocuments = () => (
       >
         <option value="">-- Select a Case --</option>
         {cases.map((legalCase) => (
-          <option key={legalCase._id} value={legalCase.case_num}>
+          <option key={legalCase.id || legalCase.case_num} value={legalCase.case_num}>
             {legalCase.case_num} - {legalCase.case_type}
           </option>
         ))}
@@ -1484,8 +1493,11 @@ const renderDocuments = () => (
         payload.reason = declineReason;
       }
 
-      await axios.put(`https://nyaay-desk-app-backend.onrender.com/api/advocate-change/respond-noc/${requestId}`, payload, {
-        headers: { 'Authorization': `Bearer ${token}` },
+      await supabaseApi.put(`/api/advocate-change/respond-noc/${requestId}`, {
+        ...payload,
+        action: 'respond-noc',
+        requestId,
+        responseAction: action,
       });
 
       setSigningNocId(null);
@@ -1512,21 +1524,21 @@ const renderDocuments = () => (
       ) : (
         <div className="advocat-noc-requests-grid">
           {nocRequests.map((request) => (
-            <div key={request._id} className={`advocat-noc-request-card status-${request.nocRequestStatus.toLowerCase()}`}>
+            <div key={request.request_id} className={`advocat-noc-request-card status-${(request.noc_request_status || 'none').toLowerCase()}`}>
               <div className="advocat-noc-card-header">
-                <h3>Case No: {request.caseId?.case_num}</h3>
-                <span className={`advocat-noc-status-badge ${request.nocRequestStatus.toLowerCase()}`}>
-                  {request.nocRequestStatus}
+                <h3>Case No: {request.case_id}</h3>
+                <span className={`advocat-noc-status-badge ${(request.noc_request_status || 'none').toLowerCase()}`}>
+                  {request.noc_request_status || 'None'}
                 </span>
               </div>
               
               <div className="advocat-noc-card-body">
-                <p><strong>Court:</strong> {request.caseId?.court}</p>
-                <p><strong>Requested Date:</strong> {new Date(request.createdAt).toLocaleDateString()}</p>
+                <p><strong>Case ID:</strong> {request.case_id}</p>
+                <p><strong>Requested Date:</strong> {request.created_at ? new Date(request.created_at).toLocaleDateString() : 'N/A'}</p>
                 
-                {request.nocRequestStatus === 'Requested' && (
+                {request.noc_request_status === 'Requested' && (
                   <div className="advocat-noc-actions mt-4">
-                    {signingNocId === request._id ? (
+                    {signingNocId === request.request_id ? (
                       <div className="advocat-signing-form">
                         <input 
                           type="password" 
@@ -1538,7 +1550,7 @@ const renderDocuments = () => (
                         <div className="advocat-action-buttons-row mt-2">
                           <button 
                             className="advocat-sign-confirm-btn"
-                            onClick={() => handleNocResponse(request._id, 'Sign')}
+                            onClick={() => handleNocResponse(request.request_id, 'Sign')}
                             disabled={isSigning}
                           >
                             {isSigning ? 'Signing...' : 'Digitally Sign NOC'}
@@ -1546,7 +1558,7 @@ const renderDocuments = () => (
                           <button className="advocat-cancel-btn" onClick={() => setSigningNocId(null)}>Cancel</button>
                         </div>
                       </div>
-                    ) : decliningNocId === request._id ? (
+                    ) : decliningNocId === request.request_id ? (
                       <div className="advocat-declining-form">
                         <textarea 
                           placeholder="Reason for declining..." 
@@ -1557,7 +1569,7 @@ const renderDocuments = () => (
                         <div className="advocat-action-buttons-row mt-2">
                           <button 
                             className="advocat-decline-confirm-btn"
-                            onClick={() => handleNocResponse(request._id, 'Decline')}
+                            onClick={() => handleNocResponse(request.request_id, 'Decline')}
                           >
                             Confirm Decline
                           </button>
@@ -1566,10 +1578,10 @@ const renderDocuments = () => (
                       </div>
                     ) : (
                       <div className="advocat-action-buttons-row">
-                        <button className="advocat-sign-trigger-btn" onClick={() => setSigningNocId(request._id)}>
+                        <button className="advocat-sign-trigger-btn" onClick={() => setSigningNocId(request.request_id)}>
                           Sign NOC
                         </button>
-                        <button className="advocat-decline-trigger-btn" onClick={() => setDecliningNocId(request._id)}>
+                        <button className="advocat-decline-trigger-btn" onClick={() => setDecliningNocId(request.request_id)}>
                           Decline
                         </button>
                       </div>
@@ -1577,17 +1589,19 @@ const renderDocuments = () => (
                   </div>
                 )}
 
-                {request.nocRequestStatus === 'Signed' && (
+                {request.noc_request_status === 'Signed' && (
                   <div className="advocat-noc-info-box success mt-4">
-                    <p>✓ You digitally signed this NOC on {new Date(request.nocDigitalSignature.timestamp).toLocaleDateString()}</p>
-                    <p className="text-xs italic">Hash: {request.nocDigitalSignature.certificateHash.substr(0, 20)}...</p>
+                    <p>✓ You digitally signed this NOC on {request.noc_digital_signature?.timestamp ? new Date(request.noc_digital_signature.timestamp).toLocaleDateString() : 'N/A'}</p>
+                    {request.noc_digital_signature?.certificateHash && (
+                      <p className="text-xs italic">Hash: {request.noc_digital_signature.certificateHash.substr(0, 20)}...</p>
+                    )}
                   </div>
                 )}
 
-                {request.nocRequestStatus === 'Declined' && (
+                {request.noc_request_status === 'Declined' && (
                   <div className="advocat-noc-info-box error mt-4">
                     <p>✕ You declined this request.</p>
-                    <p><strong>Reason:</strong> {request.nocDeclineReason}</p>
+                    <p><strong>Reason:</strong> {request.noc_decline_reason}</p>
                   </div>
                 )}
               </div>
@@ -1616,7 +1630,7 @@ return <NoticeBoard />;
 case 'calendar':
 return <UserCalendar />;
 case 'caseassign':
-return <AdvocateCaseAssign />;
+return <AdvocateCaseAssign userInfo={profile} />;
 case 'filecase':
 return <AdvocateFileCase />;
 case 'meetings':

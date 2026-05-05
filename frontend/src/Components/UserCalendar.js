@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { supabase } from '../services/supabaseClient';
 import 'react-calendar/dist/Calendar.css';
 import '../ComponentsCSS/calendar.css'; // You'll need to create this CSS file
 
@@ -28,19 +28,20 @@ const UserCalendarPanel = () => {
     const fetchTodayTiming = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('https://nyaay-desk-app-backend.onrender.com/api/calendar/today', {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
-        });
-        setTodayTiming(response.data);
-        setLoading(false);
+        const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+        const { data, error: err } = await supabase
+          .from('court_calendar')
+          .select('*')
+          .eq('date', today)
+          .maybeSingle();
+        if (err) throw err;
+        setTodayTiming(data || null);
       } catch (err) {
-        setError(err.response?.data?.message || 'Failed to load today\'s timing');
+        setError(err.message || 'Failed to load today\'s timing');
+      } finally {
         setLoading(false);
       }
     };
-    
     fetchTodayTiming();
   }, []);
 
@@ -49,30 +50,29 @@ const UserCalendarPanel = () => {
     const fetchCalendarEntries = async () => {
       try {
         setLoading(true);
-        const year = selectedDate.getFullYear();
+        const year  = selectedDate.getFullYear();
         const month = selectedDate.getMonth() + 1;
-        
-        const response = await axios.get(`https://nyaay-desk-app-backend.onrender.com/api/calendar/${year}/${month}`, {
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`
-          }
-        });
-        
-        // Transform calendar entries into an object for easy lookup
+        const startDate = `${year}-${String(month).padStart(2,'0')}-01`;
+        const endDate   = `${year}-${String(month).padStart(2,'0')}-31`;
+
+        const { data, error: err } = await supabase
+          .from('court_calendar')
+          .select('*')
+          .gte('date', startDate)
+          .lte('date', endDate);
+        if (err) throw err;
+
         const entriesObj = {};
-        response.data.calendar.forEach(entry => {
-          const dateKey = formatDate(entry.date);
-          entriesObj[dateKey] = entry;
+        (data || []).forEach(entry => {
+          entriesObj[entry.date] = entry;
         });
-        
         setCalendarEntries(entriesObj);
-        setLoading(false);
       } catch (err) {
-        setError(err.response?.data?.message || 'Failed to load calendar data');
+        setError(err.message || 'Failed to load calendar data');
+      } finally {
         setLoading(false);
       }
     };
-    
     fetchCalendarEntries();
   }, [selectedDate]);
 

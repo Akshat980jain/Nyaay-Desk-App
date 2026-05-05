@@ -1,0 +1,86 @@
+[
+  {
+    "_id": "697dffe480bdcb7bf56d7288",
+    "schedule_id": "SCH-1769865188268",
+    "date": "2026-01-30T18:30:00.000Z",
+    "court_no": "Court_12346",
+    "court_allotted": "Court_12346",
+    "district": "Ghaziabad",
+    "scheduled_cases": [
+      {
+        "case_num": "MAC20267G82",
+        "hearing_id": "697dff3718d8003c63b87c60",
+        "listing_time_start": "2026-01-31T14:40:00.000Z",
+        "listing_time_end": "2026-01-31T15:40:00.000Z",
+        "estimated_duration": 60,
+        "status": "completed",
+        "listing_order": 0,
+        "plaintiff_name": "aaditiya",
+        "respondent_name": "Kishore kumar",
+        "case_type": "MACP",
+        "_id": "697e13564c1005600af1ecb3",
+        "actual_start_time": "2026-01-31T14:40:42.016Z",
+        "actual_duration": 119,
+        "actual_end_time": "2026-01-31T16:39:37.540Z"
+      },
+      {
+        "case_num": "CL2025XK72",
+        "hearing_id": "697e00b7faa4de5c1e8e10d7",
+        "listing_time_start": "2026-01-31T16:41:37.540Z",
+        "listing_time_end": "2026-01-31T17:40:37.540Z",
+        "estimated_duration": 60,
+        "status": "completed",
+        "listing_order": 1,
+        "plaintiff_name": "Rakesh Kumar ji",
+        "respondent_name": "Aaditiya Tyagi",
+        "case_type": "Civil",
+        "_id": "697e13a54c1005600af1ecef",
+        "actual_start_time": "2026-01-31T16:40:23.326Z",
+        "actual_duration": 2,
+        "actual_end_time": "2026-01-31T16:42:23.349Z"
+      }
+    ],
+    "current_case_index": 1,
+    "court_start_time": "2026-01-31T03:30:00.000Z",
+    "updated_by": "6810ac553b7435e35b182c6d",
+    "total_estimated_time": 225,
+    "last_updated": "2026-01-31T16:42:23.350Z",
+    "createdAt": "2026-01-31T13:13:08.311Z",
+    "updatedAt": "2026-01-31T16:42:23.354Z",
+    "__v": 5
+  },
+  {
+    "_id": "697e1c666e60ddbd2b1a98cf",
+    "schedule_id": "SCH-1769872486205",
+    "date": "2026-01-30T18:30:00.000Z",
+    "court_no": "Court_6789",
+    "court_allotted": "Court_6789",
+    "district": "Ghaziabad",
+    "scheduled_cases": [
+      {
+        "case_num": "CL2026VS53",
+        "hearing_id": "697e1c286e60ddbd2b1a98af",
+        "listing_time_start": "2026-01-31T15:16:00.000Z",
+        "listing_time_end": "2026-01-31T16:18:00.000Z",
+        "estimated_duration": 60,
+        "status": "completed",
+        "listing_order": 0,
+        "plaintiff_name": "Mahesh Kumar",
+        "respondent_name": "Adhir chaudhary",
+        "case_type": "Civil",
+        "_id": "697e1c666e60ddbd2b1a98d0",
+        "actual_start_time": "2026-01-31T16:41:36.380Z",
+        "actual_duration": 1,
+        "actual_end_time": "2026-01-31T16:42:34.051Z"
+      }
+    ],
+    "total_estimated_time": 60,
+    "current_case_index": 0,
+    "court_start_time": "2026-01-31T15:16:00.000Z",
+    "last_updated": "2026-01-31T16:42:34.052Z",
+    "updated_by": "697e16c86e60ddbd2b1a971e",
+    "createdAt": "2026-01-31T15:14:46.211Z",
+    "updatedAt": "2026-01-31T16:42:34.054Z",
+    "__v": 0
+  }
+]

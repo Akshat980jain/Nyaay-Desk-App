@@ -1,0 +1,153 @@
+[
+  {
+    "_id": "679f0867e523d476a4f837c1",
+    "advocate_id": "ADV1738475623381",
+    "enrollment_no": "UP06509/11",
+    "name": "ASHUTOSH SINGH",
+    "gender": "male",
+    "dob": "1988-01-01T00:00:00.000Z",
+    "contact": {
+      "email": "akash.2226cs1058@kiet.edu"
+    },
+    "district": "LUCKNOW",
+    "practice_details": {
+      "district_court": true,
+      "high_court": false,
+      "state": "Uttar Pradesh",
+      "district": "Ghaziabad",
+      "high_court_bench": "N.A"
+    },
+    "email": "akash.2226cs1058@kiet.edu",
+    "password": "$2a$10$P42ivvs8fh/pktaZBuSZ/udCjB6YkZVwD64OazGbfhD1tVV2MPiRq",
+    "isEmailVerified": true,
+    "otpExpiry": "2025-02-02T06:03:43.381Z",
+    "iCOP_number": "17789",
+    "cop_document": {
+      "filename": "1738475623122-2200290120001_AaditiyaTyagi_DBMS_LabCT.pdf",
+      "path": "uploads\\cop_documents\\1738475623122-2200290120001_AaditiyaTyagi_DBMS_LabCT.pdf",
+      "uploadDate": "2025-02-02T05:53:43.381Z"
+    },
+    "barId": "UP/12/2004",
+    "isVerified": true,
+    "status": "active",
+    "createdAt": "2025-02-02T05:53:43.401Z",
+    "updatedAt": "2026-04-29T15:00:42.947Z",
+    "__v": 0,
+    "verificationDate": "2026-04-29T15:00:42.939Z",
+    "verificationNotes": "proceed",
+    "verifiedBy": "CLERK-GZB-001",
+    "lastLogin": "2025-04-07T11:13:29.422Z"
+  },
+  {
+    "_id": "679f2e31e824d61c1de41abd",
+    "advocate_id": "ADV1738485297707",
+    "enrollment_no": "UP08991/13",
+    "name": "ARCHANA SINGH",
+    "gender": "male",
+    "dob": "1986-08-05T00:00:00.000Z",
+    "contact": {
+      "email": "tyagiaaditiya123@gmail.com"
+    },
+    "district": "MAINPURI",
+    "practice_details": {
+      "district_court": true,
+      "high_court": false,
+      "state": "Uttar Pradesh",
+      "district": "Ghaziabad",
+      "high_court_bench": "N.A"
+    },
+    "email": "tyagiaaditiya123@gmail.com",
+    "password": "$2a$10$HeSUTuIx375PWVRJWr/HEe9GnxDsz13wod9m4qFJR.qIHO6.JBoS.",
+    "isEmailVerified": true,
+    "otpExpiry": "2025-02-02T08:44:57.707Z",
+    "iCOP_number": "17718",
+    "cop_document": {
+      "filename": "1738485297293-2200290120001_Aaditiyatyagi_DBMS_Lab_08.pdf",
+      "path": "uploads\\cop_documents\\1738485297293-2200290120001_Aaditiyatyagi_DBMS_Lab_08.pdf",
+      "uploadDate": "2025-02-02T08:34:57.707Z"
+    },
+    "barId": "UP/12/14/2014",
+    "isVerified": true,
+    "status": "active",
+    "createdAt": "2025-02-02T08:34:57.746Z",
+    "updatedAt": "2025-04-07T13:41:49.550Z",
+    "__v": 0,
+    "verificationDate": "2025-02-02T08:38:18.224Z",
+    "verificationNotes": "Verified successfully",
+    "verifiedBy": "CLK1738411280535",
+    "lastLogin": "2025-04-07T13:41:41.411Z"
+  },
+  {
+    "_id": "67f3bdc6388e51ca952dcef1",
+    "advocate_id": "ADV1744027078877",
+    "enrollment_no": "1",
+    "name": "1",
+    "gender": "male",
+    "dob": "1111-11-11T00:00:00.000Z",
+    "contact": {
+      "email": "aaditiyatyagi123@gmail.com"
+    },
+    "district": "Ghaziabad",
+    "practice_details": {
+      "district_court": true,
+      "high_court": false,
+      "state": "Uttar Pradesh",
+      "district": "Ghaziabad",
+      "high_court_bench": "N.A"
+    },
+    "email": "aaditiyatyagi123@gmail.com",
+    "password": "$2a$10$ZQfePIzMIqvPcH2rOrVpneuHFtVJSd.eBz4cRUWdvPmKhU4p7cxWK",
+    "isEmailVerified": true,
+    "otpExpiry": "2025-04-07T12:07:58.877Z",
+    "iCOP_number": "12345678",
+    "cop_document": {
+      "filename": "1744027078755-2200290120001_Aaditiyatyagi_Compiler_design_Lab_03.pdf",
+      "path": "uploads\\cop_documents\\1744027078755-2200290120001_Aaditiyatyagi_Compiler_design_Lab_03.pdf",
+      "uploadDate": "2025-04-07T11:57:58.877Z"
+    },
+    "barId": "UP/12/2024",
+    "isVerified": true,
+    "status": "active",
+    "createdAt": "2025-04-07T11:57:58.879Z",
+    "updatedAt": "2026-02-06T23:18:32.833Z",
+    "__v": 0,
+    "verificationDate": "2025-04-26T07:20:40.658Z",
+    "verificationNotes": "congratultions on your successfull verification",
+    "verifiedBy": "CLK1738411280535",
+    "lastLogin": "2026-02-06T23:18:32.828Z",
+    "profilePicture": {
+      "filename": "ADV1744027078877-1745869292700-aadiimage.jpg",
+      "path": "uploads\\profile_pictures\\ADV1744027078877-1745869292700-aadiimage.jpg",
+      "uploadDate": "2025-04-28T19:41:32.705Z"
+    }
+  },
+  {
+    "_id": "69eb2c15f5299115ad7003fc",
+    "advocate_id": "ADV-GZB-001",
+    "enrollment_no": "UP/GZB/2020/001",
+    "name": "Manoj Jain",
+    "gender": "male",
+    "dob": "1990-05-15T00:00:00.000Z",
+    "contact": {
+      "email": "manojneetijain@gmail.com"
+    },
+    "district": "Ghaziabad",
+    "practice_details": {
+      "district_court": true,
+      "high_court": false,
+      "state": "Uttar Pradesh",
+      "district": "Ghaziabad"
+    },
+    "email": "manojneetijain@gmail.com",
+    "password": "$2b$10$3/VaL19TopAuW3y9nVd4ke4EuLLQmCd8F5NVXD9oDs7ZaWvjSRd3.",
+    "isEmailVerified": true,
+    "iCOP_number": "ICOP-UP-2020-001",
+    "barId": "BAR-GZB-2020-001",
+    "isVerified": true,
+    "status": "active",
+    "createdAt": "2026-04-24T08:38:45.730Z",
+    "updatedAt": "2026-04-29T06:42:02.072Z",
+    "__v": 0,
+    "lastLogin": "2026-04-29T06:42:02.071Z"
+  }
+]

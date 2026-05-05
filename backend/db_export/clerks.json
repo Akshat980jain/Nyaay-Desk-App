@@ -1,0 +1,44 @@
+[
+  {
+    "_id": "679e0d10876dd59c79e71b9d",
+    "clerk_id": "CLK1738411280535",
+    "name": "Aaditiya Tyagi",
+    "gender": "male",
+    "district": "Ghaziabad",
+    "court_name": "District court , Ghaziabad",
+    "court_no": "UP123",
+    "contact": {
+      "email": "aaditiyatyagi123@gmail.com",
+      "mobile": "07351811709"
+    },
+    "password": "$2a$10$Mb5iNhl7KKiWX66IYe1qie7kAM/9AHJPOIlqXNK05DfSl7PiBx4P2",
+    "isEmailVerified": true,
+    "otpExpiry": "2025-02-01T12:11:20.535Z",
+    "status": "active",
+    "createdAt": "2025-02-01T12:01:20.579Z",
+    "updatedAt": "2026-02-07T00:39:46.244Z",
+    "__v": 0,
+    "lastLogin": "2026-02-07T00:04:19.547Z",
+    "lastLogout": "2026-02-07T00:39:46.241Z"
+  },
+  {
+    "_id": "69eb2c15f5299115ad7003f5",
+    "clerk_id": "CLERK-GZB-001",
+    "name": "Aarjav Jain",
+    "gender": "male",
+    "district": "Ghaziabad",
+    "court_name": "District Court, Ghaziabad",
+    "court_no": "Court No. 3",
+    "contact": {
+      "email": "aarjav.jain.9.b.sdpsmzn@gmail.com",
+      "mobile": "9456609840"
+    },
+    "password": "$2b$10$K3AFFF1oh2ood4AmzF6S8OorjK0JsiXIdruE1B6fTh85PFFBEPfpm",
+    "isEmailVerified": true,
+    "status": "active",
+    "createdAt": "2026-04-24T08:38:45.347Z",
+    "updatedAt": "2026-04-29T06:08:40.527Z",
+    "__v": 0,
+    "lastLogin": "2026-04-29T06:08:40.526Z"
+  }
+]

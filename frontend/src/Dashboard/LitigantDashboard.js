@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
+import { supabase } from '../services/supabaseClient';
 import { useNavigate } from 'react-router-dom';
-import { LogOut, FileText, Calendar, Database, Info, Book, Users, Video, X } from 'lucide-react';
+import { LogOut, FileText, Calendar, Database, Info, Book, Users, Video, X, Download, FileDown } from 'lucide-react';
 import '../ComponentsCSS/LitigantDashboardStyles.css';
 import emblem from '../images/aadiimage4.svg';
 import logo from '../images/aadiimage4.png';
@@ -143,58 +143,83 @@ const [popup, setPopup] = useState({ isOpen: false, message: '', type: 'success'
     localStorage.setItem('litigant_active_section', activeSection);
   }, [activeSection]);
 
-  // Fetch profile data
+  // Load profile from localStorage (saved during login by authService)
   useEffect(() => {
-    const fetchProfile = async () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      navigate('/litilogin');
+      return;
+    }
+    const userData = localStorage.getItem('userData');
+    if (userData) {
       try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-          navigate('/litilogin');
-          throw new Error('No authentication token found');
-        }
-        const response = await axios.get('https://nyaay-desk-app-backend.onrender.com/api/litigant/profile', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setProfile(response.data.litigant);
+        setProfile(JSON.parse(userData));
         setLoading(false);
-      } catch (err) {
-        setError(err.response?.data?.message || err.message);
+      } catch {
+        setError('Failed to load profile data. Please log in again.');
         setLoading(false);
-        if (err.response?.status === 401) navigate('/litilogin');
       }
-    };
-    fetchProfile();
+    } else {
+      setError('No profile data found. Please log in again.');
+      setLoading(false);
+      navigate('/litilogin');
+    }
   }, [navigate]);
 
-  // Fetch cases
+  // Fetch cases from Supabase
+  const fetchCases = async () => {
+    if (!profile) return;
+    setCasesLoading(true);
+    try {
+      const { data, error: casesError } = await supabase
+          .from('legal_cases')
+          .select('*')
+          .or(`plaintiff_details->>party_id.eq.${profile?.litigant_id || profile?.party_id},respondent_details->>party_id.eq.${profile?.litigant_id || profile?.party_id}`);
+      
+      if (casesError) throw casesError;
+      setCases(data || []);
+    } catch (error) {
+      console.error('Failed to fetch cases:', error);
+      setError('Failed to fetch cases');
+    } finally {
+      setCasesLoading(false);
+    }
+  };
+
+  // Fetch cases from Supabase on mount
   useEffect(() => {
-    const fetchCases = async () => {
-      setCasesLoading(true);
-      try {
-        const token = localStorage.getItem('token');
-        const response = await axios.get('https://nyaay-desk-app-backend.onrender.com/api/cases/litigant', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setCases(response.data.cases || []);
-      } catch (error) {
-        setError(error.response?.data?.message || 'Failed to fetch cases');
-      } finally {
-        setCasesLoading(false);
-      }
-    };
     if (!loading && profile) {
       fetchCases();
       fetchAdvocateChangeRequests();
     }
   }, [loading, profile]);
 
+  // Listen for global update events (e.g. from Video Pleading recorder)
+  useEffect(() => {
+    const handleUpdate = (event) => {
+      console.log('Case data update detected:', event.detail);
+      fetchCases();
+      // If we are currently looking at the updated case's documents, refresh them too
+      if (selectedCaseForDocuments && event.detail?.caseNum === selectedCaseForDocuments.case_num) {
+        fetchDocuments(event.detail.caseNum);
+      }
+    };
+
+    window.addEventListener('caseDataUpdated', handleUpdate);
+    return () => window.removeEventListener('caseDataUpdated', handleUpdate);
+  }, [selectedCaseForDocuments, profile]);
+
   const fetchAdvocateChangeRequests = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get(`https://nyaay-desk-app-backend.onrender.com/api/advocate-change/litigant-requests/${profile.party_id}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setAdvocateChangeRequests(response.data || []);
+      const litigantId = profile?.litigant_id || profile?.party_id;
+      if (!litigantId) return;
+      const { data, error: err } = await supabase
+        .from('advocate_change_requests')
+        .select('*')
+        .eq('litigant_id', litigantId)
+        .order('created_at', { ascending: false });
+      if (err) throw err;
+      setAdvocateChangeRequests(data || []);
     } catch (err) {
       console.error('Error fetching advocate change requests:', err);
     }
@@ -202,26 +227,16 @@ const [popup, setPopup] = useState({ isOpen: false, message: '', type: 'success'
 
   const handleFinalSubmitToCourt = async (requestId) => {
     try {
-      const token = localStorage.getItem('token');
-      await axios.put(`https://nyaay-desk-app-backend.onrender.com/api/advocate-change/court-pending`, {
-        requestId,
-        status: 'Court Pending'
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setPopup({
-        isOpen: true,
-        message: 'Application submitted to court successfully!',
-        type: 'success'
-      });
+      const { error: err } = await supabase
+        .from('advocate_change_requests')
+        .update({ status: 'Under Court Review' })
+        .eq('request_id', requestId);
+      if (err) throw err;
+      setPopup({ isOpen: true, message: 'Application submitted to court successfully!', type: 'success' });
       fetchAdvocateChangeRequests();
     } catch (err) {
       console.error('Error submitting to court:', err);
-      setPopup({
-        isOpen: true,
-        message: 'Failed to submit to court. Please try again.',
-        type: 'error'
-      });
+      setPopup({ isOpen: true, message: 'Failed to submit to court. Please try again.', type: 'error' });
     }
   };
 
@@ -231,33 +246,25 @@ useEffect(() => {
     const fetchAllHearings = async () => {
       setHearingsLoading(true);
       try {
-        const token = localStorage.getItem('token');
-        const hearingPromises = cases.map((legalCase) =>
-          axios.get(`https://nyaay-desk-app-backend.onrender.com/api/case/${legalCase.case_num}/hearings`, {
-            headers: { Authorization: `Bearer ${token}` },
-          })
+        // Hearings are stored as JSONB in legal_cases — extract them directly
+        const allHearingsData = cases.flatMap(legalCase =>
+          (legalCase.hearings || []).map(h => ({
+            ...h,
+            case_num: legalCase.case_num,
+            case_type: legalCase.case_type
+          }))
         );
-        const responses = await Promise.all(hearingPromises);
-        const allHearingsData = responses.reduce((acc, response, index) => {
-          const caseHearings = response.data.hearings.map((hearing) => ({
-            ...hearing,
-            case_num: cases[index].case_num,
-            case_type: cases[index].case_type,
-          }));
-          return [...acc, ...caseHearings];
-        }, []);
         const sortedHearings = allHearingsData.sort(
           (a, b) => new Date(b.hearing_date) - new Date(a.hearing_date)
         );
         setAllHearings(sortedHearings);
         setHearingsError(null);
       } catch (error) {
-        setHearingsError(error.response?.data?.message || 'Failed to fetch hearings');
+        setHearingsError('Failed to load hearings');
       } finally {
         setHearingsLoading(false);
       }
     };
-
     if (activeSection === 'hearings' && cases.length > 0) {
       fetchAllHearings();
     }
@@ -267,22 +274,25 @@ useEffect(() => {
   const fetchDocumentRequests = async () => {
     setRequestsLoading(true);
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get('https://nyaay-desk-app-backend.onrender.com/api/my-document-requests', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setDocumentRequests(response.data.requests || []);
+      const litigantId = profile?.litigant_id || profile?.party_id;
+      if (!litigantId) return;
+      const { data, error: err } = await supabase
+        .from('document_requests')
+        .select('*')
+        .eq('requested_from', litigantId)
+        .order('created_at', { ascending: false });
+      if (err) throw err;
+      setDocumentRequests(data || []);
     } catch (error) {
       console.error('Error fetching document requests:', error);
     } finally {
       setRequestsLoading(false);
     }
   };
-
-  if (activeSection === 'documents') {
+  if (activeSection === 'documents' && profile) {
     fetchDocumentRequests();
   }
-}, [activeSection]);
+}, [activeSection, profile]);
 // Add this function after handleDocumentUpload (around line 340)
 const handleRequestedDocumentUpload = async (e, documentId, caseNum) => {
   e.preventDefault();
@@ -297,34 +307,55 @@ const handleRequestedDocumentUpload = async (e, documentId, caseNum) => {
   }
 
   try {
-    const token = localStorage.getItem('token');
-    const formData = new FormData();
-    formData.append('file', documentFile);
+    const timestamp = Date.now();
+    const ext = documentFile.name.split('.').pop();
+    const filePath = `${caseNum}/requested/${documentId}-${timestamp}.${ext}`;
 
-    await axios.post(
-      `https://nyaay-desk-app-backend.onrender.com/api/case/${caseNum}/upload-requested-document/${documentId}`,
-      formData,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data',
-        },
-      }
-    );
+    // 1. Upload to Supabase Storage
+    const { data: uploadData, error: uploadError } = await supabase.storage
+      .from('video-pleadings') // Reusing the same bucket for simplicity
+      .upload(filePath, documentFile);
+
+    if (uploadError) throw uploadError;
+
+    // 2. Get Public URL
+    const { data: { publicUrl } } = supabase.storage
+      .from('video-pleadings')
+      .getPublicUrl(filePath);
+
+    // 3. Update the document request in document_requests table
+    // Note: This assumes document_requests table exists and has a file_path and status field
+    const { error: updateError } = await supabase
+      .from('document_requests')
+      .update({
+        status: 'fulfilled',
+        file_path: publicUrl,
+        uploaded_at: new Date().toISOString()
+      })
+      .eq('document_id', documentId);
+
+    if (updateError) throw updateError;
 
     setDocumentSuccess('Requested document uploaded successfully. Pending admin verification.');
     setDocumentFile(null);
     setSelectedDocumentRequest(null);
-    document.getElementById('requested-doc-file-input').value = '';
+    if (document.getElementById('requested-doc-file-input')) {
+      document.getElementById('requested-doc-file-input').value = '';
+    }
     
-    // Refresh document requests
-    const response = await axios.get('https://nyaay-desk-app-backend.onrender.com/api/my-document-requests', {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    setDocumentRequests(response.data.requests || []);
+    // Refresh document requests (we'll need to fetch them from Supabase)
+    const { data: requests, error: reqError } = await supabase
+      .from('document_requests')
+      .select('*')
+      .eq('case_num', caseNum);
+    
+    if (!reqError) {
+      setDocumentRequests(requests || []);
+    }
     
   } catch (error) {
-    setDocumentError(error.response?.data?.message || 'Failed to upload requested document');
+    console.error('Error uploading requested document:', error);
+    setDocumentError(error.message || 'Failed to upload requested document');
   } finally {
     setUploadingRequestedDoc(false);
   }
@@ -334,14 +365,15 @@ const handleHearingSearch = async (e) => {
     setHearingsLoading(true);
     setHearingsError(null);
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get(
-        `https://nyaay-desk-app-backend.onrender.com/api/case/${searchCaseNum}/hearings`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setSearchedHearings(response.data.hearings);
+      const { data, error: err } = await supabase
+        .from('legal_cases')
+        .select('hearings, case_type')
+        .eq('case_num', searchCaseNum)
+        .single();
+      if (err) throw err;
+      setSearchedHearings(data?.hearings || []);
     } catch (error) {
-      setHearingsError(error.response?.data?.message || 'Failed to fetch hearings');
+      setHearingsError('Failed to fetch hearings for case: ' + searchCaseNum);
     } finally {
       setHearingsLoading(false);
     }
@@ -468,34 +500,36 @@ const handleHearingSearch = async (e) => {
 
   const handleLogout = async () => {
     try {
-      const token = localStorage.getItem('token');
-      await axios.post(
-        'https://nyaay-desk-app-backend.onrender.com/api/litigant/logout',
-        {},
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const { supabase } = await import('../services/supabaseClient');
+      await supabase.auth.signOut();
       localStorage.removeItem('token');
+      localStorage.removeItem('userType');
+      localStorage.removeItem('userData');
       localStorage.removeItem('litigant_active_section');
       navigate('/litilogin');
     } catch (error) {
-      setError(error.response?.data?.message || 'Logout failed');
+      console.error('Logout error:', error);
+      // Clear local state even if signout fails
+      localStorage.clear();
+      navigate('/litilogin');
     }
   };
 
   const handleLogoutAll = async () => {
     try {
-      const token = localStorage.getItem('token');
-      await axios.post(
-        'https://nyaay-desk-app-backend.onrender.com/api/litigant/logout-all',
-        { password: logoutPassword },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const { supabase } = await import('../services/supabaseClient');
+      // Supabase signOut with scope 'global' invalidates all sessions
+      await supabase.auth.signOut({ scope: 'global' });
       localStorage.removeItem('token');
+      localStorage.removeItem('userType');
+      localStorage.removeItem('userData');
       localStorage.removeItem('litigant_active_section');
       setShowLogoutConfirm(false);
       navigate('/litilogin');
     } catch (error) {
-      setError(error.response?.data?.message || 'Logout from all devices failed');
+      console.error('Logout all error:', error);
+      localStorage.clear();
+      navigate('/litilogin');
     }
   };
 
@@ -586,12 +620,11 @@ const handleTopLevelChange = (field, value) => {
     if (!criminalTypes.includes(formData.case_type)) {
       delete dataToSubmit.police_station_details;
     }
-      const response = await axios.post(
-        'https://nyaay-desk-app-backend.onrender.com/api/filecase/litigant',
-        dataToSubmit,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setFormSuccess(`Case filed successfully! Case Number: ${response.data.case_num}`);
+      // Make API call to file the case using Supabase Edge Function
+      const response = await callEdgeFunction('file-case', dataToSubmit, true);
+      
+      setFormSuccess(`Case filed successfully! Case Number: ${response.case_num}`);
+
       setFormData(initialFormState);
       setActiveSection('dashboard');
     } catch (error) {
@@ -600,23 +633,29 @@ const handleTopLevelChange = (field, value) => {
   };
 
   const fetchDocuments = async (caseNum) => {
+    if (!caseNum) return;
     setDocumentsLoading(true);
+    setDocumentError('');
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get('https://nyaay-desk-app-backend.onrender.com/api/cases/litigant', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const caseData = response.data.cases.find((c) => c.case_num === caseNum);
-      if (caseData) {
-        setDocuments(caseData.documents || []);
-        setSelectedCaseForDocuments(caseData);
-        setDocumentError('');
+      // Always fetch fresh from Supabase to avoid stale cache from 'cases' state
+      const { data, error } = await supabase
+        .from('legal_cases')
+        .select('documents, case_num, case_type, status')
+        .eq('case_num', caseNum)
+        .single();
+      
+      if (error) throw error;
+
+      if (data) {
+        setDocuments(data.documents || []);
+        setSelectedCaseForDocuments(data);
       } else {
         setDocumentError('Case not found');
         setDocuments([]);
       }
     } catch (error) {
-      setDocumentError(error.response?.data?.message || 'Failed to fetch documents');
+      console.error('Error fetching documents:', error);
+      setDocumentError('Failed to fetch documents: ' + error.message);
       setDocuments([]);
     } finally {
       setDocumentsLoading(false);
@@ -640,74 +679,111 @@ const handleTopLevelChange = (field, value) => {
       return;
     }
     try {
-      const token = localStorage.getItem('token');
-      const formData = new FormData();
-      formData.append('file', documentFile);
-      formData.append('document_type', documentType);
-      formData.append('description', documentDescription);
-      await axios.post(
-        `https://nyaay-desk-app-backend.onrender.com/api/case/${selectedCaseForDocuments.case_num}/document`,
-        formData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data',
-          },
-        }
-      );
+      setDocumentsLoading(true);
+      const timestamp = Date.now();
+      const ext = documentFile.name.split('.').pop();
+      const filePath = `${selectedCaseForDocuments.case_num}/litigant/${timestamp}.${ext}`;
+
+      // 1. Upload to Supabase Storage
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('video-pleadings') // Reusing bucket for now
+        .upload(filePath, documentFile);
+
+      if (uploadError) throw uploadError;
+
+      // 2. Get Public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('video-pleadings')
+        .getPublicUrl(filePath);
+
+      // 3. Update legal_cases table
+      const newDoc = {
+        document_id: `DOC-${timestamp}`,
+        document_type: documentType,
+        description: documentDescription,
+        file_name: documentFile.name,
+        file_path: publicUrl,
+        upload_date: new Date().toISOString(),
+        uploaded_by_role: 'litigant',
+        uploaded_by_name: profile?.name || 'Litigant'
+      };
+
+      const updatedDocs = [...(selectedCaseForDocuments.documents || []), newDoc];
+
+      const { error: updateError } = await supabase
+        .from('legal_cases')
+        .update({ documents: updatedDocs })
+        .eq('case_num', selectedCaseForDocuments.case_num);
+
+      if (updateError) throw updateError;
+
       setDocumentSuccess('Document uploaded successfully');
-      fetchDocuments(selectedCaseForDocuments.case_num);
+      
+      // Update local state
+      setDocuments(updatedDocs);
+      setSelectedCaseForDocuments({ ...selectedCaseForDocuments, documents: updatedDocs });
+      
       setDocumentFile(null);
       setDocumentType('');
       setDocumentDescription('');
-      document.getElementById('litigantdoc-upload-file-input').value = '';
+      if (document.getElementById('litigantdoc-upload-file-input')) {
+        document.getElementById('litigantdoc-upload-file-input').value = '';
+      }
     } catch (error) {
-      setDocumentError(error.response?.data?.message || 'Failed to upload document');
+      console.error('Error uploading document:', error);
+      setDocumentError(error.message || 'Failed to upload document');
+    } finally {
+      setDocumentsLoading(false);
     }
   };
 
   const downloadDocument = async (documentId, fileName) => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get(
-        `https://nyaay-desk-app-backend.onrender.com/api/document/${documentId}/download`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-          responseType: 'blob',
-        }
-      );
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', fileName);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.URL.revokeObjectURL(url);
+      const doc = documents.find(d => d.document_id === documentId);
+      if (!doc) throw new Error('Document not found');
+
+      // If it's already a full URL, just open it
+      if (doc.file_path && (doc.file_path.startsWith('http') || doc.file_path.startsWith('https'))) {
+        window.open(doc.file_path, '_blank');
+        return;
+      }
+
+      // Generate a signed URL for the document from Supabase Storage
+      const bucketName = 'case-documents';
+      const filePath = doc.file_path || `${documentId}`;
+      
+      const { data, error } = await supabase.storage
+        .from(bucketName)
+        .createSignedUrl(filePath, 300); // 5 minute expiry
+
+      if (error) {
+        // Try fallback bucket or direct path
+        const { data: fallbackData, error: fallbackError } = await supabase.storage
+          .from('documents')
+          .createSignedUrl(filePath, 300);
+          
+        if (fallbackError) throw fallbackError;
+        window.open(fallbackData.signedUrl, '_blank');
+      } else {
+        window.open(data.signedUrl, '_blank');
+      }
     } catch (error) {
-      console.error('Download failed:', error);
-      alert('Failed to download the document');
+      console.error('Download error:', error);
+      setDocumentError('Failed to download document: ' + error.message);
     }
   };
 
   const downloadAttachment = async (filename, originalname) => {
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get(`https://nyaay-desk-app-backend.onrender.com/api/files/${filename}`, {
-        headers: { Authorization: `Bearer ${token}` },
-        responseType: 'blob',
-      });
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', originalname);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.URL.revokeObjectURL(url);
+      const { data, error } = await supabase.storage
+        .from('case-attachments')
+        .createSignedUrl(filename, 300);
+
+      if (error) throw error;
+      window.open(data.signedUrl, '_blank');
     } catch (error) {
       console.error('Download failed:', error);
-      alert('Failed to download the file');
+      alert('Failed to download the file: ' + error.message);
     }
   };
 
@@ -828,44 +904,48 @@ const handleTopLevelChange = (field, value) => {
           <h2>Advocate Change Status</h2>
           <div className="litigantdash-cases-grid-container">
             {advocateChangeRequests.map((req) => (
-              <div key={req._id} className="litigantdash-case-card-box" style={{borderLeft: `4px solid ${req.nocRequestStatus === 'Signed' ? '#22c55e' : req.nocRequestStatus === 'Declined' ? '#ef4444' : '#fbbf24'}`}}>
+              <div key={req.request_id || req.case_id} className="litigantdash-case-card-box" style={{borderLeft: `4px solid ${req.status === 'Approved' ? '#22c55e' : req.status === 'Rejected' ? '#ef4444' : req.noc_request_status === 'Signed' ? '#22c55e' : req.noc_request_status === 'Declined' ? '#ef4444' : '#fbbf24'}`}}>
                 <div className="litigantdash-case-card-header">
-                  <h3>Case: {req.caseId?.case_num || 'Loading...'}</h3>
-                  <span className={`litigantdash-status-badge ${req.nocRequestStatus?.toLowerCase()}`}>
-                    NOC: {req.nocRequestStatus}
+                  <h3>Case: {req.case_id || 'Loading...'}</h3>
+                  <span className={`litigantdash-status-badge ${(req.status || '').replace(/\s+/g, '-').toLowerCase()}`}>
+                    {req.status || req.noc_request_status}
                   </span>
                 </div>
                 <div className="litigantdash-case-card-details">
-                  <p><strong>Current Lawyer:</strong> {req.currentAdvocateId}</p>
-                  <p><strong>Request Date:</strong> {new Date(req.createdAt).toLocaleDateString()}</p>
-                  {req.nocRequestStatus === 'Signed' && (
+                  <p><strong>Current Lawyer:</strong> {req.existing_advocate_id}</p>
+                  <p><strong>Request Date:</strong> {req.created_at ? new Date(req.created_at).toLocaleDateString() : 'N/A'}</p>
+                  {req.noc_request_status === 'Signed' && (
                     <div style={{marginTop: '12px', display: 'flex', gap: '8px'}}>
                       <button 
                         className="litigantdash-view-details-button"
                         style={{
-                          background: (req.status === 'Under Court Review' || req.status === 'Approved') ? '#64748b' : '#0f172a', 
+                          background: (req.status === 'Under Court Review' || req.status === 'Approved' || req.status === 'Rejected') ? '#64748b' : '#0f172a', 
                           color: 'white',
-                          cursor: (req.status === 'Under Court Review' || req.status === 'Approved') ? 'not-allowed' : 'pointer'
+                          cursor: (req.status === 'Under Court Review' || req.status === 'Approved' || req.status === 'Rejected') ? 'not-allowed' : 'pointer'
                         }}
-                        onClick={() => handleFinalSubmitToCourt(req._id)}
-                        disabled={req.status === 'Under Court Review' || req.status === 'Approved'}
+                        onClick={() => handleFinalSubmitToCourt(req.request_id)}
+                        disabled={req.status === 'Under Court Review' || req.status === 'Approved' || req.status === 'Rejected'}
                       >
-                        {req.status === 'Under Court Review' ? 'Submitted to Court' : 'Submit to Court'}
-                      </button>
-                      <button 
-                        className="litigantdash-view-details-button"
-                        onClick={() => window.open(`${process.env.REACT_APP_API_URL || 'http://localhost:5000'}/api/advocate-change/generate-application/${req._id}`, '_blank')}
-                      >
-                        Print NOC
+                        {req.status === 'Approved' ? '✅ Approved by Court' : req.status === 'Under Court Review' ? '📤 Submitted to Court' : req.status === 'Rejected' ? '❌ Rejected' : '📤 Submit to Court'}
                       </button>
                     </div>
                   )}
-                  {req.nocRequestStatus === 'Declined' && (
-                    <p style={{color: '#991b1b', fontSize: '12px', marginTop: '8px'}}>
-                      ⚠ Lawyer declined NOC. Reason: {req.nocDeclineReason}
+                  {req.status === 'Approved' && (
+                    <p style={{color: '#166534', fontSize: '12px', marginTop: '8px', background: '#dcfce7', padding: '8px', borderRadius: '4px'}}>
+                      🎉 Approved! Your previous advocate has been discharged. You can now attach a new advocate.
                     </p>
                   )}
-                  {req.nocRequestStatus === 'Requested' && (
+                  {req.status === 'Rejected' && (
+                    <p style={{color: '#991b1b', fontSize: '12px', marginTop: '8px', background: '#fee2e2', padding: '8px', borderRadius: '4px'}}>
+                      ❌ Rejected by court. {req.review_remarks && `Remarks: ${req.review_remarks}`}
+                    </p>
+                  )}
+                  {req.noc_request_status === 'Declined' && req.status !== 'Approved' && req.status !== 'Rejected' && (
+                    <p style={{color: '#991b1b', fontSize: '12px', marginTop: '8px'}}>
+                      ⚠ Lawyer declined NOC. Reason: {req.noc_decline_reason}
+                    </p>
+                  )}
+                  {req.noc_request_status === 'Requested' && req.status !== 'Approved' && req.status !== 'Rejected' && (
                     <p style={{color: '#92400e', fontSize: '12px', marginTop: '8px'}}>
                       ⏳ Request sent to lawyer. Waiting for digital signature.
                     </p>
@@ -888,7 +968,7 @@ const handleTopLevelChange = (field, value) => {
         ) : (
           <div className="litigantdash-cases-grid-container">
             {cases.map((legalCase) => (
-              <div key={legalCase._id} className="litigantdash-case-card-box">
+              <div key={legalCase.case_num} className="litigantdash-case-card-box">
                 <div className="litigantdash-case-card-header">
                   <h3>{legalCase.case_num}</h3>
                   <span className={`litigantdash-status-badge ${legalCase.status}`}>{legalCase.status}</span>
@@ -896,7 +976,7 @@ const handleTopLevelChange = (field, value) => {
                 <div className="litigantdash-case-card-details">
                   <p><strong>Type:</strong> {legalCase.case_type}</p>
                   <p><strong>Court:</strong> {legalCase.court}</p>
-                  <p><strong>Filed:</strong> {new Date(legalCase.createdAt).toLocaleDateString()}</p>
+                  <p><strong>Filed:</strong> {legalCase.created_at ? new Date(legalCase.created_at).toLocaleDateString() : 'N/A'}</p>
                 </div>
                 <div className="litigantdash-case-card-actions">
                   <button
@@ -2142,7 +2222,7 @@ const renderDocuments = () => (
       >
         <option value="">-- Select a Case --</option>
         {cases.map((legalCase) => (
-          <option key={legalCase._id} value={legalCase.case_num}>
+          <option key={legalCase.case_num} value={legalCase.case_num}>
             {legalCase.case_num} - {legalCase.case_type}
           </option>
         ))}
@@ -2178,11 +2258,11 @@ const renderDocuments = () => (
                 <tr key={doc.document_id}>
                   <td>{doc.document_type}</td>
                   <td>{doc.file_name}</td>
-                  <td>{doc.uploaded_by_name || 'N/A'}</td>
-                  <td>{new Date(doc.upload_date).toLocaleDateString()}</td>
+                  <td>{doc.uploaded_by_name || doc.uploaded_by || 'User'}</td>
+                  <td>{doc.upload_date || doc.uploaded_date ? new Date(doc.upload_date || doc.uploaded_date).toLocaleDateString() : 'N/A'}</td>
                   <td>
-                    <span className={`litigantdash-doc-status-badge ${doc.verification_status}`}>
-                      {doc.verification_status || 'Pending'}
+                    <span className={`litigantdash-doc-status-badge ${doc.verification_status || 'pending'}`}>
+                      {(doc.verification_status || 'Pending Review').replace(/_/g, ' ')}
                     </span>
                   </td>
                   <td>
@@ -2190,6 +2270,7 @@ const renderDocuments = () => (
                       onClick={() => downloadDocument(doc.document_id, doc.file_name)}
                       className="litigantdash-download-doc-button"
                     >
+                      <FileDown className="litigantdash-btn-icon" />
                       Download
                     </button>
                   </td>
@@ -2228,7 +2309,7 @@ const renderDocuments = () => (
       case 'nyaaysaathi':
         return <NyaaySaathi />;
       case 'courtschedule':
-        return <LitigantLiveDashboard />;
+        return <LitigantLiveDashboard litigantId={profile?.litigant_id || profile?.party_id} />;
       default:
         return <div>Select an option from the sidebar</div>;
     }

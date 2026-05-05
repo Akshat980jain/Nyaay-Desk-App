@@ -1,49 +1,71 @@
 import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import authService from '../services/authService';
 import { Turnstile } from '@marsidev/react-turnstile';
 import '../ComponentsCSS/ClerkLogin.css';
 
-const ClerkLogin = () => {
+/**
+ * ClerkLogin — shared login UI for both the Clerk and Admin portals.
+ *
+ * Props:
+ *   expectedRole {string} — 'clerk' or 'admin'
+ *     • 'clerk' → calls authService.loginClerk (expected_role='clerk' sent to Edge Function)
+ *     • 'admin' → calls authService.loginAdmin (expected_role='admin' sent to Edge Function)
+ *
+ * On success the Edge Function returns the actual user_type, and this component
+ * navigates to the correct dashboard (/clerkdash or /admindash) automatically.
+ */
+const ClerkLogin = ({ expectedRole = 'clerk' }) => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    email: '',
-    password: ''
-  });
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-  // Auto-bypass Turnstile on localhost (site key is production-only)
+  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [error, setError]       = useState('');
+  const [loading, setLoading]   = useState(false);
+
+  // On localhost, bypass Cloudflare Turnstile (production site key won't validate locally)
   const isDev = window.location.hostname === 'localhost';
   const [turnstileToken, setTurnstileToken] = useState(isDev ? 'dev-bypass' : null);
   const turnstileRef = useRef(null);
 
-  const siteKey = "0x4AAAAAABUex35iY9OmXSBB";
+  const siteKey = '0x4AAAAAABUex35iY9OmXSBB';
+
+  // Derive display title from the prop
+  const pageTitle = expectedRole === 'admin' ? 'Admin Login' : 'Court Clerk Login';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
-    if (!turnstileToken) {
+    if (!isDev && !turnstileToken) {
       setError('Please complete the CAPTCHA verification');
       setLoading(false);
       return;
     }
 
     try {
-      const response = await axios.post('https://nyaay-desk-app-backend.onrender.com/api/clerk/login', {
-        ...formData,
-        'cf-turnstile-response': turnstileToken
-      });
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('userType', 'clerk');
-      localStorage.setItem('userData', JSON.stringify(response.data.clerk));
-      navigate('/clerkdash');
-    } catch (error) {
-      setError(error.response?.data?.message || 'Login failed');
-      setTurnstileToken(null);
-      if (turnstileRef.current) {
-        turnstileRef.current.reset();
+      // Choose the correct auth method based on the expectedRole prop.
+      // The Edge Function uses expected_role to validate against user_metadata.user_role.
+      const loginFn = expectedRole === 'admin'
+        ? authService.loginAdmin
+        : authService.loginClerk;
+
+      const result = await loginFn(formData.email, formData.password);
+
+      // Edge Function returns the *actual* user_type in the token.
+      // Route to the correct dashboard regardless of which portal was used.
+      if (result.user_type === 'admin') {
+        navigate('/admindash');
+      } else {
+        navigate('/clerkdash');
+      }
+    } catch (err) {
+      setError(err.message || 'Login failed. Please try again.');
+      // Restore the dev bypass token so the button stays enabled after an error
+      if (isDev) {
+        setTurnstileToken('dev-bypass');
+      } else {
+        setTurnstileToken(null);
+        if (turnstileRef.current) turnstileRef.current.reset();
       }
     } finally {
       setLoading(false);
@@ -53,20 +75,16 @@ const ClerkLogin = () => {
   return (
     <div className="clerk-container">
       <div className="clerk-login-box">
-        <img 
-          src="../images/aadiimage4.svg" 
-          alt="Official Logo" 
+        <img
+          src="../images/aadiimage4.svg"
+          alt="Official Logo"
           className="official-logo"
         />
-        <div className="secure-authentication2">
-          Secure Authentication
-        </div>
-        <h2 className="clerk-title">Admin Login</h2>
+        <div className="secure-authentication2">Secure Authentication</div>
+        <h2 className="clerk-title">{pageTitle}</h2>
 
         {error && (
-          <div className="clerk-error-box">
-            {error}
-          </div>
+          <div className="clerk-error-box">{error}</div>
         )}
 
         <form onSubmit={handleSubmit}>
@@ -90,23 +108,15 @@ const ClerkLogin = () => {
               required
             />
           </div>
+
           <div className="clerk-form-group turnstile-container">
             {!isDev && (
               <Turnstile
                 ref={turnstileRef}
                 siteKey={siteKey}
-                onSuccess={(token) => {
-                  setTurnstileToken(token);
-                  setError('');
-                }}
-                onError={() => {
-                  setError('CAPTCHA verification failed. Please try again.');
-                  setTurnstileToken(null);
-                }}
-                onExpire={() => {
-                  setError('CAPTCHA expired. Please verify again.');
-                  setTurnstileToken(null);
-                }}
+                onSuccess={(token) => { setTurnstileToken(token); setError(''); }}
+                onError={() => { setError('CAPTCHA verification failed. Please try again.'); setTurnstileToken(null); }}
+                onExpire={() => { setError('CAPTCHA expired. Please verify again.'); setTurnstileToken(null); }}
                 theme="light"
                 size="normal"
                 responseField={false}
@@ -115,12 +125,18 @@ const ClerkLogin = () => {
               />
             )}
           </div>
-          <button 
-            type="submit" 
+
+          <button
+            type="submit"
             className="clerk-submit-btn"
-            disabled={loading || !turnstileToken}
+            disabled={loading || (!isDev && !turnstileToken)}
           >
-            {loading ? 'Processing...' : 'Login'}
+            {loading ? (
+              <>
+                <span style={{ marginRight: '8px' }}>Login</span>
+                <span className="btn-spinner" />
+              </>
+            ) : 'Login'}
           </button>
         </form>
       </div>

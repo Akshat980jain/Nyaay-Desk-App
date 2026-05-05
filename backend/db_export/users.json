@@ -1,0 +1,71 @@
+[
+  {
+    "_id": "68597287ffd32de3b3cdcca1",
+    "username": "Aaditiya Tyagi",
+    "email": "tyagiaaditiya123@gmail.com",
+    "password": "$2b$10$WEzMTxNzB88J8VXt2QjPIu5S7Zed.IGErwJXu3mStYJ7xDJwLUsKC",
+    "isAdmin": false,
+    "avatar": "",
+    "isOnline": false,
+    "lastSeen": "2025-06-23T15:45:22.684Z",
+    "createdAt": "2025-06-23T15:28:07.828Z",
+    "updatedAt": "2025-06-23T15:45:22.686Z",
+    "__v": 0
+  },
+  {
+    "_id": "685a362a591c89ef8ee56616",
+    "username": "meaaditiya",
+    "email": "aaditiyatyagi123@gmail.com",
+    "password": "$2b$10$/8KzZwnQdNZ6UyQOQUKLGeUeH7N2IvVcpj.n9TFCtsWCIursbJa8O",
+    "isAdmin": true,
+    "avatar": "",
+    "isOnline": true,
+    "joinedRooms": [],
+    "createdAt": "2025-06-24T05:22:50.445Z",
+    "updatedAt": "2025-06-24T06:15:40.521Z",
+    "__v": 0
+  },
+  {
+    "_id": "685a3fa870d6e8aec7c9e8dd",
+    "username": "iaaditiya",
+    "email": "aaditiya.2226cs1189@kiet.edu",
+    "password": "$2b$10$97fM3SrxTHgSsiLELIr2C..EtUeFz0YFAb1Khk4cucV/Tshp.Luji",
+    "isAdmin": false,
+    "avatar": "",
+    "isOnline": false,
+    "joinedRooms": [],
+    "createdAt": "2025-06-24T06:03:20.588Z",
+    "updatedAt": "2025-06-24T06:03:20.588Z",
+    "__v": 0
+  },
+  {
+    "_id": "685a41cf70d6e8aec7c9e9a0",
+    "username": "aadi",
+    "email": "badaltyagi123@g,ail.com",
+    "password": "$2b$10$Q5EHMZfRb3j39HDGTUY.JuxJTdEWpyEHXpWjdggZTPG1YYrqYz4sO",
+    "isAdmin": false,
+    "avatar": "",
+    "isOnline": false,
+    "joinedRooms": [
+      "685a6a56e09fe88a6d2a6f9d"
+    ],
+    "createdAt": "2025-06-24T06:12:31.313Z",
+    "updatedAt": "2025-06-24T09:20:33.199Z",
+    "__v": 0
+  },
+  {
+    "_id": "685a6748e09fe88a6d2a6ebb",
+    "username": "aadiv2226",
+    "email": "aditiyat123@gmail.com",
+    "password": "$2b$10$wZvbHDVcQs5BlJUj8o3ZkeoFerYWTqpWNHTcHac/CiXEZM2YwhBoa",
+    "isAdmin": false,
+    "avatar": "",
+    "isOnline": false,
+    "joinedRooms": [
+      "685a6a56e09fe88a6d2a6f9d"
+    ],
+    "createdAt": "2025-06-24T08:52:24.431Z",
+    "updatedAt": "2025-06-24T09:20:29.677Z",
+    "__v": 0
+  }
+]

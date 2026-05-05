@@ -27,35 +27,45 @@ const decodeJwtPayload = (token) => {
 
 const clearSession = () => {
   localStorage.removeItem('token');
+  localStorage.removeItem('refreshToken');
   localStorage.removeItem('userType');
   localStorage.removeItem('userData');
 };
 
 const ProtectedRoute = ({ children, requiredRole, redirectTo = '/' }) => {
-  const token = localStorage.getItem('token');
-  const userType = localStorage.getItem('userType');
+  const token        = localStorage.getItem('token');
+  const refreshToken = localStorage.getItem('refreshToken');
+  const userType     = localStorage.getItem('userType');
 
-  // No token → redirect
-  if (!token) {
+  // No token AND no refresh token → definitely logged out
+  if (!token && !refreshToken) {
     return <Navigate to={redirectTo} replace />;
   }
 
-  // Decode and check expiry client-side (server still validates on every request)
-  const payload = decodeJwtPayload(token);
-  if (!payload || !payload.exp) {
-    clearSession();
-    return <Navigate to={redirectTo} replace />;
-  }
+  if (token) {
+    const payload = decodeJwtPayload(token);
 
-  const nowSeconds = Math.floor(Date.now() / 1000);
-  if (payload.exp < nowSeconds) {
-    // Token is expired — clear session and redirect
-    clearSession();
-    return <Navigate to={redirectTo} replace />;
+    if (!payload || !payload.exp) {
+      // Malformed token — only hard-redirect if there's no refresh token either
+      if (!refreshToken) {
+        clearSession();
+        return <Navigate to={redirectTo} replace />;
+      }
+      // Else: let the child render; App.js restoreSession() will fix the token
+    } else {
+      const nowSeconds = Math.floor(Date.now() / 1000);
+      if (payload.exp < nowSeconds && !refreshToken) {
+        // Access token expired and no refresh token — force login
+        clearSession();
+        return <Navigate to={redirectTo} replace />;
+      }
+      // If expired but refreshToken exists: restoreSession() in App.js has already
+      // renewed it. Allow render; the next API call will use the refreshed token.
+    }
   }
 
   // Wrong role for this route → redirect to home
-  if (requiredRole && userType !== requiredRole) {
+  if (requiredRole && userType?.toLowerCase() !== requiredRole.toLowerCase()) {
     return <Navigate to="/" replace />;
   }
 

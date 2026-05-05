@@ -3,62 +3,25 @@
 // ============================================================
 // Add these new functions to your existing scheduleApi.js
 
-import axios from 'axios';
+import { supabase } from './supabaseClient';
 import API_BASE_URL from '../config';
 
 const API_URL = `${API_BASE_URL}/api`;
 
-const getAuthHeader = () => {
-  const token = localStorage.getItem('token');
-  return {
-    headers: {
-      'Authorization': `Bearer ${token}`
-    }
-  };
-};
-
-// ============================================================
-// EXISTING FUNCTIONS (keep as is)
-// ============================================================
-
-export const getTodaySchedule = async (court_no) => {
-  const response = await axios.get(
-    `${API_URL}/courtadmin/schedule/today/${court_no}`,
-    getAuthHeader()
-  );
-  return response.data;
-};
-
-export const startHearing = async (data) => {
-  const response = await axios.post(
-    `${API_URL}/courtadmin/schedule/start-hearing`,
-    data,
-    getAuthHeader()
-  );
-  return response.data;
-};
-
-export const endHearing = async (data) => {
-  const response = await axios.post(
-    `${API_URL}/courtadmin/schedule/end-hearing`,
-    data,
-    getAuthHeader()
-  );
-  return response.data;
-};
-
-export const dismissHearing = async (data) => {
-  const response = await axios.post(
-    `${API_URL}/courtadmin/schedule/dismiss-hearing`,
-    data,
-    getAuthHeader()
-  );
-  return response.data;
-};
-
 export const getPublicSchedule = async (court_no) => {
-  const response = await axios.get(`${API_URL}/schedule/public/${court_no}`);
-  return response.data;
+  const today = new Date().toISOString().split('T')[0];
+  const { data, error } = await supabase
+    .from('daily_court_schedules')
+    .select('*')
+    .eq('court_no', court_no.toString())
+    .eq('date', today)
+    .single();
+    
+  if (error) {
+    if (error.code === 'PGRST116') return null; // No schedule for today yet
+    throw error;
+  }
+  return data;
 };
 
 export const getCasesForListing = async () => {

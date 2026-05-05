@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import authService from '../services/authService';
 import { Turnstile } from '@marsidev/react-turnstile';
 import '../ComponentsCSS/LitigantLogin.css';
 
@@ -89,28 +89,23 @@ const AdminLogin = () => {
     setError('');
     setLoading(true);
 
-    if (!turnstileToken) {
+    if (window.location.hostname !== 'localhost' && !turnstileToken) {
       setError('Please complete the CAPTCHA verification');
       setLoading(false);
       return;
     }
 
     try {
-      const response = await axios.post('https://nyaay-desk-app-backend.onrender.com/api/courtadmin/login', {
-        email: loginData.email,
-        password: loginData.password,
-        'cf-turnstile-response': turnstileToken
-      });
-
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('userType', 'admin');
-      localStorage.setItem('userData', JSON.stringify(response.data.admin));
+      await authService.loginAdmin(loginData.email, loginData.password);
       navigate('/admindash');
-    } catch (error) {
-      setError(error.response?.data?.message || 'Login failed');
-      setTurnstileToken(null);
-      if (turnstileRef.current) {
-        turnstileRef.current.reset();
+    } catch (err) {
+      setError(err.message || 'Login failed');
+      // Reset turnstile — on localhost keep the bypass token so button stays enabled
+      if (window.location.hostname === 'localhost') {
+        setTurnstileToken('dev-bypass');
+      } else {
+        setTurnstileToken(null);
+        if (turnstileRef.current) turnstileRef.current.reset();
       }
     } finally {
       setLoading(false);
@@ -122,26 +117,17 @@ const AdminLogin = () => {
       setError('Please enter your email address first');
       return;
     }
-    if (!turnstileToken) {
-      setError('Please complete the CAPTCHA verification');
-      return;
-    }
     setError('');
     setMessage('');
     setLoading(true);
 
     try {
-      const response = await axios.post('https://nyaay-desk-app-backend.onrender.com/api/courtadmin/forgot-password', { 
-        email: loginData.email,
-        'cf-turnstile-response': turnstileToken
-      });
-
-      // Save email for password reset step
+      const res = await authService.forgotPassword(loginData.email);
       setEmail(loginData.email);
-      setMessage(response.data.message);
+      setMessage(res.message);
       changeView('resetPassword');
-    } catch (error) {
-      setError(error.response?.data?.message || 'Failed to process request');
+    } catch (err) {
+      setError(err.message || 'Failed to process request');
       setTurnstileToken(null);
       if (turnstileRef.current) {
         turnstileRef.current.reset();
@@ -170,16 +156,13 @@ const AdminLogin = () => {
     }
 
     try {
-      const response = await axios.post(`https://nyaay-desk-app-backend.onrender.com/api/courtadmin/reset-password/${e.target.token.value}`, {
-        newPassword: resetData.newPassword
-      });
-
-      setMessage(response.data.message);
+      const res = await authService.resetPassword(resetData.newPassword);
+      setMessage(res.message);
       setTimeout(() => {
         changeView('login');
       }, 3000);
-    } catch (error) {
-      setError(error.response?.data?.message || 'Password reset failed');
+    } catch (err) {
+      setError(err.message || 'Password reset failed');
     } finally {
       setLoading(false);
     }
@@ -268,9 +251,14 @@ const AdminLogin = () => {
         <button 
           type="submit" 
           className="litigant-submit-btn"
-          disabled={loading || !turnstileToken}
+          disabled={loading || (window.location.hostname !== 'localhost' && !turnstileToken)}
         >
-          {loading ? 'Processing...' : 'Login'}
+          {loading ? (
+            <>
+              <span style={{ marginRight: '8px' }}>Login</span>
+              <span className="btn-spinner" />
+            </>
+          ) : 'Login'}
         </button>
       </form>
     </div>
@@ -465,22 +453,14 @@ const AdminLogin = () => {
     }
     
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.post('https://nyaay-desk-app-backend.onrender.com/api/courtadmin/change-password', {
-        currentPassword: changePasswordData.currentPassword,
-        newPassword: changePasswordData.newPassword
-      }, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-      
-      setMessage(response.data.message);
+      // Uses Supabase Auth to update the password directly (no backend needed)
+      const res = await authService.resetPassword(changePasswordData.newPassword);
+      setMessage(res.message);
       setTimeout(() => {
         changeView('login');
       }, 3000);
-    } catch (error) {
-      setError(error.response?.data?.message || 'Failed to change password');
+    } catch (err) {
+      setError(err.message || 'Failed to change password');
     } finally {
       setLoading(false);
     }

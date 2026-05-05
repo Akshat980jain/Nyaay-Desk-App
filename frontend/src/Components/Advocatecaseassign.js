@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import supabaseApi from '../services/supabaseApi';
 import { AlertCircle, CheckCircle, Search, User, FileText, Clock, Send } from 'lucide-react';
 import '../ComponentsCSS/advocatecaseassign.css';
 
-const AdvocateCaseSearch = () => {
+const AdvocateCaseSearch = ({ userInfo: propUserInfo }) => {
   const [cases, setCases] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
@@ -12,15 +12,20 @@ const AdvocateCaseSearch = () => {
   const [pendingRequests, setPendingRequests] = useState([]);
   const [sentRequests, setSentRequests] = useState([]);
   const [activeTab, setActiveTab] = useState('requests'); // Default to pending requests
-  const [userInfo, setUserInfo] = useState(null);
+  const [userInfo, setUserInfo] = useState(propUserInfo || null);
   const [viewDetails, setViewDetails] = useState(null);
   
   // Fetch advocate info and district cases on initial load
   useEffect(() => {
-    fetchUserInfo();
-    fetchCases();
-    fetchPendingRequests();
-    fetchSentRequests(); // New function to fetch requests made by the advocate
+    const loadData = async () => {
+      if (!userInfo) {
+        await fetchUserInfo();
+      }
+      await fetchCases();
+      await fetchPendingRequests();
+      await fetchSentRequests();
+    };
+    loadData();
   }, []);
   
   const fetchUserInfo = async () => {
@@ -32,10 +37,7 @@ const AdvocateCaseSearch = () => {
         throw new Error('No authentication token found');
       }
       
-      const response = await axios.get(
-        'https://nyaay-desk-app-backend.onrender.com/api/advocate/profile',
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const response = await supabaseApi.get('/api/advocate/profile');
       
       setUserInfo(response.data.advocate);
       setLoading(false);
@@ -52,10 +54,7 @@ const AdvocateCaseSearch = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
-      const response = await axios.get(
-        'https://nyaay-desk-app-backend.onrender.com/cases/district',
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const response = await supabaseApi.get('/api/cases/district');
       
       setCases(response.data.cases);
       setLoading(false);
@@ -69,10 +68,7 @@ const AdvocateCaseSearch = () => {
   const fetchPendingRequests = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(
-        'https://nyaay-desk-app-backend.onrender.com/advocate/pending-requests',
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const response = await supabaseApi.get('/api/advocate/pending-requests');
       
       setPendingRequests(response.data.pendingRequests);
     } catch (error) {
@@ -84,10 +80,7 @@ const AdvocateCaseSearch = () => {
   const fetchSentRequests = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(
-        'https://nyaay-desk-app-backend.onrender.com/advocate/sent-requests',
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const response = await supabaseApi.get('/api/advocate/sent-requests');
       
       setSentRequests(response.data.sentRequests || []);
     } catch (error) {
@@ -106,13 +99,12 @@ const AdvocateCaseSearch = () => {
         ? selectedCase.plaintiff_details.party_id 
         : selectedCase.respondent_details.party_id;
       
-      await axios.post(
-        `https://nyaay-desk-app-backend.onrender.com/cases/${caseId}/advocate-join-request`,
+      await supabaseApi.post(
+        `/api/cases/${caseId}/advocate-join-request`,
         {
           partyType,
           litigantId
-        },
-        { headers: { Authorization: `Bearer ${token}` } }
+        }
       );
       
       setSuccess(`Request sent to join case as ${partyType}'s advocate`);
@@ -134,10 +126,9 @@ const AdvocateCaseSearch = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
-      await axios.put(
-        `https://nyaay-desk-app-backend.onrender.com/cases/${caseId}/advocate-requests/${requestId}`,
-        { status: 'approved' },
-        { headers: { Authorization: `Bearer ${token}` } }
+      await supabaseApi.put(
+        `/api/cases/${caseId}/advocate-requests/${requestId}`,
+        { status: 'approved' }
       );
       
       setSuccess('Request approved successfully');
@@ -159,10 +150,9 @@ const AdvocateCaseSearch = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('token');
-      await axios.put(
-        `https://nyaay-desk-app-backend.onrender.com/cases/${caseId}/advocate-requests/${requestId}`,
-        { status: 'rejected' },
-        { headers: { Authorization: `Bearer ${token}` } }
+      await supabaseApi.put(
+        `/api/cases/${caseId}/advocate-requests/${requestId}`,
+        { status: 'rejected' }
       );
       
       setSuccess('Request rejected successfully');
@@ -343,7 +333,7 @@ const AdvocateCaseSearch = () => {
                   </thead>
                   <tbody>
                     {filteredCases.map(caseItem => (
-                      <tr key={caseItem._id}>
+                      <tr key={caseItem.id || caseItem.case_num}>
                         <td>{caseItem.case_num || 'N/A'}</td>
                         <td>{caseItem.court}</td>
                         <td>{caseItem.case_type}</td>

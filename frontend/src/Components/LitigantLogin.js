@@ -1,77 +1,42 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import authService from '../services/authService';
 import { Turnstile } from '@marsidev/react-turnstile';
 import '../ComponentsCSS/LitigantLogin.css';
 
-// Ensure React is loaded correctly
-if (!React.useState) {
-  console.error('React is not properly loaded. Check for multiple React instances or version mismatches.');
-}
-
 const LitigantLogin = () => {
   const navigate = useNavigate();
-  
   const [view, setView] = useState('login');
-  
+
   useEffect(() => {
     const token = localStorage.getItem('token');
     const userType = localStorage.getItem('userType');
-    if (token && userType === 'litigant') {
-      navigate('/litidash');
-    }
+    if (token && userType === 'litigant') navigate('/litidash');
   }, [navigate]);
 
   const [animating, setAnimating] = useState(false);
-  const [party_id, setPartyId] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  
-  const [loginData, setLoginData] = useState({
-    email: '',
-    password: ''
-  });
-  
-  const [resetData, setResetData] = useState({
-    otp: '',
-    newPassword: '',
-    confirmPassword: ''
-  });
-
+  const [loginData, setLoginData] = useState({ email: '', password: '' });
+  const [resetData, setResetData] = useState({ newPassword: '', confirmPassword: '' });
   const [passwordStrength, setPasswordStrength] = useState(0);
-  // Auto-bypass Turnstile on localhost (production site key won't work locally)
-  const [turnstileToken, setTurnstileToken] = useState(
-    window.location.hostname === 'localhost' ? 'dev-bypass' : null
-  );
-  const turnstileRef = useRef(null);
 
-  // Use the direct site key instead of environment variable
-  const siteKey = "0x4AAAAAABUex35iY9OmXSBB";
-  
-  const handleLoginChange = (e) => {
-    setLoginData({
-      ...loginData,
-      [e.target.name]: e.target.value
-    });
-  };
-  
+  const isDev = window.location.hostname === 'localhost';
+  const [turnstileToken, setTurnstileToken] = useState(isDev ? 'dev-bypass' : null);
+  const turnstileRef = useRef(null);
+  const siteKey = process.env.REACT_APP_TURNSTILE_SITE_KEY || "0x4AAAAAABUex35iY9OmXSBB";
+
+  const handleLoginChange = (e) => setLoginData({ ...loginData, [e.target.name]: e.target.value });
+
   const handleResetChange = (e) => {
     const { name, value } = e.target;
-    setResetData({
-      ...resetData,
-      [name]: value
-    });
-    if (name === 'newPassword') {
-      checkPasswordStrength(value);
-    }
+    setResetData({ ...resetData, [name]: value });
+    if (name === 'newPassword') checkPasswordStrength(value);
   };
-  
+
   const checkPasswordStrength = (password) => {
-    if (!password) {
-      setPasswordStrength(0);
-      return;
-    }
+    if (!password) { setPasswordStrength(0); return; }
     let strength = 0;
     if (password.length >= 8) strength += 1;
     if (/[A-Z]/.test(password) && /[a-z]/.test(password)) strength += 1;
@@ -79,118 +44,59 @@ const LitigantLogin = () => {
     if (/[^A-Za-z0-9]/.test(password)) strength += 1;
     setPasswordStrength(strength >= 4 ? 3 : (strength >= 2 ? 2 : 1));
   };
-  
+
   const changeView = (newView) => {
     setAnimating(true);
     setTimeout(() => {
-      setView(newView);
-      setError('');
-      setMessage('');
-      setAnimating(false);
-      setTurnstileToken(null); // Reset token on view change
-      if (turnstileRef.current) {
-        turnstileRef.current.reset();
-      }
+      setView(newView); setError(''); setMessage(''); setAnimating(false);
+      setTurnstileToken(isDev ? 'dev-bypass' : null);
+      if (turnstileRef.current) turnstileRef.current.reset();
     }, 300);
   };
-  
+
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setLoading(true);
-
-    if (!turnstileToken) {
-      setError('Please complete the CAPTCHA verification');
-      setLoading(false);
-      return;
+    setError(''); setLoading(true);
+    if (!isDev && !turnstileToken) {
+      setError('Please complete the CAPTCHA verification'); setLoading(false); return;
     }
-
     try {
-      const response = await axios.post('https://nyaay-desk-app-backend.onrender.com/api/litigant/login', {
-        email: loginData.email,
-        password: loginData.password,
-        'cf-turnstile-response': turnstileToken // This is the correct field name expected by Cloudflare
-      });
-
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('userType', 'litigant');
-      localStorage.setItem('userData', JSON.stringify(response.data.litigant));
+      await authService.loginLitigant(loginData.email, loginData.password);
       navigate('/litidash');
-    } catch (error) {
-      setError(error.response?.data?.message || 'Login failed');
+    } catch (err) {
+      setError(err.message || 'Login failed');
       setTurnstileToken(null);
-      if (turnstileRef.current) {
-        turnstileRef.current.reset();
-      }
-    } finally {
-      setLoading(false);
-    }
+      if (turnstileRef.current) turnstileRef.current.reset();
+    } finally { setLoading(false); }
   };
-  
+
   const handleForgotPassword = async () => {
-    if (!loginData.email) {
-      setError('Please enter your email address first');
-      return;
-    }
-    if (!turnstileToken) {
-      setError('Please complete the CAPTCHA verification');
-      return;
-    }
-    setError('');
-    setMessage('');
-    setLoading(true);
-
+    if (!loginData.email) { setError('Please enter your email address first'); return; }
+    setError(''); setMessage(''); setLoading(true);
     try {
-      const response = await axios.post('https://nyaay-desk-app-backend.onrender.com/api/litigant/forgot-password', { 
-        email: loginData.email,
-        'cf-turnstile-response': turnstileToken
-      });
-
-      setMessage(response.data.message);
-      setPartyId(response.data.party_id);
+      const res = await authService.forgotPassword(loginData.email);
+      setMessage(res.message);
       changeView('enterOTP');
-    } catch (error) {
-      setError(error.response?.data?.message || 'Failed to process request');
-      setTurnstileToken(null);
-      if (turnstileRef.current) {
-        turnstileRef.current.reset();
-      }
-    } finally {
-      setLoading(false);
-    }
+    } catch (err) {
+      setError(err.message || 'Failed to process request');
+    } finally { setLoading(false); }
   };
-  
+
   const handleResetSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-    setMessage('');
-    setLoading(true);
+    e.preventDefault(); setError(''); setMessage(''); setLoading(true);
     if (resetData.newPassword !== resetData.confirmPassword) {
-      setError('Passwords do not match');
-      setLoading(false);
-      return;
+      setError('Passwords do not match'); setLoading(false); return;
     }
     if (passwordStrength < 2) {
-      setError('Please use a stronger password');
-      setLoading(false);
-      return;
+      setError('Please use a stronger password'); setLoading(false); return;
     }
     try {
-      const response = await axios.post('https://nyaay-desk-app-backend.onrender.com/api/litigant/reset-password', {
-        party_id,
-        otp: resetData.otp,
-        newPassword: resetData.newPassword,
-        confirmPassword: resetData.confirmPassword
-      });
-      setMessage(response.data.message);
-      setTimeout(() => {
-        changeView('login');
-      }, 3000);
-    } catch (error) {
-      setError(error.response?.data?.message || 'Password reset failed');
-    } finally {
-      setLoading(false);
-    }
+      const res = await authService.resetPassword(resetData.newPassword);
+      setMessage(res.message);
+      setTimeout(() => changeView('login'), 3000);
+    } catch (err) {
+      setError(err.message || 'Password reset failed');
+    } finally { setLoading(false); }
   };
   
   const getPasswordStrengthClass = () => {

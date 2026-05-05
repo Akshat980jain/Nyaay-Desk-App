@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { callEdgeFunction } from '../services/supabaseClient';
 import '../ComponentsCSS/Advocatecasefile.css';
 
 const AdvocateCaseFiling = ({ setActiveSection, advocateData }) => {
@@ -157,18 +158,10 @@ const handleFormSubmit = async (e) => {
       delete dataToSubmit.police_station_details;
     }
 
-    // Make API call to file the case
-    const response = await axios.post(
-      'https://nyaay-desk-app-backend.onrender.com/api/filecase/advocate',
-      dataToSubmit,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${localStorage.getItem('token')}`
-        }
-      }
-    );
-      setFormSuccess(`Case filed successfully. Case Number: ${response.data.case_num}`);
+    // Make API call to file the case using Supabase Edge Function
+    const response = await callEdgeFunction('file-case', dataToSubmit, true);
+
+      setFormSuccess(`Case filed successfully. Case Number: ${response.case_num}`);
       // Reset form after successful submission
       setTimeout(() => {
         if (typeof setActiveSection === 'function') {

@@ -13,10 +13,8 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const path = require('path');
 const fs = require('fs');
+const supabase = require('../supabaseClient');
 
-const Advocate = require('../models/Advocate');
-const BlacklistedToken = require('../models/Blaclisttoken');
-const EnrollmentRecord = require('../models/Enrollment');
 const { sendEmailOTP } = require('../services/emailService');
 const { authenticateToken } = require('../middleware/auth');
 const { authLimiter, otpLimiter, registerLimiter } = require('../middleware/rateLimiter');
@@ -67,24 +65,26 @@ router.post('/verify-enrollment', async (req, res, next) => {
     const dateParts = date_of_registration.split('/');
     const formattedDate = `${parseInt(dateParts[0])}/${parseInt(dateParts[1])}/${dateParts[2]}`;
 
-    const record = await EnrollmentRecord.findOne({
-      ENROLLMENT_NO: enrollment_no,
-      NAME_OF_ADVOCATE: name,
-      DISTRICT: district,
-      DATE_OF_REGISTRATION: formattedDate
-    });
+    const { data: record, error } = await supabase
+      .from('enrollment_records')
+      .select('*')
+      .eq('enrollment_no', enrollment_no)
+      .eq('name_of_advocate', name)
+      .eq('district', district)
+      .eq('date_of_registration', formattedDate)
+      .single();
 
-    if (!record) {
+    if (error || !record) {
       return res.status(400).json({ message: 'Enrollment details do not match our records' });
     }
     res.json({
       message: 'Enrollment verified successfully',
       record: {
-        enrollment_no: record.ENROLLMENT_NO,
-        name: record.NAME_OF_ADVOCATE,
-        fathers_name: record.FATHERS_NAME_OF_ADVOCATE,
-        district: record.DISTRICT,
-        date_of_registration: record.DATE_OF_REGISTRATION
+        enrollment_no: record.enrollment_no,
+        name: record.name_of_advocate,
+        fathers_name: record.fathers_name_of_advocate,
+        district: record.district,
+        date_of_registration: record.date_of_registration
       }
     });
   } catch (error) {
@@ -108,9 +108,12 @@ router.post('/register', registerLimiter, uploadCOP.single('cop_document'), vali
       return res.status(400).json({ message: 'COP document is required' });
     }
 
-    const existingAdvocate = await Advocate.findOne({
-      $or: [{ email }, { enrollment_no }, { iCOP_number }, { barId }]
-    });
+    const { data: existingAdvocate } = await supabase
+      .from('advocates')
+      .select('advocate_id')
+      .or(`email.eq.${email},enrollment_no.eq.${enrollment_no},i_cop_number.eq.${iCOP_number},bar_id.eq.${barId}`)
+      .single();
+
     if (existingAdvocate) {
       return res.status(400).json({
         message: 'Advocate already registered with this email, enrollment number, iCOP number, or Bar ID'
@@ -119,26 +122,35 @@ router.post('/register', registerLimiter, uploadCOP.single('cop_document'), vali
 
     const emailOTP = generateOTP();
     const hashedPassword = await bcrypt.hash(password, 10);
+    const advocateId = 'ADV' + Date.now();
 
-    const advocate = new Advocate({
-      advocate_id: 'ADV' + Date.now(),
-      enrollment_no, name, gender, dob,
-      contact: { email },
-      district, practice_details, email,
-      password: hashedPassword,
-      emailOTP,
-      otpExpiry: new Date(Date.now() + 10 * 60 * 1000),
-      iCOP_number, barId,
-      cop_document: {
-        filename: req.file.filename,
-        path: req.file.path,
-        uploadDate: new Date()
-      },
-      status: 'pending',
-      isVerified: false
-    });
+    const { error: insertError } = await supabase
+      .from('advocates')
+      .insert([{
+        advocate_id: advocateId,
+        enrollment_no, 
+        name, 
+        gender, 
+        dob,
+        contact: { email },
+        district, 
+        practice_details, 
+        email,
+        password: hashedPassword,
+        email_otp: emailOTP,
+        otp_expiry: new Date(Date.now() + 10 * 60 * 1000).toISOString(),
+        i_cop_number: iCOP_number, 
+        bar_id: barId,
+        cop_document: {
+          filename: req.file.filename,
+          path: req.file.path,
+          uploadDate: new Date().toISOString()
+        },
+        status: 'pending',
+        is_verified: false
+      }]);
 
-    await advocate.save();
+    if (insertError) throw insertError;
     await sendEmailOTP(email, emailOTP);
 
     res.status(201).json({
@@ -153,21 +165,28 @@ router.post('/register', registerLimiter, uploadCOP.single('cop_document'), vali
 // ─── POST /api/advocate/verify-email ───────────────────────
 router.post('/verify-email', otpLimiter, async (req, res, next) => {
   try {
-    const { advocate_id, otp } = req.body;
-    const advocate = await Advocate.findOne({
-      advocate_id,
-      emailOTP: otp,
-      otpExpiry: { $gt: new Date() }
-    });
+    const { data: advocate, error: findError } = await supabase
+      .from('advocates')
+      .select('*')
+      .eq('advocate_id', advocate_id)
+      .eq('email_otp', otp)
+      .gt('otp_expiry', new Date().toISOString())
+      .single();
 
-    if (!advocate) {
+    if (findError || !advocate) {
       return res.status(400).json({ message: 'Invalid or expired OTP' });
     }
 
-    advocate.isEmailVerified = true;
-    advocate.emailOTP = undefined;
-    advocate.status = 'pending';
-    await advocate.save();
+    const { error: updateError } = await supabase
+      .from('advocates')
+      .update({
+        is_email_verified: true,
+        email_otp: null,
+        status: 'pending'
+      })
+      .eq('advocate_id', advocate_id);
+
+    if (updateError) throw updateError;
 
     res.json({ message: 'Email verified successfully' });
   } catch (error) {
@@ -179,20 +198,26 @@ router.post('/verify-email', otpLimiter, async (req, res, next) => {
 router.post('/login', authLimiter, validateAdvocateLogin, async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    const advocate = await Advocate.findOne({ email });
+    const { data: advocate, error: loginError } = await supabase
+      .from('advocates')
+      .select('*')
+      .eq('email', email)
+      .single();
 
-    if (!advocate || !(await bcrypt.compare(password, advocate.password))) {
+    if (loginError || !advocate || !(await bcrypt.compare(password, advocate.password))) {
       return res.status(401).json({ message: 'Invalid credentials' });
     }
-    if (!advocate.isEmailVerified) {
+    if (!advocate.is_email_verified) {
       return res.status(401).json({ message: 'Please complete email verification' });
     }
     if (advocate.status !== 'active') {
       return res.status(401).json({ message: 'Account is not active. Please wait for verification by court admin.' });
     }
 
-    advocate.lastLogin = new Date();
-    await advocate.save();
+    await supabase
+      .from('advocates')
+      .update({ last_login: new Date().toISOString() })
+      .eq('advocate_id', advocate.advocate_id);
 
     const token = jwt.sign(
       { advocate_id: advocate.advocate_id, email: advocate.email, user_type: 'advocate' },
@@ -213,8 +238,12 @@ router.post('/login', authLimiter, validateAdvocateLogin, async (req, res, next)
 router.post('/logout', authenticateToken, async (req, res, next) => {
   try {
     const token = req.headers.authorization?.split(' ')[1];
-    await new BlacklistedToken({ token, user_id: req.user.advocate_id, user_type: 'advocate' }).save();
-    await Advocate.findOneAndUpdate({ advocate_id: req.user.advocate_id }, { lastLogout: new Date() });
+    await supabase.from('blacklisted_tokens').insert([{
+      token,
+      user_id: req.user.advocate_id,
+      user_type: 'advocate'
+    }]);
+    await supabase.from('advocates').update({ last_logout: new Date().toISOString() }).eq('advocate_id', req.user.advocate_id);
     res.json({ message: 'Logged out successfully' });
   } catch (error) {
     next(error);
@@ -224,8 +253,13 @@ router.post('/logout', authenticateToken, async (req, res, next) => {
 // ─── GET /api/advocate/profile ─────────────────────────────
 router.get('/profile', authenticateToken, async (req, res, next) => {
   try {
-    const advocate = await Advocate.findOne({ advocate_id: req.user.advocate_id });
-    if (!advocate) return res.status(404).json({ message: 'Advocate not found' });
+    const { data: advocate, error } = await supabase
+      .from('advocates')
+      .select('*')
+      .eq('advocate_id', req.user.advocate_id)
+      .single();
+
+    if (error || !advocate) return res.status(404).json({ message: 'Advocate not found' });
 
     res.json({
       advocate: {
@@ -236,10 +270,32 @@ router.get('/profile', authenticateToken, async (req, res, next) => {
         district: advocate.district,
         status: advocate.status,
         practice_details: advocate.practice_details,
-        profilePicture: advocate.profilePicture ? advocate.profilePicture.filename : null
+        profilePicture: advocate.profile_picture ? advocate.profile_picture.filename : null
       }
     });
   } catch (error) {
+    next(error);
+  }
+});
+
+// ─── GET /api/advocate/search ──────────────────────────────
+router.get('/search', async (req, res, next) => {
+  try {
+    const { district } = req.query;
+    let query = supabase
+      .from('advocates')
+      .select('advocate_id, name, district, specialization, enrollment_no, state, is_verified, status');
+
+    if (district) {
+      query = query.ilike('district', `%${district.trim()}%`);
+    }
+
+    const { data, error } = await query;
+
+    if (error) throw error;
+    res.json(data || []);
+  } catch (error) {
+    console.error('Search error:', error);
     next(error);
   }
 });
@@ -249,8 +305,13 @@ router.post('/profile-picture', authenticateToken, uploadProfilePicture.single('
   try {
     if (!req.file) return res.status(400).json({ message: 'No file uploaded' });
 
-    const advocate = await Advocate.findOne({ advocate_id: req.user.advocate_id });
-    if (!advocate) {
+    const { data: advocate, error: findError } = await supabase
+      .from('advocates')
+      .select('*')
+      .eq('advocate_id', req.user.advocate_id)
+      .single();
+
+    if (findError || !advocate) {
       fs.unlinkSync(req.file.path);
       return res.status(404).json({ message: 'Advocate not found' });
     }
@@ -259,16 +320,22 @@ router.post('/profile-picture', authenticateToken, uploadProfilePicture.single('
     const newPath = path.join('uploads/profile_pictures', newFilename);
     fs.renameSync(req.file.path, newPath);
 
-    if (advocate.profilePicture?.path) {
-      try { fs.unlinkSync(advocate.profilePicture.path); } catch (_) {}
+    if (advocate.profile_picture?.path) {
+      try { fs.unlinkSync(advocate.profile_picture.path); } catch (_) {}
     }
 
-    advocate.profilePicture = { filename: newFilename, path: newPath, uploadDate: new Date() };
-    await advocate.save();
+    const profile_picture = { filename: newFilename, path: newPath, uploadDate: new Date().toISOString() };
+    
+    const { error: updateError } = await supabase
+      .from('advocates')
+      .update({ profile_picture })
+      .eq('advocate_id', req.user.advocate_id);
+
+    if (updateError) throw updateError;
 
     res.status(200).json({
       message: 'Profile picture uploaded successfully',
-      profilePicture: { filename: advocate.profilePicture.filename }
+      profilePicture: { filename: newFilename }
     });
   } catch (error) {
     if (req.file?.path) { try { fs.unlinkSync(req.file.path); } catch (_) {} }
@@ -294,19 +361,22 @@ router.get('/profile-picture/:filename', async (req, res, next) => {
 router.post('/verify/:advocate_id', authenticateToken, logAdvocateVerificationMiddleware, async (req, res, next) => {
   try {
     const { verified, notes } = req.body;
-    const advocate = await Advocate.findOne({ advocate_id: req.params.advocate_id });
-    if (!advocate) return res.status(404).json({ message: 'Advocate not found' });
+    const { error: updateError } = await supabase
+      .from('advocates')
+      .update({
+        is_verified: verified,
+        verification_notes: notes,
+        verification_date: new Date().toISOString(),
+        status: verified ? 'active' : 'pending'
+      })
+      .eq('advocate_id', req.params.advocate_id);
 
-    advocate.isVerified = verified;
-    advocate.verificationNotes = notes;
-    advocate.verificationDate = new Date();
-    advocate.status = verified ? 'active' : 'pending';
-    await advocate.save();
+    if (updateError) throw updateError;
 
     res.json({
       message: `Advocate ${verified ? 'verified' : 'verification rejected'} successfully`,
-      advocate_id: advocate.advocate_id,
-      status: advocate.status
+      advocate_id: req.params.advocate_id,
+      status: verified ? 'active' : 'pending'
     });
   } catch (error) {
     next(error);

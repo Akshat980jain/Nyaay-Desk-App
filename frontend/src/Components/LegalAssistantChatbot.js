@@ -1,6 +1,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Loader,Volume2 , VolumeX} from "lucide-react";
+import { Send, Loader, Volume2, VolumeX } from "lucide-react";
+import { supabase } from '../services/supabaseClient';
 // Add this after the imports, before the component
 const isCriminalType = (caseType) => {
   const criminalTypes = [
@@ -519,8 +520,8 @@ Type "CONFIRM" to submit the case or "CANCEL" to start over.`;
 const submitCase = async () => {
   addThinkingMessage();
   try {
-    const token = localStorage.getItem('token');
-    if (!token) {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
       removeThinkingMessage();
       addMessage('bot', '❌ Authentication required. Please log in first.');
       resetCaseFlow();
@@ -533,31 +534,23 @@ const submitCase = async () => {
       delete dataToSubmit.police_station_details;
     }
 
-    const response = await fetch('https://nyaay-desk-app-backend.onrender.com/api/filecase/litigant', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(dataToSubmit)
+    // Use Supabase Edge Function to file the case
+    const { data, error: functionError } = await supabase.functions.invoke('file-case', {
+      body: dataToSubmit
     });
 
-      const data = await response.json();
-      removeThinkingMessage();
+    if (functionError) throw functionError;
 
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to file case');
-      }
-
-      addMessage('bot', `✅ SUCCESS! Case Filed Successfully!\n\n📌 Your Case Number: ${data.case_num || data.case_no}\n\n🎉 An email notification has been sent to the registered email address.\n\nIs there anything else I can help you with?`);
-      
-      resetCaseFlow();
-    } catch (error) {
-      removeThinkingMessage();
-      addMessage('bot', `❌ Error filing case: ${error.message}\n\nPlease try again or contact support.`);
-      resetCaseFlow();
-    }
-  };
+    removeThinkingMessage();
+    addMessage('bot', `✅ SUCCESS! Case Filed Successfully!\n\n📌 Your Case Number: ${data.case_num || data.case_no}\n\n🎉 An email notification has been sent to the registered email address.\n\nIs there anything else I can help you with?`);
+    
+    resetCaseFlow();
+  } catch (error) {
+    removeThinkingMessage();
+    addMessage('bot', `❌ Error filing case: ${error.message}\n\nPlease try again or contact support.`);
+    resetCaseFlow();
+  }
+};
 
   const resetCaseFlow = () => {
     setActiveFlow(null);
@@ -599,36 +592,23 @@ const submitCase = async () => {
       }
 
       setCaseNumber(targetCaseNumber);
-      const token = localStorage.getItem('token');
+      
+      const { data: caseData, error } = await supabase
+        .from('legal_cases')
+        .select('hearings')
+        .eq('case_num', targetCaseNumber)
+        .single();
 
-      if (!token) {
-        removeThinkingMessage();
-        addMessage('bot', '❌ Authentication required. Please log in first.');
-        setActiveFlow(null);
-        return;
-      }
+      if (error) throw error;
 
-      const response = await fetch(
-        `https://nyaay-desk-app-backend.onrender.com/api/case/${targetCaseNumber}/hearings`,
-        { 
-          headers: { 'Authorization': `Bearer ${token}` },
-          method: 'GET'
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch hearings');
-      }
-
-      const data = await response.json();
       removeThinkingMessage();
 
-      if (data.hearings && data.hearings.length > 0) {
-        const hearingsList = data.hearings.map((h, i) => 
+      if (caseData.hearings && caseData.hearings.length > 0) {
+        const hearingsList = caseData.hearings.map((h, i) => 
           `${i + 1}. ${h.hearing_type || 'General Hearing'}\n   📅 Date: ${new Date(h.hearing_date).toLocaleDateString()}\n   📍 ${h.location || 'Court Room'}\n`
         ).join('\n');
         
-        addMessage('bot', `🔔 Found ${data.hearings.length} hearing(s) for case ${targetCaseNumber}:\n\n${hearingsList}\n\nAnything else I can help with?`);
+        addMessage('bot', `🔔 Found ${caseData.hearings.length} hearing(s) for case ${targetCaseNumber}:\n\n${hearingsList}\n\nAnything else I can help with?`);
       } else {
         addMessage('bot', `📭 No hearings scheduled yet for case ${targetCaseNumber}.`);
       }
@@ -655,26 +635,25 @@ const submitCase = async () => {
       }
 
       setCaseNumber(targetCaseNumber);
-      const token = localStorage.getItem('token');
+      const { data: { user } } = await supabase.auth.getUser();
 
-      if (!token) {
+      if (!user) {
         removeThinkingMessage();
         addMessage('bot', '❌ Authentication required. Please log in first.');
         setActiveFlow(null);
         return;
       }
 
-      const response = await fetch('https://nyaay-desk-app-backend.onrender.com/api/cases/litigant', {
-        headers: { 'Authorization': `Bearer ${token}` },
-        method: 'GET'
-      });
+      const litigantId = user.user_metadata?.litigant_id || user.user_metadata?.party_id;
 
-      if (!response.ok) {
-        throw new Error('Failed to fetch documents');
-      }
+      const { data: cases, error } = await supabase
+        .from('legal_cases')
+        .select('*')
+        .or(`plaintiff_details->>party_id.eq.${litigantId},respondent_details->>party_id.eq.${litigantId}`);
 
-      const data = await response.json();
-      const caseData = data.cases?.find(c => c.case_num === targetCaseNumber || c.case_no === targetCaseNumber);
+      if (error) throw error;
+
+      const caseData = cases?.find(c => c.case_num === targetCaseNumber || c.case_no === targetCaseNumber);
       
       removeThinkingMessage();
 
@@ -699,37 +678,32 @@ const submitCase = async () => {
   const handleCheckCalendarFlow = async (userInput) => {
     addThinkingMessage();
     try {
-      const token = localStorage.getItem('token');
-
-      if (!token) {
-        removeThinkingMessage();
-        addMessage('bot', '❌ Authentication required. Please log in first.');
-        return;
-      }
-
       const lowerInput = userInput.toLowerCase();
       
       if (lowerInput.includes('today')) {
-        const response = await fetch('https://nyaay-desk-app-backend.onrender.com/api/calendar/today', {
-          headers: { 'Authorization': `Bearer ${token}` },
-          method: 'GET'
-        });
+        const todayStr = new Date().toISOString().split('T')[0];
+        const { data, error } = await supabase
+          .from('court_calendar')
+          .select('*')
+          .eq('date', todayStr)
+          .single();
 
-        if (!response.ok) {
-          throw new Error('Failed to fetch calendar');
-        }
+        if (error && error.code !== 'PGRST116') throw error;
 
-        const data = await response.json();
         removeThinkingMessage();
         
-        const { date, district, is_holiday, holiday_reason, opening_time, closing_time } = data;
-        const info = `📅 COURT CALENDAR - TODAY\n━━━━━━━━━━━━━━━━━━━━━\n📆 Date: ${new Date(date).toLocaleDateString()}\n📍 District: ${district}\n\n${
-          is_holiday 
-            ? `🔴 CLOSED - Holiday${holiday_reason ? `\n📝 Reason: ${holiday_reason}` : ''}` 
-            : `🟢 OPEN\n⏰ Timings: ${opening_time} - ${closing_time}`
-        }\n\nAnything else I can help with?`;
-        
-        addMessage('bot', info);
+        if (data) {
+          const { date, district, is_holiday, holiday_reason, opening_time, closing_time } = data;
+          const info = `📅 COURT CALENDAR - TODAY\n━━━━━━━━━━━━━━━━━━━━━\n📆 Date: ${new Date(date).toLocaleDateString()}\n📍 District: ${district || 'N/A'}\n\n${
+            is_holiday 
+              ? `🔴 CLOSED - Holiday${holiday_reason ? `\n📝 Reason: ${holiday_reason}` : ''}` 
+              : `🟢 OPEN\n⏰ Timings: ${opening_time || '10:00 AM'} - ${closing_time || '5:00 PM'}`
+          }\n\nAnything else I can help with?`;
+          
+          addMessage('bot', info);
+        } else {
+          addMessage('bot', '📅 Court is generally OPEN today (10:00 AM - 5:00 PM). No specific holidays listed in the current calendar.');
+        }
       } else {
         removeThinkingMessage();
         addMessage('bot', '📅 To check court calendar, please type "today" or specify a date.');
@@ -753,33 +727,23 @@ const submitCase = async () => {
       }
 
       setCaseNumber(targetCaseNumber);
-      const token = localStorage.getItem('token');
+      
+      const { data, error } = await supabase
+        .from('video_meetings')
+        .select('*')
+        .eq('case_num', targetCaseNumber)
+        .order('start_time', { ascending: false })
+        .limit(1)
+        .single();
 
-      if (!token) {
-        removeThinkingMessage();
-        addMessage('bot', '❌ Authentication required. Please log in first.');
-        return;
-      }
+      if (error && error.code !== 'PGRST116') throw error;
 
-      const response = await fetch(
-        `https://nyaay-desk-app-backend.onrender.com/api/case/${targetCaseNumber}/video-meeting`,
-        { 
-          headers: { 'Authorization': `Bearer ${token}` },
-          method: 'GET'
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch meeting details');
-      }
-
-      const data = await response.json();
       removeThinkingMessage();
 
-      if (data.meetingLink) {
-        const startTime = new Date(data.startDateTime).toLocaleString();
-        const endTime = new Date(data.endDateTime).toLocaleString();
-        addMessage('bot', `📹 VIRTUAL MEETING DETAILS\n━━━━━━━━━━━━━━━━━━━━━\n📌 Case: ${targetCaseNumber}\n🕐 Start: ${startTime}\n🕑 End: ${endTime}\n🔗 Link: ${data.meetingLink}\n\nClick the link to join the meeting!`);
+      if (data && data.meeting_link) {
+        const startTime = new Date(data.start_time).toLocaleString();
+        const endTime = new Date(data.end_time).toLocaleString();
+        addMessage('bot', `📹 VIRTUAL MEETING DETAILS\n━━━━━━━━━━━━━━━━━━━━━\n📌 Case: ${targetCaseNumber}\n🕐 Start: ${startTime}\n🕑 End: ${endTime}\n🔗 Link: ${data.meeting_link}\n\nClick the link to join the meeting!`);
       } else {
         addMessage('bot', `📭 No virtual meeting scheduled for case ${targetCaseNumber}.`);
       }

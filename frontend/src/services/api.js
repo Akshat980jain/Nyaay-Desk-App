@@ -7,7 +7,9 @@
  */
 import axios from 'axios';
 
-const BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+const BASE_URL =
+  process.env.REACT_APP_API_URL ||
+  'https://nyaay-desk-app-backend.onrender.com';
 
 const api = axios.create({
   baseURL: BASE_URL,
@@ -18,9 +20,21 @@ const api = axios.create({
 });
 
 // --- Request Interceptor ---
-// Automatically attach JWT token from localStorage to every request
+let lastRequestTime = 0;
+const MIN_REQUEST_GAP = 300; // ms
+
 api.interceptors.request.use(
-  (config) => {
+  async (config) => {
+    // Throttling logic for Render free tier
+    const now = Date.now();
+    const timeSinceLastRequest = now - lastRequestTime;
+    
+    if (timeSinceLastRequest < MIN_REQUEST_GAP) {
+      await new Promise(resolve => setTimeout(resolve, MIN_REQUEST_GAP - timeSinceLastRequest));
+    }
+    
+    lastRequestTime = Date.now();
+
     const token = localStorage.getItem('token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;

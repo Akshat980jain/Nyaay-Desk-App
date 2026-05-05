@@ -1,0 +1,2045 @@
+[
+  {
+    "_id": "6976816c4aa5dcac9a727bcb",
+    "blockIndex": 0,
+    "blockHash": "2a6f54b786d36d71ab546f630038e3eeae2ea9dd712bd7016bda38aa903d0411",
+    "dataFingerprint": "829efc2c815c0f6c2a0e0051fa90d459f2bbf45e2bf61b4493389ad01af17083c900f253236912f35571b1dcb28fd5cb3c49df2322c77a5ab36f6d249aec9c42",
+    "timestampProof": {
+      "ots": {
+        "proof": "8Ai0giPzUyq56QjwEATEGtd+/qcKdOB3KF2YvcAI8CCAOnaZjxKR4OItPmm4rTsyor2yFySf7Gk8l/fWUzPiIAjwIJcc+cZO4GklZww2ONhiP7VszZd2lhoDKi2eSv85mZhZCPEEaXaBa/AIKb7xHKFcs4QAg9/jDS75DI4uLWh0dHBzOi8vYWxpY2UuYnRjLmNhbGVuZGFyLm9wZW50aW1lc3RhbXBzLm9yZw==",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "previousBlockHash": "0",
+      "signatureHash": null,
+      "ipfsCid": null
+    },
+    "checksums": {
+      "sha256": "88dc244e882c5ae8652705690954c18ddf1d2a2f542c55fee7e4cbb4bb22f8af",
+      "sha512": "a0588ed8527fb62d2d9c4b094f9a09e4c4aeab6c265496c422cd3268d9bfcf52de611637bea0aaa48ce83d4c706c19f4b12997e6fbe1fe55772571f4755dd010",
+      "blake2b": "a0968cb34f588f5fc67e6b3b92a260a5ef42b14b1d24f775963590f391da00a9132c311bc2cfd369fc2ced9a234b42e725115bbc5f3e593c3e85f45016761752"
+    },
+    "entityId": "genesis",
+    "dataType": "case_filing",
+    "distributedProofs": [],
+    "createdAt": "2026-01-25T20:47:40.031Z",
+    "updatedAt": "2026-01-25T20:47:40.031Z",
+    "__v": 0
+  },
+  {
+    "_id": "6976816d4aa5dcac9a727bce",
+    "blockIndex": 1,
+    "blockHash": "000064f42885c5f45e50d41ba0989f5c9aa6202b0a7580733142966c5e974447",
+    "dataFingerprint": "58959aa386b1c5d0f19e46566448512846fcd3550422e0887c82feb5cb73e845d415894bb10f9936d5b23ce66789154e3433847dcde71b60048b9312ec71fff1",
+    "timestampProof": {
+      "ots": {
+        "proof": "8AhY6xk6NHJOrAjwEHYe6BYVvgj/ntgaHa1cj+cI8CDzOCvlOaltDtL6uPdY0isJs6wLDLY+YVe6Q4fg8qStUgjxIAIsJhi+cJYSg2yGUwn+nrdRTy1Lys7DhIJf5188el3hCPAgzKGUgli3FcJgdxcD+7wPD4qt559iyy7jub/bXNGlYbgI8QRpdoFs8AiZ1mznFTq7dACD3+MNLvkMji4taHR0cHM6Ly9hbGljZS5idGMuY2FsZW5kYXIub3BlbnRpbWVzdGFtcHMub3Jn",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "previousBlockHash": "2a6f54b786d36d71ab546f630038e3eeae2ea9dd712bd7016bda38aa903d0411",
+      "signatureHash": null,
+      "ipfsCid": null
+    },
+    "checksums": {
+      "sha256": "00e0e333e399ed0d7f07cace8dc4011925f12c4564cc7e1461d425a36487e867",
+      "sha512": "f800164da3bd4af7e48036fe0e77b55635d564031548bcbb0221bd5b294ee5ec28d4a580fcb0c9a8f0ebb8b5eba92c6d68990eb498058d5c553e59c86bd60960",
+      "blake2b": "8edcd0bf072d68c6295770954190ff8dff821f29fa92fe2e40b95b0659be02f12905af2411b06c6478a475decdf60ce08426162b67bc2f7651eaadd2e04808e3"
+    },
+    "entityId": "CL20264G39",
+    "dataType": "case_filing",
+    "distributedProofs": [],
+    "createdAt": "2026-01-25T20:47:41.061Z",
+    "updatedAt": "2026-01-25T20:47:41.061Z",
+    "__v": 0
+  },
+  {
+    "_id": "6976816e4aa5dcac9a727bd1",
+    "blockIndex": 2,
+    "blockHash": "0000132f9c2274289eaa54b59936d6238c25f089fde7f65ba39a69190d2cc00a",
+    "dataFingerprint": "e18c304a36bd956bc70fbabd2c3d8585774ed7756a321859e499dda88a200cda431f5683eaf88c03cdadaabb577006f839c2f12adf50f1858245a0a0eacedd6c",
+    "timestampProof": {
+      "ots": {
+        "proof": "8AgO/HlJbBXlFAjwEKOaTjNmS+Y6l4vegofGrr0I8SCXbrzkpFYxVX+dnZUOkBE7gA2v7Aaq3dR5qM7e1t6n3wjxBGl2gW3wCH34A8EBJy+BAIPf4w0u+QyOLi1odHRwczovL2FsaWNlLmJ0Yy5jYWxlbmRhci5vcGVudGltZXN0YW1wcy5vcmc=",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "previousBlockHash": "000064f42885c5f45e50d41ba0989f5c9aa6202b0a7580733142966c5e974447",
+      "signatureHash": null,
+      "ipfsCid": null
+    },
+    "checksums": {
+      "sha256": "a82ee5547aa18cdf74a05bfd0e2288133c6930484adbce3979449a86b8394b57",
+      "sha512": "1022640fbe1235c6fca3c0cbb293de1c895a815205bbd04d377db70cc6cfae54af60efa796a4f5cadeac44b68f1425d34358a513b1ee77544c3cdc1d10816aa3",
+      "blake2b": "02eb82e5c6f2b83bdf35c4cf55ad1b2a5c36e42c128ffc3c75c9466a553de6e0a91dac99972e3116ddd4f7f155c51a47ffd6ae95211308655d18c9a5a440a8c6"
+    },
+    "entityId": "CL2025XK72",
+    "dataType": "case_status_update",
+    "distributedProofs": [],
+    "createdAt": "2026-01-25T20:47:42.344Z",
+    "updatedAt": "2026-01-25T20:47:42.344Z",
+    "__v": 0
+  },
+  {
+    "_id": "6976816f4aa5dcac9a727bd4",
+    "blockIndex": 3,
+    "blockHash": "0000eeda40ab556a2cf4a6987a45610da3453f46979224f7efb21927a5b2cca4",
+    "dataFingerprint": "f87b5c41f8c0c945c85fd7d44d04e09fdd94329490275caa761dc0b5e4340271e129beed40aea6e8e01dee6e182f04f95768fc02d74afc938465227530e7fb21",
+    "timestampProof": {
+      "ots": {
+        "proof": "8AhBOhIhvQg+iAjwECWN4dM0bkF8DCDM3cVD+HII8SDLOEQQL5Xh1Y0Dkw27yKwOuiNunIvuSwxCF5wZ7sJwwwjxBGl2gW7wCFJclFI3n2GsAIPf4w0u+QyOLi1odHRwczovL2FsaWNlLmJ0Yy5jYWxlbmRhci5vcGVudGltZXN0YW1wcy5vcmc=",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "previousBlockHash": "0000132f9c2274289eaa54b59936d6238c25f089fde7f65ba39a69190d2cc00a",
+      "signatureHash": null,
+      "ipfsCid": null
+    },
+    "checksums": {
+      "sha256": "0da02c2456d5fc8d776c79f89300b490fc336f7141dfc6e0f8e924741e631030",
+      "sha512": "17c90b933d4d2f013378075a1e0b35c65fecdcd818153270c0242692281edaa40f91341075d5bf77a1e3cd678515a817b323f05b14c7f8e5dd0ee3cd2f3a1dc9",
+      "blake2b": "1176f4f19fe0c7dfd13f464a9a67a63a76a5f12128af592e5275bd701f4839419565df87d65096b2f72e986143f6523eaa09ccb00388aa3bff8ddd3a408da4e5"
+    },
+    "entityId": "CL2025XK72",
+    "dataType": "case_status_update",
+    "distributedProofs": [],
+    "createdAt": "2026-01-25T20:47:43.340Z",
+    "updatedAt": "2026-01-25T20:47:43.340Z",
+    "__v": 0
+  },
+  {
+    "_id": "697681704aa5dcac9a727bd7",
+    "blockIndex": 4,
+    "blockHash": "000035e5be509685f5bee8a88d35dd4f223cc077288993575eb9e421ed048da5",
+    "dataFingerprint": "f4789695df3bd69e0f6ea1bd99d40bb2ad0f6e810e75057783b0f130483be5810eb75db040524e977a3099e1d064690a068e82f3e861fbce0a14f82f21d8f257",
+    "timestampProof": {
+      "ots": {
+        "proof": "8Ai0aTu9t29ICwjwEOuJIrJFoka3UspSjMIuBSsI8CByPGJUGjlhAlfW0/Dah46W/tUqdrR9G0fj9z0GEHX14gjxIMikPXERPpwe6TIZt9Cl7+HoUw5JwQK1Aj6HNYRrwK8mCPEEaXaBb/AI7Oz5RJHrBCUAg9/jDS75DI4uLWh0dHBzOi8vYWxpY2UuYnRjLmNhbGVuZGFyLm9wZW50aW1lc3RhbXBzLm9yZw==",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "previousBlockHash": "0000eeda40ab556a2cf4a6987a45610da3453f46979224f7efb21927a5b2cca4",
+      "signatureHash": null,
+      "ipfsCid": null
+    },
+    "checksums": {
+      "sha256": "8a86f19f0e669ee0500bbe42f5cc895b0dc232bbbe37519d090e5a124342f05b",
+      "sha512": "da33ad20ff4536e31ba3085d9c0831834581a070df6d5e9383738bc85827ad831fef83842547182c4ffb3936b57fd3905ba631fcf81d48f8fef50cf32341e2f9",
+      "blake2b": "f4eec836d070850b71e8c0fc05e39f46caabb752e8e5025fd24591de9e7a8c6987f968a1a9392e4879be1884b8401d412959f8970651a23b1dc235b2e6ebc1de"
+    },
+    "entityId": "CL2025XK72",
+    "dataType": "case_status_update",
+    "distributedProofs": [],
+    "createdAt": "2026-01-25T20:47:44.351Z",
+    "updatedAt": "2026-01-25T20:47:44.351Z",
+    "__v": 0
+  },
+  {
+    "_id": "697681714aa5dcac9a727bda",
+    "blockIndex": 5,
+    "blockHash": "0000e44ed6ff3accede1d56203b1567d55b07e1fe1e97295b924208ed092af1e",
+    "dataFingerprint": "82b96d803a6e965d5f66d908f0c9be6c6b4a6aa76b97481239ee89ba19d3d9bb8fb811ae84128966a7d42f4397f875e5f041c37747cc427eb37b44d4a2bad59b",
+    "timestampProof": {
+      "ots": {
+        "proof": "8AjUWIXAOdnl+gjwIJhx4PcTk6FiRJbaLTQw8Va9c/WSCbuLUpmA4SHJsbkcCPEg918KdiZjPqmuF2yQwe8/05P1+QqM6CZ5iwcGyPRIKuMI8BACFlkt4kZKjH36WXqBXjGaCPAg18S+cTr7G0Aw65PTU9p3UNOZJXqYMd+k7AeB7eoDpNsI8SDAoAfcAD3o72fUd9V+W/FaB9aS5ggEhYpgL9TxMabz6gjxBGl2gXDwCMjmoxMP2iDnAIPf4w0u+QyOLi1odHRwczovL2FsaWNlLmJ0Yy5jYWxlbmRhci5vcGVudGltZXN0YW1wcy5vcmc=",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "bae5e15a31f3ddeec41a9a82e45f8fbe48d8407323142cbf16cb6d0a814982cb",
+      "previousBlockHash": "000035e5be509685f5bee8a88d35dd4f223cc077288993575eb9e421ed048da5",
+      "signatureHash": "a17387aa61fced9fa7ec33c54687b5ed88d57df77472a8b83b5662e0380ab239",
+      "ipfsCid": null
+    },
+    "checksums": {
+      "sha256": "f38ad45e9c809cf68c700b3ec1b4da376fdf4e5ef6e4b59a77d84f95247b46b2",
+      "sha512": "bed7bde1a981747b8a8d078674c06856181d2cd31fa39c8e2db6192c6e62bd209d02a8f964deac004847acda65091ab77f610ddf8892c928029f52ac214ce986",
+      "blake2b": "e116e6c0e4a0278a5e6ad3bc2e5b73d93502241b2dcb6eb3d619b4d2d3a2bc9f1c8b36d778899290d1453e07497c5543c28bd67e6e0320db19f18798f2a4a1b9"
+    },
+    "entityId": "CL2025XK72",
+    "dataType": "case_status_update",
+    "distributedProofs": [],
+    "createdAt": "2026-01-25T20:47:45.356Z",
+    "updatedAt": "2026-01-25T20:47:45.356Z",
+    "__v": 0
+  },
+  {
+    "_id": "697681724aa5dcac9a727bdd",
+    "blockIndex": 6,
+    "blockHash": "0000cf1943d19f195dcb620308296d8b29e0bedf53fb1739cf7ca20c46fe7b4d",
+    "dataFingerprint": "28e24aece844a01affec255515cb3aa2473dceed9e2c838a66484d929ff64c479680c1656e56aa10ec5b89d9f336eec171858e9f92dfe9ce19622b7872fa2ada",
+    "timestampProof": {
+      "ots": {
+        "proof": "8AhxHr1xQYbquQjwEHnvHXIt+wyLPyx/yaeEVD0I8CD405vGwtqmv0Iyjwv2GmcfkpNB/AAjI9CcBBGBqSJ0JgjxIBQp16j3XsGD7fN1H9J0DoZvDPC+5/qfkwW2KMb5bBwHCPEEaXaBcfAI0L5Pg4+hq40Ag9/jDS75DI4uLWh0dHBzOi8vYWxpY2UuYnRjLmNhbGVuZGFyLm9wZW50aW1lc3RhbXBzLm9yZw==",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "be65041f62958ac198cd973267b11c67e4fb7ff624d24cb954195323f9f06c4e",
+      "previousBlockHash": "0000e44ed6ff3accede1d56203b1567d55b07e1fe1e97295b924208ed092af1e",
+      "signatureHash": "caa3a743d5e167659b216f23ebdb45960c4d2831ba9ac4e38ff947ab1b07893d",
+      "ipfsCid": null
+    },
+    "checksums": {
+      "sha256": "2db33cb13577c5838866aaf7891173d11128b24b719e93a2583bdc5bd8b32ce5",
+      "sha512": "56616ae7588a116b29d6a60bb6a100b92ff304c6be1c875e26a161f613a4db697bd1af8403af6d884d1b0d9e4d2af79aff7f7d3e204318d62bf4d8e174045b53",
+      "blake2b": "f70d228ee95c3d173ef46a6de61ba26118c45b1e2688126382ee2d01b60dfbec3b866779a0efa034077075b86d6bdee916d68f17c08d4cffc8005a5127cc4f67"
+    },
+    "entityId": "CM20250O96",
+    "dataType": "case_status_update",
+    "distributedProofs": [],
+    "createdAt": "2026-01-25T20:47:46.361Z",
+    "updatedAt": "2026-01-25T20:47:46.361Z",
+    "__v": 0
+  },
+  {
+    "_id": "697681734aa5dcac9a727be0",
+    "blockIndex": 7,
+    "blockHash": "0000fc608521e013c83a555fa4c6037dcb3230ef7327b4cc44091d9f47134b39",
+    "dataFingerprint": "9b00671c4846c26d85b755bba45ac56af2dadb17669ce822c59aa9e4395652343d1f84d20469af0cc4ca0e79eb26fba2cd6fe968a9041a487ea92436a05b218a",
+    "timestampProof": {
+      "ots": {
+        "proof": "8AheGN+miFNNywjwEMlXXMgcKkYmTLY9wZfwaVII8CDNAuFLQtOC30js9ZGSGMNTbbZdRHTjRfArySmKWu2lVQjxIJjB2EyPiurxs1dfaMqhjEn7ltz/o1G8PafWcI0ZXvtLCPEEaXaBcvAI66S5qgpmZcMAg9/jDS75DI4uLWh0dHBzOi8vYWxpY2UuYnRjLmNhbGVuZGFyLm9wZW50aW1lc3RhbXBzLm9yZw==",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "5c3186ae884ded9df1493c2e4ef3ea0dcefe3aa3de67ba8ef8fb38a5119ee4a7",
+      "previousBlockHash": "0000cf1943d19f195dcb620308296d8b29e0bedf53fb1739cf7ca20c46fe7b4d",
+      "signatureHash": "c03813b37b37e8da34d17dcf64708a489dda953bc18ecd1479e2b370b6dcd1db",
+      "ipfsCid": null
+    },
+    "checksums": {
+      "sha256": "4d161803beda700297606e31475fc7384603dd18b48bc07d7862e5a6037c1837",
+      "sha512": "e8e548bb9a05430fc9763466dbd785cb5ea5ee517845fdf511345d08f20c7c33abf13712b53752747426cf1ca065edbe789f87a56a7d5c562afa71c03b339d6c",
+      "blake2b": "a86e7d1ca1ad53c9fca9cf27498e352f6d2211619f7a94e813052a685eb46cca3754d1051498b0be718f61eacd1f23a35c15b4c4d7af92057d14a07de20cb0da"
+    },
+    "entityId": "CM20250O96",
+    "dataType": "hearing_added",
+    "distributedProofs": [],
+    "createdAt": "2026-01-25T20:47:47.362Z",
+    "updatedAt": "2026-01-25T20:47:47.362Z",
+    "__v": 0
+  },
+  {
+    "_id": "697681744aa5dcac9a727be3",
+    "blockIndex": 8,
+    "blockHash": "00008a9b1b3757dd5588c1178a9d38e1c1281332de30c65bb2cc4704789ecdeb",
+    "dataFingerprint": "4ecb66ac39fa0b8259b9e4d8309f096e44bcd14fd620727bf2a17a1598a98fb1c9c44078ccd854d1114d50d34ed0b4c3fd1e7eca950e9c6f55f4b0ea2ed8a963",
+    "timestampProof": {
+      "ots": {
+        "proof": "8Ai3/aSCiv3zYQjwEE+KfQ+NU3ggl/KcXemiEdgI8SAsP3Fe70SsF7L6H8YHePRezgJnyk5iMgHQbmLqv8IvswjxBGl2gXPwCLppPEdE9KOgAIPf4w0u+QyOLi1odHRwczovL2FsaWNlLmJ0Yy5jYWxlbmRhci5vcGVudGltZXN0YW1wcy5vcmc=",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "5496d3b7dd5803c18f28047c36639a86f32c008776c5712d7601163723a36f89",
+      "previousBlockHash": "0000fc608521e013c83a555fa4c6037dcb3230ef7327b4cc44091d9f47134b39",
+      "signatureHash": "704de47a96d1c29f2de4d620e2964ea8d8873d87f68e1b7ee5b1130e825c5e85",
+      "ipfsCid": null
+    },
+    "checksums": {
+      "sha256": "531c4b073110f11823dce35685e7d684015368c8cec8b64ab7afad50860d9184",
+      "sha512": "49647568200c8df94d7e94cb223de9aca509047a9cd26b67a68ba06d4ac3f69ae91211a9511f72e75900a4fb72cecc9d157942b12c49b712def5d1fe4caecfc0",
+      "blake2b": "20778c361e3f315709e2101b5c173606938944358209e79a4632621ee92be8691d7862b2e96906acb8ec2531731bfe5473c938a232a849270e2b9c8dc984ce12"
+    },
+    "entityId": "CM20250O96",
+    "dataType": "case_status_update",
+    "distributedProofs": [],
+    "createdAt": "2026-01-25T20:47:48.374Z",
+    "updatedAt": "2026-01-25T20:47:48.374Z",
+    "__v": 0
+  },
+  {
+    "_id": "697681754aa5dcac9a727be6",
+    "blockIndex": 9,
+    "blockHash": "0000ac7eee661818bb937d514940128a34d3b77e9c93772e560315e0b8d61df6",
+    "dataFingerprint": "f55dff799d4e78ef760d4e7f0e8950c83de3fa8e452abf96e239d7340b7914a044f35e66a555398c091f7c3ba4e43db3d3891ab59b5313472c3fd3c96d1d77cb",
+    "timestampProof": {
+      "ots": {
+        "proof": "8AhJoa23K5gN3wjwEHt7Ya0b8T/i1ABFH9WfHroI8SAzEAMOijVFLRjdoCSyhwPSh4jh8FjnOiyENRVJOaZmCgjxIHv1AwHHrT1Njcg5264E7Pe+y0LUepZLaYkxk3HH45M9CPEEaXaBdPAIVM02TDJFm7EAg9/jDS75DI4uLWh0dHBzOi8vYWxpY2UuYnRjLmNhbGVuZGFyLm9wZW50aW1lc3RhbXBzLm9yZw==",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "249d59a61145d4b816adc22f67d888713916281dac0ab8d0e1842ea8a474f6e1",
+      "previousBlockHash": "00008a9b1b3757dd5588c1178a9d38e1c1281332de30c65bb2cc4704789ecdeb",
+      "signatureHash": "22558d8672382861d575149f5f0ba9b8c11398d08c3bed47f3f0bd3dbc862151",
+      "ipfsCid": null
+    },
+    "checksums": {
+      "sha256": "3cd0746be105ca5187811ca7efff83bcf60e2557ce92e14466fc9c5bb55b6d86",
+      "sha512": "42a9982d4a16d24c40c43dedf4f06431fe6e7f3e1a025441dad232839dcc266eca8060c840f699ab816e85d681c4e70fb23ec3a479da7f14bd3ccd6075a21cdc",
+      "blake2b": "92c77ea860fc6243ccc3ef8bef6dd7f439ae81ceb78525989007503f81cfcb1f27fb4ec36af83d2697f7f4ed487a7f1972be355f2dc3ad13417af161670eee4e"
+    },
+    "entityId": "CM20250O96",
+    "dataType": "case_status_update",
+    "distributedProofs": [],
+    "createdAt": "2026-01-25T20:47:49.381Z",
+    "updatedAt": "2026-01-25T20:47:49.381Z",
+    "__v": 0
+  },
+  {
+    "_id": "697681764aa5dcac9a727be9",
+    "blockIndex": 10,
+    "blockHash": "0000a3e71e6b5de5dd4aabbe0b2b8557ad4bd405d5c9e709e43aac88ae2182c8",
+    "dataFingerprint": "98507247f65e752b6711e55799aee67884b70f8736a46bfe4d841adbccd70ec9dfa4874c0a7f520a9e69836dbad01f77223c4395c2f53e6c9cedb149202a4560",
+    "timestampProof": {
+      "ots": {
+        "proof": "8AgwlKce5dGFtAjwED1sh7nvYdzb6xlkzQDG/44I8SBdPjUT0c9VAasILjGF8ze9vtJXpa0PCwZiBt4rXh0I+AjxIC2gN6vN4x3DDFkpNaOCWgLpdx9yqRQjMjxoX4GnBfMECPEEaXaBdfAIZjP3qzbwnM0Ag9/jDS75DI4uLWh0dHBzOi8vYWxpY2UuYnRjLmNhbGVuZGFyLm9wZW50aW1lc3RhbXBzLm9yZw==",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "2fc5648a275f4a0abe70bf7d816dc53a934334f218a552b39ab817afeadc1694",
+      "previousBlockHash": "0000ac7eee661818bb937d514940128a34d3b77e9c93772e560315e0b8d61df6",
+      "signatureHash": "1d8e80c069a82497e8fd11c0d59f77dca24541f7d833d281e08104ba43c975cc",
+      "ipfsCid": null
+    },
+    "checksums": {
+      "sha256": "d8d3b4fa9facdac427178975e41283c8f7a654d0f6d9d3870b4ec66069069b19",
+      "sha512": "ac5ce329b6b16a625f7ba0603df1e5a65f44824f3c61c676d9002ebf98b94772e19c96671438bd17f69d226072c250ff1a4478a395ecfe46d2b274ea74add548",
+      "blake2b": "5d6346316839e4e91c0ce86062150e64be1061c6793ef771c477925b9d7559726d8e147514b4fd2395db83c430b79bd8de98448692c159f1fa918718482de8ab"
+    },
+    "entityId": "CL2025B496",
+    "dataType": "case_status_update",
+    "distributedProofs": [],
+    "createdAt": "2026-01-25T20:47:50.383Z",
+    "updatedAt": "2026-01-25T20:47:50.383Z",
+    "__v": 0
+  },
+  {
+    "_id": "697681774aa5dcac9a727bec",
+    "blockIndex": 11,
+    "blockHash": "00006f27c0dca3b0525b7c9d93e611ae33e07924762a07379e299e4fb66c96e2",
+    "dataFingerprint": "a324926e63d72562cd04e329247aa8844982c8982b3779cd55ccfac01e40fcd33dfdd80cef99d4a4cb2ab7468d26414c9e7236c27f72472e6256810f2ee214bb",
+    "timestampProof": {
+      "ots": {
+        "proof": "8AjarpYsKWhXygjxIMcqm9jV5NTbPfFlu7DPUFIBFfl1d81K7F7wCtFBhKecCPAgS8AbZ7y6NFvLIRSS30iJLdsVqOZFVySqiTzC0+YxCsEI8BDvG1kOtjpSZXpb5KRRHtAfCPEgrwAtNvKj51L4iVfUgdGUNN6sjiKi57z0Tf9WAE1idBII8QRpdoF28Agb1EokKjs/CwCD3+MNLvkMji4taHR0cHM6Ly9hbGljZS5idGMuY2FsZW5kYXIub3BlbnRpbWVzdGFtcHMub3Jn",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "4190be42d80ffa8e62c5f7500049be86b7e42b5c5f3b86cf6a159a2bc457c4ab",
+      "previousBlockHash": "0000a3e71e6b5de5dd4aabbe0b2b8557ad4bd405d5c9e709e43aac88ae2182c8",
+      "signatureHash": "9f54218fb8acf8e470ba4db300cd99a293e2e2ac9e9e6617ab5df897deb3d406",
+      "ipfsCid": null
+    },
+    "checksums": {
+      "sha256": "3ccfc951d4e4a78dbc42db88597d30a3115ccdeb1ee21aaab43e2d5f8bb95c5c",
+      "sha512": "37876bad78f0597a94955120f133ae464cdadcfc38ed35106c0d1065be2bd3cd1651dc7e8ec0f4bcc4493385f1cd18bb150f5c4235dd815402b46c1ccff0bb18",
+      "blake2b": "d982326441f365f277e3d84b0f585bec1630d49664acf8a7c2f40bcf424f1f92e7aff5cb5fd19dd1216c6803d67ab977614443535dd632d8d55af28e1c21e285"
+    },
+    "entityId": "CL2025B496",
+    "dataType": "case_status_update",
+    "distributedProofs": [],
+    "createdAt": "2026-01-25T20:47:51.392Z",
+    "updatedAt": "2026-01-25T20:47:51.392Z",
+    "__v": 0
+  },
+  {
+    "_id": "697681784aa5dcac9a727bef",
+    "blockIndex": 12,
+    "blockHash": "0000073b87842250a5944f444e517adc8c32b888faf257c5515c48fb9df69f73",
+    "dataFingerprint": "39e0d74fe2482a3bd24eee77ab0df177e906896bd850bdbf7e552b3f565a4ffaa3e92d49c9be11baa77526ca595273d6c66b6aa71fc445f1b5ee3fb17b965db5",
+    "timestampProof": {
+      "ots": {
+        "proof": "8AjJop4ejv8LCQjwEKogwc70gVyBI9eNG/Ba3I8I8SAJG/lLZ3caK4AuzkDDom/uFkdxcL4VH9mofrkHFHq34QjxIG9/9N3OjHT27UGaoLbh7GoIhg7oKEhjMPDwDhRKOPfjCPAgWISD1USxZAoo3PPGOU6gIYDyZHTs70HXroThJpcfs+MI8QRpdoF38AhociyxLTSXRACD3+MNLvkMji4taHR0cHM6Ly9hbGljZS5idGMuY2FsZW5kYXIub3BlbnRpbWVzdGFtcHMub3Jn",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "31cbb7e352ffeee2d60ef505467c0c1dd9f7808c225ffff7061577a8c556d064",
+      "previousBlockHash": "00006f27c0dca3b0525b7c9d93e611ae33e07924762a07379e299e4fb66c96e2",
+      "signatureHash": "a956445f686677f2f954209ea7bc028213147fbfbd4c99448f6fa92752b8b193",
+      "ipfsCid": null
+    },
+    "checksums": {
+      "sha256": "7d4f200e08f55585d2b11515909a560744b772fddbf3a2342b7d70c11bda447d",
+      "sha512": "b531be5b8fd629e83053a67687a0e3827492e20d0035248ec687625ba0d0eae1650cfcb8de010ad6c7db407f8d6428a9badd40b66543b9c982c29990829a3f80",
+      "blake2b": "99766d70b1ee2668957acd4efa6ccda99004fa9f43d3a9cb84f6f040f45b926d6f98571a59d03797e1c5994d23249d19f9d13a0f40a11851410a6e16d61af778"
+    },
+    "entityId": "CM2026PW69",
+    "dataType": "case_filing",
+    "distributedProofs": [],
+    "createdAt": "2026-01-25T20:47:52.399Z",
+    "updatedAt": "2026-01-25T20:47:52.399Z",
+    "__v": 0
+  },
+  {
+    "_id": "697681794aa5dcac9a727bf2",
+    "blockIndex": 13,
+    "blockHash": "0000dc99d2232e209967ceca15c66c0027c82167e98550c0e327b2efc5856e42",
+    "dataFingerprint": "be13e8c842559160ba4554c304d1a402d178b070814ea3aa3324b1164f1ffd3508678bd3caa4c046d60f9bbd3a760eaee81f5305ffa331f2b0176d9564ddab58",
+    "timestampProof": {
+      "ots": {
+        "proof": "8Ah/lUeFoczuPAjxIF0aCu2Gt5pzKnvf/OVnfoWKv8Cdt8KrAe5nLzryxZafCPAQcSUx/5SoyZtDXf3PYImOhgjwIMzTCGuw50q3B5o4k0RR4VilKGAjlod3ouM7uPx3ZxtMCPEgukShrzrUG5n/S7PVuAev2EJk/rnxVLDbxAMd31XQaQsI8QRpdoF48AjCUfYgc3m12QCD3+MNLvkMji4taHR0cHM6Ly9hbGljZS5idGMuY2FsZW5kYXIub3BlbnRpbWVzdGFtcHMub3Jn",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "2ed1e64c4ae6d59414e4b3b979a1ed2ed302d9039265b74cb281ec094451f4bd",
+      "previousBlockHash": "0000073b87842250a5944f444e517adc8c32b888faf257c5515c48fb9df69f73",
+      "signatureHash": "b76d64d50d6a1fd84885a636b9e8facf52091f4dbca9ae98fd59b3b83330850e",
+      "ipfsCid": null
+    },
+    "checksums": {
+      "sha256": "81e3738c067fa05b33b857e918c7b42957b4f7c138f407f88022451bd6ff8b03",
+      "sha512": "10aaf7a60117dd0274aaf086b8f18e4f5a8a151526ef1af72c9cac9e042c470b8ce6555c96c2080387c23d16515491a0dc146f7c41ad0f16874d59ffb6a43682",
+      "blake2b": "64fc50043241dee2c2e785172c7c504ee7a57b637fe76c0afc60a5a2f367e3686da787aa55fbd6708dca0c6fb4c3378af2f8a7675ea884c554900945e710cafb"
+    },
+    "entityId": "CL20251C11",
+    "dataType": "case_status_update",
+    "distributedProofs": [],
+    "createdAt": "2026-01-25T20:47:53.406Z",
+    "updatedAt": "2026-01-25T20:47:53.406Z",
+    "__v": 0
+  },
+  {
+    "_id": "6976817a4aa5dcac9a727bf5",
+    "blockIndex": 14,
+    "blockHash": "0000775d662f9b3b05c3f3baa51e3f01448200781eb00a2bc417c12fbcba5a29",
+    "dataFingerprint": "ffb27c5ecc6b44f0fb6cbcec2e8fa9b41000de01bc78434f14d3de7651286df41df870beb03af22c91eb8a459a02393d654148de02a98c0a6c444891e7cf3855",
+    "timestampProof": {
+      "ots": {
+        "proof": "8AilZtsp9EtfiAjxINTwuW9CU8Lgk0aMtZ0CM/r6cPVti/260CC6yh3GasDMCPAQ4Yir6Phk3crqVBCBkjC8FAjxIECmmwURURn0Vxi5cFetqYjrlzuhF5ig/WU2SW0XXtkrCPAgRQFI6bzm6KfCRVUYN9HkUzn1N8qCIdc8yrCK6WJNK1AI8QRpdoF58Ahy5mqTREAfIQCD3+MNLvkMji4taHR0cHM6Ly9hbGljZS5idGMuY2FsZW5kYXIub3BlbnRpbWVzdGFtcHMub3Jn",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "a9383ff69540c07b2f70750da4adaf77024997a2b85a610a47d5dcc188b80644",
+      "previousBlockHash": "0000dc99d2232e209967ceca15c66c0027c82167e98550c0e327b2efc5856e42",
+      "signatureHash": "2f1143202c87d8de6aeb2497f2993f455ecaac140ff535f4d033d87837e12e3b",
+      "ipfsCid": null
+    },
+    "checksums": {
+      "sha256": "1f3ec49d1e7d5cafd9a3701105acff608ebf784c40501ade970bfda5bdd8ace1",
+      "sha512": "91b4fa0f1f486690225152a73b84876e951faa193b99173addd4a54d1f05710d72ec6c395c18e5c2cb57784772a17e20bc75af41592ae5fa20c8ba2e1393be64",
+      "blake2b": "7a78a22943029f56abf4aba8c6e6f259e3de276c694a331d07afc54899c9d88ae0d468f97d2df5ea7227cfc688e286059aa3340719d4134c15109fef37fb9dc9"
+    },
+    "entityId": "CL2025XK72",
+    "dataType": "case_status_update",
+    "distributedProofs": [],
+    "createdAt": "2026-01-25T20:47:54.413Z",
+    "updatedAt": "2026-01-25T20:47:54.413Z",
+    "__v": 0
+  },
+  {
+    "_id": "69768ec11eef8c8f16be21aa",
+    "blockIndex": 15,
+    "blockHash": "0000417dbde7da3ae05b9c38184241d8b583c9ab96609307d1a15b899db9744a",
+    "dataFingerprint": "9c891307420f18f2cebc500fcff48ed804e8c5f87e55adbb6279e88d480c646258ec5949667b2c68ae6c8ea2a572747f66cb0fd0bbb9b47fe165bc9c1cf6b6dd",
+    "timestampProof": {
+      "ots": {
+        "proof": "8AjQ/Saoe1j8AgjwIMIM9akPmOC8C01L5hWAb7pG9xrAjEBEdc0xw5b8/nF3CPEg+8cXcN2EjWvI6FodBXhUg5Un/2DAe783lN9KZTf9rnoI8BDnSSOHEiNS5o3gKTFNxq/4CPAgx0/NykbCs0qc8ao33OSxKVczTCKxgVjC5QhGtSe8yuYI8QRpdo7B8AhXlreDL77X8wCD3+MNLvkMji4taHR0cHM6Ly9hbGljZS5idGMuY2FsZW5kYXIub3BlbnRpbWVzdGFtcHMub3Jn",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "d2011a43f2e8d0ff0cf861ae6d5498fae4e1b8a8d1900111bae722581ce93fb9",
+      "previousBlockHash": "0000775d662f9b3b05c3f3baa51e3f01448200781eb00a2bc417c12fbcba5a29",
+      "signatureHash": "5e543b47d2c979429ea2ed7d35a21f33a0d6abafacbe0f319ace2079470444a1",
+      "ipfsCid": "31735186466d5e510f5ba08c9120be32"
+    },
+    "checksums": {
+      "sha256": "ef9eac813e52c237ea4e86826b51c95b072ada02e6044501e406e18960906a50",
+      "sha512": "26f2b0816924fdc498ba7835d65531f8f50f5de0c1e06c31f9fd46ad2bfafec966c1b817a7d354d179026a121936edde93e3a3325ec625b954a96d3795aeba8c",
+      "blake2b": "9fe5df0d293181e3d1587e89739a82c69d7c2eeeb1d9f9605946ddd92e30f0ddd699de7156c3a8319caba9dbfb6e50b089c7a3d31563302c289742b752992e6d"
+    },
+    "entityId": "CM2026PW69",
+    "dataType": "case_status_update",
+    "distributedProofs": [],
+    "createdAt": "2026-01-25T21:44:33.842Z",
+    "updatedAt": "2026-01-25T21:44:33.842Z",
+    "__v": 0
+  },
+  {
+    "_id": "6976ba111eef8c8f16be2384",
+    "blockIndex": 16,
+    "blockHash": "00009c5bac999222392088bc884e2750ff5e80351d0f894ce043797d3d5b48d8",
+    "dataFingerprint": "aee86445c95f7d5fdea8c88ad2782a47832dabf4bf9759cb1b4ef0fd7623d6c49c24b191582525a8378a14ef4701765cfc4638c50701b0700969bfaa6415fed0",
+    "timestampProof": {
+      "ots": {
+        "proof": "8Aid1Efb1ifYJwjwEGyqsU8teZuN+iKagvcXExMI8CBeKlgC9tVZ+r+pdDBRx53JEHFXxFofk/lQezIypXobFwjwINLcN1ZF7ol/wLfxM9m0ax9b1ZVe30oIRP+hRU8BFA8rCPEEaXa6EfAIRtEif0McziAAg9/jDS75DI4uLWh0dHBzOi8vYWxpY2UuYnRjLmNhbGVuZGFyLm9wZW50aW1lc3RhbXBzLm9yZw==",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "b6ac0397706f4ee78a587cd9b530864b867bdcb97d29bde86be50d73fb9cfba0",
+      "previousBlockHash": "0000417dbde7da3ae05b9c38184241d8b583c9ab96609307d1a15b899db9744a",
+      "signatureHash": "bda0e381009ef24ed293fdbe16ee0e0142108e078309b931334efa2ccdf0a2d0",
+      "ipfsCid": "145dbbd47cb7f4f4568e02a83070b0a7"
+    },
+    "checksums": {
+      "sha256": "f00095e0fceb426723ac2bd990ba1c3cca08ee1a657e241969086bb03cdcbf43",
+      "sha512": "ee8a85eace1e538b1bb4b037e06cd7e9a23ec18d3f77ac60b5be63174da4f68049de50de05f40dc9f3d28c549298bf28a6cad250a3abccc5ceb69b322db287b0",
+      "blake2b": "485698e3120f823338bd55e76c1a9a714cae9af54d0d1ccc5f48ef1d3a2dbb6a25cf83c3eb3a595c6891a5d718d1fed45664dfdc7296b35cd96ab9b7bcc306ac"
+    },
+    "entityId": "CM2026PW69",
+    "dataType": "hearing_added",
+    "distributedProofs": [],
+    "createdAt": "2026-01-26T00:49:21.770Z",
+    "updatedAt": "2026-01-26T00:49:21.770Z",
+    "__v": 0
+  },
+  {
+    "_id": "6976c17a1eef8c8f16be24e9",
+    "blockIndex": 17,
+    "blockHash": "0000665476d27b80248ad80f3b92ad34ca2b3e25f8df4cf8d09769f463d78ded",
+    "dataFingerprint": "2680dace9677f3a9187b5880d7f9244a840ddd59c8562705f67a4b28d713f46a68a4cad3a87e1386cd4ca1841372614694641c94fd547f41a5d6e3a62e72f261",
+    "timestampProof": {
+      "ots": {
+        "proof": "8AiXpXsOCWw96wjwEBJhTCg4CvBChm/ik1fYn6UI8SDefuHV+DTFC3vm6YmV6ElMBpFfO8XrFgmojrrD6ulO5gjwIN357a+q+9ZTF8v/z+5kuq3yPlcChEajItyXo2T1pObCCPEEaXbBevAI0r0laI6r7j8Ag9/jDS75DI4uLWh0dHBzOi8vYWxpY2UuYnRjLmNhbGVuZGFyLm9wZW50aW1lc3RhbXBzLm9yZw==",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "66b68ee051b3c205b9d295a07d0c9849d8831b521324fdab860a58b06341bfe9",
+      "previousBlockHash": "00009c5bac999222392088bc884e2750ff5e80351d0f894ce043797d3d5b48d8",
+      "signatureHash": "f9e6f35f8b672db71b5680e2e2410a4ffeb6111a3d2385b2bfc770e441d43371",
+      "ipfsCid": "ed2fca122a0aca6c723a28f127dd6a42"
+    },
+    "checksums": {
+      "sha256": "7a9be8f5fc46b11fa8126e43e2482d4315984b349e11f534af3e6dda63093db7",
+      "sha512": "a801559e5e5771503144045c6c8e501310fb2710d377fca7597c457d925d52b855c7057c3d83d479ebb53e34f00f0b90003c26f268d9523906e4b98719caeb17",
+      "blake2b": "1cf2446c576fe8b36434a673986b985f4a777107bb0a74b721504418e610582244ea51e0534274d5a57d3567c6e1d0702d9afd44a242d9ebb28b1ec1b183fe62"
+    },
+    "entityId": "CM2026PW69",
+    "dataType": "case_status_update",
+    "distributedProofs": [],
+    "createdAt": "2026-01-26T01:20:58.843Z",
+    "updatedAt": "2026-01-26T01:20:58.843Z",
+    "__v": 0
+  },
+  {
+    "_id": "69778e8f092bcdc6f5a8e363",
+    "blockIndex": 18,
+    "blockHash": "0000dacf591f57c726f9e8021f4081b64b6dbcb1be041626f72f0c730a81dd9f",
+    "dataFingerprint": "f3fdcd22db6ac36f01aa58e08341b1bbcd8f60d5b25819ad807ee5265ca73552ca7641fc261ad6f0da85dddbd4ce1d512860d6879c99b774c8b440a896f2baa3",
+    "timestampProof": {
+      "ots": {
+        "proof": "8Ail1Pyh718dWAjwEAo1TciZH4fgyxTtsGndbwUI8SBrJtCzK7C1nPgSDbHo+aMAsz3fy4oUYk7vE/c0bdMC4QjxIDE/C+z8zoVWMi9tGClPIUo9/Nwk5hvKH56QvFwdQcB2CPAgGNZTPe9MX0Kprq8bBlDyod4yFD6+M5sLyp4QDx2dko4I8QRpd46O8Ag/XXhoGTXLYACD3+MNLvkMji4taHR0cHM6Ly9hbGljZS5idGMuY2FsZW5kYXIub3BlbnRpbWVzdGFtcHMub3Jn",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "bc2d588ec02cf0e23f590b8902bd34f74946318b63d0eeb1b6fc02effb1a99ed",
+      "previousBlockHash": "0000665476d27b80248ad80f3b92ad34ca2b3e25f8df4cf8d09769f463d78ded",
+      "signatureHash": null,
+      "ipfsCid": "4afdf63568acc052b03862b69e89f8b7"
+    },
+    "checksums": {
+      "sha256": "5b76cf1e06129eb25b1f35b12cbf6ff8152d5d5298c9ac55294d21b8329f3995",
+      "sha512": "38290dc118876018ed89a598bb5f6cb7c2d8cd340770a02a01887729e6a5fe968ea8c708c020b8667bb0f393a0313579ba588486bd418549039920bc938938f7",
+      "blake2b": "c79cd0e5b6080f0d92737af5359a0410e26b69771a2be1aa5955e0cb2d0f0d29b33c6bbfef44eafd6f556a5b5741ae870502dec6ff15d45402afef297501f229"
+    },
+    "entityId": "CM20250O96",
+    "dataType": "case_status_update",
+    "distributedProofs": [],
+    "createdAt": "2026-01-26T15:55:59.336Z",
+    "updatedAt": "2026-01-26T15:55:59.336Z",
+    "__v": 0
+  },
+  {
+    "_id": "69778f7a092bcdc6f5a8e3c1",
+    "blockIndex": 19,
+    "blockHash": "0000b1102ffb06c1904d2fa5f70e0897908bbeab319a62c135bd57c20974400d",
+    "dataFingerprint": "8ef25140fa0056d8f349be5d9738cded2b7146bb2f72f45fa02898b2911856ff36c62ccfa61703b5310e7eb8607e61b93b578e3e092efddfdf53795dd8e2c746",
+    "timestampProof": {
+      "ots": {
+        "proof": "8AgQMzsY6EiISwjxIFXmztp360sGjmrmPjYILCKZxkEsVFx7nmOVZec+O/m7CPAQKcdCioTkKlW01jE7dn0gowjwIJ2kBcnimhZ7rOyxczB8QMj2GLNDFg1geUZ6cNAYUO1ACPEgIn88zGgbKULIEpr/eQjE6wgH0MXhV+O9AjbXp8x9tR0I8QRpd4968AjiRx+DMfkQiQCD3+MNLvkMji4taHR0cHM6Ly9hbGljZS5idGMuY2FsZW5kYXIub3BlbnRpbWVzdGFtcHMub3Jn",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "3d664acd5d9080689a64b711d4928325ff9bcf3a75b007bd20f01568e9c6db6d",
+      "previousBlockHash": "0000dacf591f57c726f9e8021f4081b64b6dbcb1be041626f72f0c730a81dd9f",
+      "signatureHash": null,
+      "ipfsCid": "1401d28259773116ea996bd048a2de6b"
+    },
+    "checksums": {
+      "sha256": "3e2c187ae6d5b5593705f06f83a783fff79898fd12e3e772305f9801f6762f89",
+      "sha512": "af1e086b887f156e3065b0e2951bbd067df05340950aaa2b90c53d65bba989ad8f6ac247d93f9b72fbaf2837524979478da5095a2131388fea5297287bf29a8b",
+      "blake2b": "e0effd4ef2a24941f7ddada23b80d025e886e41a94cd5767f445253faf3b6c1f481173e94e51fbf4a95e70d11b5600504ed920d2a76c6623a0eb9f7eb834578c"
+    },
+    "entityId": "CL2025XK72",
+    "dataType": "case_status_update",
+    "distributedProofs": [],
+    "createdAt": "2026-01-26T15:59:54.758Z",
+    "updatedAt": "2026-01-26T15:59:54.758Z",
+    "__v": 0
+  },
+  {
+    "_id": "697790f1828f05dd8ac6359b",
+    "blockIndex": 20,
+    "blockHash": "0000c0318510a65434b12cfe56594939764d764f72a83cfc4f2b843fa9efc11e",
+    "dataFingerprint": "f26521398c9171f3f16967963a031f323dd177e8f9af6d075f22f46a9cc5578c62f6193314d775b36a06b2524157d6927d4d6e5ddb10567e60d37c80f69d559e",
+    "timestampProof": {
+      "ots": {
+        "proof": "8AjehHtykhR/nQjwEF9Z2RBuxEwDrnObEF2d9W0I8SD8/J0OKE5mUo+2yYM2zrAUIL95gloTY8oreCuplpJEoAjxIOE5odG5iXIoWul7qyKkJqGoaT7lU5OsxaBDjQCIFhfgCPAgfJn/sfS7EyVYCbk0bxtxEPpKjICoVwq5B6w3zPdg9h0I8QRpd5Dx8AhenxdGb2okMACD3+MNLvkMji4taHR0cHM6Ly9hbGljZS5idGMuY2FsZW5kYXIub3BlbnRpbWVzdGFtcHMub3Jn",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "f8cdfe1bbfe92710bbeab85c3dcc3d38fac9edd24a55f480160f611488193da1",
+      "previousBlockHash": "0000b1102ffb06c1904d2fa5f70e0897908bbeab319a62c135bd57c20974400d",
+      "signatureHash": null,
+      "ipfsCid": "a09027c7d452b9c8dc0000f7500dab67"
+    },
+    "checksums": {
+      "sha256": "5168097da789a28f274a0080b7bef3b6ddba002eb57104c9819641b27b0a35fc",
+      "sha512": "0a14b3a20d3a185f28e2a86303e5e1079a1098e705f7b9097f92e833b55250bbc8fa4b73f926a33439f3af7a8925c78d4db0357da8b77074aeda06520f4c3c56",
+      "blake2b": "8eb5db51c475b4ded0fcbb5719052ed2c06e69be876f8e32d3e6396d8d7f58f96ba0d1063079190cfe30f300249253683645efd6a9bd276da4f5af8fed0de970"
+    },
+    "entityId": "CL2025XK72",
+    "dataType": "case_status_update",
+    "distributedProofs": [],
+    "createdAt": "2026-01-26T16:06:09.821Z",
+    "updatedAt": "2026-01-26T16:06:09.821Z",
+    "__v": 0
+  },
+  {
+    "_id": "6977998607e82c5499c4c5e1",
+    "blockIndex": 21,
+    "blockHash": "00006f92885bf87d3504778c136766f2717b4e5c9c1543a8ed7260605aff026f",
+    "dataFingerprint": "2f86156a9276f1616f0065d200bffa98ebc2bd09e0e8b512748ed6ab666a4667fdb4fc2770e385f69f27e93209870517c31d5c4e0babe380c8b1fb96a427f486",
+    "timestampProof": {
+      "ots": {
+        "proof": "8AhVACwQrZZcfQjwILaqdpzXjWM/MsEmc41JoxV3IonSg+h/J6S+b8RQXWh1CPAgG067Q4JdlRR+te9pSzHOSG8PBD2O9B3Wt+eFN6KejjcI8BDAy+W2pPkvDe8Cjz3sjgOFCPEgIXkhBhL9OcyrB8aye2pZgnJKzVD2o+o5oRJIZcQ6zTkI8QRpd5mF8AgjexCaPTgslQCD3+MNLvkMji4taHR0cHM6Ly9hbGljZS5idGMuY2FsZW5kYXIub3BlbnRpbWVzdGFtcHMub3Jn",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "460485564cbb9529500590fb94fb831fecca9576ef7d6b5b347937486ac138d3",
+      "previousBlockHash": "0000c0318510a65434b12cfe56594939764d764f72a83cfc4f2b843fa9efc11e",
+      "signatureHash": "d22d9694cd79b3a2b232bebdcf5abfb02752fe00ff8da74b0ba6cbea3ec622a5",
+      "ipfsCid": "7fd932494913d597e96bbe83ee03b6e9"
+    },
+    "checksums": {
+      "sha256": "146b3e054bf51ef328d42dcdb8036fde3a335df8bcf9803d6e1e97f1a152e8bd",
+      "sha512": "76b7dd290bf2fab4ded4ca06c8e1a28ce3f248d2a637e18db3f294eb691ba2b0382afe0177c6828a62b6de06cbf01bf8b821b74a7dd3af7efa3130b52bc03b63",
+      "blake2b": "f642d4912963eb629ec87590a520e842bc0a57ffc2d76669468ce183126eac8a85afa1fcb80a1ad0e778de5869e0401b35f00e7c06e6c901bf2835416c3b1680"
+    },
+    "entityId": "CL2025XK72",
+    "dataType": "case_status_update",
+    "distributedProofs": [],
+    "createdAt": "2026-01-26T16:42:46.279Z",
+    "updatedAt": "2026-01-26T16:42:46.279Z",
+    "__v": 0
+  },
+  {
+    "_id": "6977a74e860add8fb58e293a",
+    "blockIndex": 22,
+    "blockHash": "000083d3c7cd319485f3d14cd8eaa92f7a87a9ddd2bf0f5cee3e8ca5397f21e3",
+    "dataFingerprint": "a3895a048dd9d063e3c39b1a24a9f7c44a4e93954e9ed4ef075677134ac14922a804a498d7f992f0800e496c4988c240b85d5cd124b00a96e695a03815cfd570",
+    "timestampProof": {
+      "ots": {
+        "proof": "8AhYNVlZsMhW1AjwEOZqG88ACeiayDG98Sk1BQgI8CD4pYQ3AsTYuq1g+H0i3FuSixblr9zj5pmuFRyXX0b+YgjxIDCIYqWFxEmOR4Cu9pjmisnt5DfzGA0E9xUBSp1mEQg9CPEEaXenTfAI3T432Ifzc84Ag9/jDS75DI4uLWh0dHBzOi8vYWxpY2UuYnRjLmNhbGVuZGFyLm9wZW50aW1lc3RhbXBzLm9yZw==",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "5c7c6d91374bc6e6e68b2504bd313b8131096b10109b44373d6ac22fe02156b9",
+      "previousBlockHash": "00006f92885bf87d3504778c136766f2717b4e5c9c1543a8ed7260605aff026f",
+      "signatureHash": "20a881bf7cbfbc464db1646f6aab52e21535f13eb6d4573a374baa28863f5e6e",
+      "ipfsCid": "7625b0cd754697be16527dbeda401347"
+    },
+    "checksums": {
+      "sha256": "48c0bb827ced94346014881f596b7736b41f19a5f63b24fabb5c42a2277c5a65",
+      "sha512": "b2ba7b932bb84a40ef474eb6825a23fc1056eb1516475cd6a32afe2bdf3f0f2fd1e6a969cad2c561521b9eda41bf0e18276fe0d53bc54fac12239ff343c130d6",
+      "blake2b": "c2d3607e9db367500ede0163cc93fb3a01769bc2c16478feca73453c6fc2d7c433f58b4255d901d507ebf7ac9d11f70098eb9eebbc04b91c693e5f6228ca7d06"
+    },
+    "entityId": "CL20265B47",
+    "dataType": "case_filing",
+    "distributedProofs": [],
+    "createdAt": "2026-01-26T17:41:34.318Z",
+    "updatedAt": "2026-01-26T17:41:34.318Z",
+    "__v": 0
+  },
+  {
+    "_id": "6977a869860add8fb58e298f",
+    "blockIndex": 23,
+    "blockHash": "0000f4d3183213fe6170178b739345dc3f5032a2ddc60baa2eb64882506aa1f9",
+    "dataFingerprint": "fd59fc9d6f7630c468dc9d1ac5eb4e9bbb7f9c8c910a9e9882574a0adb69ec6013ba91eea885777c3f7a6b6e2386ba3d5bbc509ea82f34d8f06957a11e50f7a5",
+    "timestampProof": {
+      "ots": {
+        "proof": "8Agd7Z0MyGF1AgjwICtyfuRQlRy9Qpz1tm8NPeurcmb3rLpG15Yl7LVYYW1ECPAQ3zOMzsy+gGtc7BK8YaY7JAjwIFjuv489H21X97PzPhgYyvQZce3knLzonDHUkhi7ObYZCPEgLfX/RGQ/4CDDbGqFTaASuT0PWxm7vh3vdmrWrMwi+ewI8CAIvgzXdycdHSBbuYgtdpw3SlMsdLxGmq+3KhVCjxyjagjxBGl3qGnwCJQ/uFGj9yk2AIPf4w0u+QyOLi1odHRwczovL2FsaWNlLmJ0Yy5jYWxlbmRhci5vcGVudGltZXN0YW1wcy5vcmc=",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "fe60f2b1eb329992ee3f7176051833d7841367d382f8a3274f0599d1e955f0e5",
+      "previousBlockHash": "000083d3c7cd319485f3d14cd8eaa92f7a87a9ddd2bf0f5cee3e8ca5397f21e3",
+      "signatureHash": "608894a3146bb36d96e4634cee1d0cf4914d1d7e6da53fee89f4309734201127",
+      "ipfsCid": "a5cd571a6cf58728178eacf0c70e32c6"
+    },
+    "checksums": {
+      "sha256": "5db187ca1010bcdc66fc81e9d13265ae1831044224a6200162407baa65c615f8",
+      "sha512": "e463ed7db643e0bf68f5dfa2a9043c1915ffcf52feffc74e9f27ab5bdbe2bcf216b44c25834dadd50528378a73c0fcc127b51d0fe618bf0a1a3ca1120d17a15c",
+      "blake2b": "29b502d3ae17dd8ffca09402abf6caa5bbae7f6ca03682b885450e01350c48298264daf1ec4b87c4eedb2640ccec59b9f40c05f27c9a63e815cad42f78de775f"
+    },
+    "entityId": "CL20265B47",
+    "dataType": "case_status_update",
+    "distributedProofs": [],
+    "createdAt": "2026-01-26T17:46:17.453Z",
+    "updatedAt": "2026-01-26T17:46:17.453Z",
+    "__v": 0
+  },
+  {
+    "_id": "6978cf7aab1bf982e7390e94",
+    "blockIndex": 24,
+    "blockHash": "0000e5aed18368375ada5da4a07fe3ae328230a89ba30a8cd9ffa7e7c62d40ec",
+    "dataFingerprint": "cb528b54d9e3317575fdd8cbf12554ce97ffdcede8de05c67f8bee0c4dfcd6a2d51844f96abe41593d56ad8eb1ce9ea21acff2a7150907bb2d5c5296544cdb77",
+    "timestampProof": {
+      "ots": {
+        "proof": "8AhwGq46e/Z+MwjwEAAO7Jw3MxXp0Xt5ySCPeo0I8CD/rjAdR3l+F17Mm5NTiPCy9y8tekiBlWN9+760QSkk0gjwIDn07L/4kZ7zyoMISgnJIu7RxzMkAlu4CN5s3WmclwoLCPEg76WqaJTwl78GJfu50IjBXc8wZ44M5LpWlpQoyMDekf4I8QRpeM968AgWK7URxl9IWgCD3+MNLvkMji4taHR0cHM6Ly9hbGljZS5idGMuY2FsZW5kYXIub3BlbnRpbWVzdGFtcHMub3Jn",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "fa28f6b9dd04e795079fb8e3eae4332dafb659a70bf9c7fe684ca0525c5b8c4f",
+      "previousBlockHash": "0000f4d3183213fe6170178b739345dc3f5032a2ddc60baa2eb64882506aa1f9",
+      "signatureHash": "d8b5c6bfa9425cbab012436c5f015a5477602d2ede2e9462221a9ad2eb31204e",
+      "ipfsCid": "95545337dd164d9b6997e52192d056ff"
+    },
+    "checksums": {
+      "sha256": "b1f32b95eeafc374be8059caa3fb9e32831a27b0716ddff9bf28f89defaa7d5d",
+      "sha512": "6de473015349809ffa27373a3c840188767696b69dd54a21567dab1c9560cad227dc83229b0ccbf1aa123f1f2d8a86a8953124a8aa4dd67c19727b02e561f1c4",
+      "blake2b": "325864be49973bd2190272b05c800da4a9d2fb922b5b576b03eb338ec227b8a77d596272ccd0b4b29a487c21312acd7bbff27bd102a353bd4e405e1aff44c224"
+    },
+    "entityId": "CL20265B47",
+    "dataType": "case_status_update",
+    "distributedProofs": [],
+    "createdAt": "2026-01-27T14:45:14.807Z",
+    "updatedAt": "2026-01-27T14:45:14.807Z",
+    "__v": 0
+  },
+  {
+    "_id": "697d194400ee35f713e95236",
+    "blockIndex": 25,
+    "blockHash": "000049bd31eb7be45bc0c7817035c0bfe3673f92cf82a723cac3542dc6f40821",
+    "dataFingerprint": "218273f2e894dee73e73ef12d925485379027486f18a4ee1b2b8bad759ebaa659e446bee811ed65ff3538d1c4b589bcbdec8b372264189e4a1d6db50a343f33f",
+    "timestampProof": {
+      "ots": {
+        "proof": "8Ah3Gv9mJ/+wXwjwEAMPT52Iyjd+0S9IZf1+oZYI8SCQUF+Iz9PKzhKgmtGmbG0+fZDtINnkGYxjiKpyUwd6yQjxIFvybFr2qlu64YLdkUxOunNrwzGm5LhtTSllw1xTnLddCPEEaX0ZRPAIx1dGGrAO1+QAg9/jDS75DI4uLWh0dHBzOi8vYWxpY2UuYnRjLmNhbGVuZGFyLm9wZW50aW1lc3RhbXBzLm9yZw==",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "0de5389921eb6d00e8adc5903b01958ecc5aa6110739a76bd1ffc875b7ab8f66",
+      "previousBlockHash": "0000e5aed18368375ada5da4a07fe3ae328230a89ba30a8cd9ffa7e7c62d40ec",
+      "signatureHash": "9dcfffaa4357a7020e2cefc80e434d7b7ac028a136282f37885dc8e2455ff88d",
+      "ipfsCid": "ce48617258fa7f4a7d3dcb56a581d38f"
+    },
+    "checksums": {
+      "sha256": "3911f806aa762236028ccf992e91f399a541112a8253f9d9165166181a336ee6",
+      "sha512": "6c27ffda61785be883ab083efab77993c439481579fdfaef6ecaf77620a185e21bf57fc165118ee951df0bfc37f486661cb9ae622c37d98c1b481ec60ff18cbd",
+      "blake2b": "4215039a913b56991b1447e7621e72cde69ec531a3624ff43d780a6b430ade8853dd7e88e7c7e61125844c0783a747510029de219c53778dfa14f8cfc6330c20"
+    },
+    "entityId": "CL20265B47",
+    "dataType": "hearing_added",
+    "distributedProofs": [],
+    "createdAt": "2026-01-30T20:49:08.960Z",
+    "updatedAt": "2026-01-30T20:49:08.960Z",
+    "__v": 0
+  },
+  {
+    "_id": "697d229ad68f3df3f7b25f84",
+    "blockIndex": 26,
+    "blockHash": "00007f87eed4916f8231b25ed957881ecd3564bf78f74dcf3e3459aed0f6dc13",
+    "dataFingerprint": "389a1599de5a8a6953201bd365199fc94e3ec9091f16fcbbd3c8807448c33a9412de24902bb512a37c8375f3c5bec547ee85fc10c6407040dc68e13c78aef48a",
+    "timestampProof": {
+      "ots": {
+        "proof": "8Ag5SGbDttTv2QjwEMelVn6H3aMl41+wIrQvDFgI8CClIHEUQ5GRS1ksbgLnnofywwRFO/6SnUMlL6n/CCovLgjxBGl9IpnwCHNSSMrF7V+EAIPf4w0u+QyOLi1odHRwczovL2FsaWNlLmJ0Yy5jYWxlbmRhci5vcGVudGltZXN0YW1wcy5vcmc=",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "2bc070607d0d5ed3b85bf39057bb8e885c50564d1334bb3d758f8f040887b0c0",
+      "previousBlockHash": "000049bd31eb7be45bc0c7817035c0bfe3673f92cf82a723cac3542dc6f40821",
+      "signatureHash": "6d4e11598875fb76f275c02f4cc6d8db4f1c1352644c8bd024c6a23811dfa4d7",
+      "ipfsCid": "b7a963051382e8e2a02f5d07e737d046"
+    },
+    "checksums": {
+      "sha256": "238d4199837898bceaa82f2d441afefb62a2e37817f426b6726ae3a3764d4769",
+      "sha512": "f1d75e6f7fbf8c33149ac4032d8ab677ecbf596195433689e4e8089007f39916b3df029f3c3ee2f1c41798845b2c76ec82a86d8f14f0a065833b5b554105f2a8",
+      "blake2b": "85417aecb67e1341d5d0adfaea80f4ce513b0ae016b50ecfe490cfcf8830e35d17f9778c4fb1b85dab751b70e45950f44f141fd05127daf55b3eca9ec634c0ce"
+    },
+    "entityId": "CL20265B47",
+    "dataType": "hearing_added",
+    "distributedProofs": [],
+    "createdAt": "2026-01-30T21:28:58.241Z",
+    "updatedAt": "2026-01-30T21:28:58.241Z",
+    "__v": 0
+  },
+  {
+    "_id": "697d3054ab7179229c8a261a",
+    "blockIndex": 27,
+    "blockHash": "00003c902193003591a25b291080976696ec601f101919d28016a511915fbfec",
+    "dataFingerprint": "4c91ad768da819ca63768d9836977167d55251f63ddc4eaf936668593f4c0e9300af364d6942c5bfdd59d410d342fa9b78e6ebe9130162cfd64806a537ce70bb",
+    "timestampProof": {
+      "ots": {
+        "proof": "8AjzP0ig1s+QuQjwEDEuqjfDCNK+C2sM8vlQ6fYI8SCyagS2a/Q6NYlrYJN0GEF+Mp6cOOxYVamiG6SdzmvJ4QjxBGl9MFPwCB1tn+IVm7HaAIPf4w0u+QyOLi1odHRwczovL2FsaWNlLmJ0Yy5jYWxlbmRhci5vcGVudGltZXN0YW1wcy5vcmc=",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "9a857ec12a3a9828a28acc75ed014b996517181beb77c6ec748f6e2b42d781dc",
+      "previousBlockHash": "00007f87eed4916f8231b25ed957881ecd3564bf78f74dcf3e3459aed0f6dc13",
+      "signatureHash": "b092d36adfa77d4dd87b9e71b4bfd3784b4016bc66db2d1669fe00d77f7b1a56",
+      "ipfsCid": "16a4e2a09e7fdeac519b9eb439037a6a"
+    },
+    "checksums": {
+      "sha256": "8937e12e6d4356b2dbaecac8abcdbb0fbb0337a50e3c83dff69bfb3440c6a935",
+      "sha512": "09640ef83cb727b8a36b262ec1c017ffbbcda17574d9f8c982d5cf8b28688e3553336f8f3b0b143c1e2dce7c6420967fe0361fc92dc4fdc827f6e2cd4d9497b4",
+      "blake2b": "41566b6a85944af7a0a77d602d3c6daa7de8b4eee15f79e31ec0b00fdaed02394429452096c8b78eb9ef628e21792af28e5d86e415b60a0a21d670555aacbf03"
+    },
+    "entityId": "CL20265B47",
+    "dataType": "hearing_added",
+    "distributedProofs": [],
+    "createdAt": "2026-01-30T22:27:32.616Z",
+    "updatedAt": "2026-01-30T22:27:32.616Z",
+    "__v": 0
+  },
+  {
+    "_id": "697dd990b10ffb34374a814a",
+    "blockIndex": 28,
+    "blockHash": "0000a0229ad13d03bbef31b4eff73a84fe8ebd361611f367917214eff59291d6",
+    "dataFingerprint": "8dd38258a8b5786f48b1b727b52fc23e984d1f495273fdefd7802c072f7bffc8d7a708ea8e10bdb9ec1811448f05817f05322fe5ace8419a5ac8555156ee6eec",
+    "timestampProof": {
+      "ots": {
+        "proof": "8AgtPsjNVWcWWAjwEG7JJ0cn8OZaLzJe3NjdFtEI8SCe7kUi96rltiSI17fwtZAaTxxcA37L4+cRzI6UB1PfqwjxBGl92ZDwCL/eElLWtyrGAIPf4w0u+QyOLi1odHRwczovL2FsaWNlLmJ0Yy5jYWxlbmRhci5vcGVudGltZXN0YW1wcy5vcmc=",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "fc521e2918574cf57a8b0c6da7c72b351ec7dbae6d0093f585c0ab8efc88fec0",
+      "previousBlockHash": "00003c902193003591a25b291080976696ec601f101919d28016a511915fbfec",
+      "signatureHash": "458f91abf42063b0640b75d16ea806cd56775c9b93bad79ebea2bbba895d377a",
+      "ipfsCid": "12565f3e45fb95e68b07f90e8fe1b9c7"
+    },
+    "checksums": {
+      "sha256": "111c9a17b4bc2ffeb06d156f1d1072479cc3c7ac1eafcad43050aee220f18753",
+      "sha512": "9b6767847cd521a98c95f429cf1f60235a151ea7a64ba7c234e7fc64640929892365a1bd8e0c124ad95a50d4e894055c1f7f72666011b4f83a2f01156d7f2e4f",
+      "blake2b": "4a89e64fc38ffadda6ac75929814b1b50e60e046e63797cda2307e3442f09db1c7a5c464f36d97fe02003afb24a24fd7bf6c4b89fe055ce0abda26ef4a3c7cc8"
+    },
+    "entityId": "CL20265B47",
+    "dataType": "hearing_added",
+    "distributedProofs": [],
+    "createdAt": "2026-01-31T10:29:36.951Z",
+    "updatedAt": "2026-01-31T10:29:36.951Z",
+    "__v": 0
+  },
+  {
+    "_id": "697de8963297af77c66bf60f",
+    "blockIndex": 29,
+    "blockHash": "000029ea9d9b78a2616cce7c73c72288e98e2e83095ae7f582cd4f151e96661e",
+    "dataFingerprint": "a5089b7590476d25801b32011b32c3f9ccfcf919a85afd87e2d58a2258893889725f4e1ec5a22b1d77efc00e13a058b89ddf442749edf64bacf6ecd741f8725e",
+    "timestampProof": {
+      "ots": {
+        "proof": "8Ah7YDNkUbffogjwEPTLvHr6YM8yBU8ZmF/6zXYI8CDQT6PvUbDopMH7mSj6Cxv+3edxBhFUBXFRoYH4VSV8YwjxBGl96JbwCEkGu3TNgIhQAIPf4w0u+QyOLi1odHRwczovL2FsaWNlLmJ0Yy5jYWxlbmRhci5vcGVudGltZXN0YW1wcy5vcmc=",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "b87f4fb0b6e7e1a983f23704ae1fb9c11543be5dfd6c125d1eb9b1244f428f7a",
+      "previousBlockHash": "0000a0229ad13d03bbef31b4eff73a84fe8ebd361611f367917214eff59291d6",
+      "signatureHash": "041566c1a7b1f043e9f9b8fdea398711d672eafa0cc655523bd568e269d4f736",
+      "ipfsCid": "4e8b0b230bd8c9b08875c085d007800a"
+    },
+    "checksums": {
+      "sha256": "ce36d91f864ccf45cff9e784a6dcc99d8580be68c41d32280f3884f8896a6b96",
+      "sha512": "7fe44d36b9061840a5039286f06586a26822581a50d04177885cf66057c764c2de0c72f3f0aa18a08c18ad5a20d809adf541ada38c381069a6cc7d63de88ce04",
+      "blake2b": "fca8196cf6d5415d3669c0e95fef9ef4c16a9bd5a12eed3a1efb59080f0f3297e71efda053884a1ca5da8f271d55956e6dc33afb319f24eb5e18c5d21acc54c8"
+    },
+    "entityId": "MAC20267G82",
+    "dataType": "case_filing",
+    "distributedProofs": [],
+    "createdAt": "2026-01-31T11:33:42.541Z",
+    "updatedAt": "2026-01-31T11:33:42.541Z",
+    "__v": 0
+  },
+  {
+    "_id": "697dff3d18d8003c63b87c65",
+    "blockIndex": 30,
+    "blockHash": "0000c09d0466e616254eea929332cebabccf50f4e00eb71ee363271b22d31e3a",
+    "dataFingerprint": "8382c153a75d09b22a9cb0f11a80baaee0204b8bf4dea8bb8d201f2030c47a043738d94db56d79467829838d98423dec74d4dda70dd558fab67295d64a5a1ef4",
+    "timestampProof": {
+      "ots": {
+        "proof": "8AiH59r7a6VXLgjwEJ0ipbmlRNKaWkSneb4SYqwI8CCCcjfPE8E+hGIjFGNiyNAxrrScmaASkh4PaooMDAwjrAjxILuF31L3wmxzyI03vre2C99Fit5+y9S7oI5p6FK5Ro0BCPEEaX3/PPAI1j8zk03SR9IAg9/jDS75DI4uLWh0dHBzOi8vYWxpY2UuYnRjLmNhbGVuZGFyLm9wZW50aW1lc3RhbXBzLm9yZw==",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "df4d99338e135e634b0ef9e8184d5f655ec91780e0c4b370ef1291e5a8ccd868",
+      "previousBlockHash": "000029ea9d9b78a2616cce7c73c72288e98e2e83095ae7f582cd4f151e96661e",
+      "signatureHash": "be46324696c0d3eea4bff2a1cff02340eaa59a27a4a6922d7c94f4436055b637",
+      "ipfsCid": "b9cb61425ee5bded71e6abeafc15bce5"
+    },
+    "checksums": {
+      "sha256": "34414c50fbe790c13c9703fd45e4f800e638150330dabc442b49126d811d6663",
+      "sha512": "685790b379b6f4aa9b0853387acbf191b709dcb6d2657200f4e11df0eb53cfe23c56805d04c28c591d41dd43a597fb6fde0bb4ab8e85aa3a0b60008aebc6a38c",
+      "blake2b": "96ac45e1e0bb17d8209056e3e5af01aee1f2a53e374c212fd90ced92e380c658352da64cd2b1d31923d4110382ecda127d688713710bb1efda3144e717286bdc"
+    },
+    "entityId": "MAC20267G82",
+    "dataType": "hearing_added",
+    "distributedProofs": [],
+    "createdAt": "2026-01-31T13:10:21.018Z",
+    "updatedAt": "2026-01-31T13:10:21.018Z",
+    "__v": 0
+  },
+  {
+    "_id": "697e00cafaa4de5c1e8e10dc",
+    "blockIndex": 31,
+    "blockHash": "0000efe119b4812e881a1f17dcd9cde1482875eda887bc7db851117052724d6c",
+    "dataFingerprint": "a253178e5b66eaef5ab5801c69e711b8e3f5ab0f5476f6d98dec3978e0bbef3623944c3588015f203b4cdcf2351191b215c16eec5a4a63228794f9ba704e7b31",
+    "timestampProof": {
+      "ots": {
+        "proof": "8AjJ7DDm4fw6kQjwEAv9lFUPKm+0zHYh5O8P8+EI8CAGv0Gzs9oQpRMfkYQbaBZqBv8gHVxxZU69ty4qViNYFQjwILX/F52TXa8Erq7x6g+VvuUP7RBLJJBKDyjPt23V1AlHCPAgVSlQeCn7u6VM6j9qRc7z/Zxkfs5SgsY31jfJP866a0kI8QRpfgDK8Ai5geYy+vCkcgCD3+MNLvkMji4taHR0cHM6Ly9hbGljZS5idGMuY2FsZW5kYXIub3BlbnRpbWVzdGFtcHMub3Jn",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "a78bcc3b286cc50a8e524ca23020badc8e4dd24c60630e5ec79644cb9aa29557",
+      "previousBlockHash": "0000c09d0466e616254eea929332cebabccf50f4e00eb71ee363271b22d31e3a",
+      "signatureHash": "680967cc8233ea0bdf7ba1de1b4ae94167b4e4b62931c2a4ee3b9e908b94fc3f",
+      "ipfsCid": "b4ab74650f3a8f45f3648c9cf7aa352d"
+    },
+    "checksums": {
+      "sha256": "dacf88b012a023a3fe4727022d2034e04675e509dde8382c606cc5e83622a543",
+      "sha512": "4095dec03264a3d72c9408f805fa63073997f743d0556d2ba0841c6d4ba5ef514b311cc6f74ff535531f0366df5ec003b1043e614996b27f7e3a68aa498ce77d",
+      "blake2b": "c62c5e39cd2ca90b9ea19a5bd465753ba52305298fd40cadfdeda970e3fca88b44ea78f5e8bfbcd8588c7232b68918e6cbd510033d7bde729afea078dfa4e4b8"
+    },
+    "entityId": "CL2025XK72",
+    "dataType": "hearing_added",
+    "distributedProofs": [],
+    "createdAt": "2026-01-31T13:16:58.997Z",
+    "updatedAt": "2026-01-31T13:16:58.997Z",
+    "__v": 0
+  },
+  {
+    "_id": "697e0b2074d2c9d810757765",
+    "blockIndex": 32,
+    "blockHash": "00006f6f72f613f4bfa6a0c0fa1fe009a28f59b7bf57b8c58fff77329479b4f3",
+    "dataFingerprint": "7d25b69f469691845f8c0482efea456e37873d2ed6ce91f9efca0e5d3e24ffa47006553a703ca92da11c978a518df3e66562c8a7280d087acc402af919401509",
+    "timestampProof": {
+      "ots": {
+        "proof": "8AiDmYTgFGWwyQjwIBriYFe5/CwFkkM936L51wRQBXXuswCorfmD9TAzQ/vkCPAQGROrcIItjAy0uB/sOtc4cQjxIBW8miRu/JnzBF2fMhFGcIg5rMgsGehbei/NYcDs4J9bCPAgJhX8iEEOa9AAFv+gJ/RP8MQPxa9FUyHm5KnXZs0v/swI8QRpfgsf8AiIuFaQEO7umACD3+MNLvkMji4taHR0cHM6Ly9hbGljZS5idGMuY2FsZW5kYXIub3BlbnRpbWVzdGFtcHMub3Jn",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "9dff15f1d4fafdb67162153b6c7a1ada70025eab6373d2b74ffacdecdee0e6d6",
+      "previousBlockHash": "0000efe119b4812e881a1f17dcd9cde1482875eda887bc7db851117052724d6c",
+      "signatureHash": "20d4dc7b1bbfdaa4e33dd73b441cff8dec692b0f9c1e4803bda439a5047eaaa2",
+      "ipfsCid": "0fd73592058ef05a1365401cbef70c69"
+    },
+    "checksums": {
+      "sha256": "f6ef59145b9f746b5ccfec20a1da17f1f4e879f734945737fbdaf1c65543bfc7",
+      "sha512": "9207641ecf44387379d2c324f10c30a7619112ccf997bf958b904fcbd1366f113285ed23f52a14ba662ed217aebb53e7ef80481f9a6d3788b719eb94e593adae",
+      "blake2b": "581c2e0a435240651370d4b9921de345c16b654105bb65bcf7fe0e40d20b63e9a7ace9805853b03e404c2887e678594970280718a50c2dce36ab31f50b688573"
+    },
+    "entityId": "CL20265B47",
+    "dataType": "case_approval",
+    "distributedProofs": [],
+    "createdAt": "2026-01-31T14:01:04.231Z",
+    "updatedAt": "2026-01-31T14:01:04.231Z",
+    "__v": 0
+  },
+  {
+    "_id": "697e19fc6e60ddbd2b1a97cf",
+    "blockIndex": 33,
+    "blockHash": "0000e5fbca38dcbcfb3d670926ea74ca68cd534327441d4382fc2ce5949817ea",
+    "dataFingerprint": "7c5f21d03bca53f3c8d9a4606a5abc9d5273c3a9d69f3ec2d35f20f6646e4dbb93bb35ff61053b626eb4e65b4d25a760d1be4777638508e5612ef3597c016a89",
+    "timestampProof": {
+      "ots": {
+        "proof": "8Aij1rvVYsMfgAjwEGhegvtaLB771Ig1BsmBHvQI8SD83aq9p5JNulqGoz4L/6OcOwjM8jsugJm784pesvp7cAjxIGgiJZOaGIYILV0fTm16K3FNPFNybvLJdrrwC2l7NovgCPAgM0w5EBkqWK/vsokVEqrfdEcw+t9qCHpA9KhU9ssey40I8QRpfhn78Aj7RSdJnEKuQgCD3+MNLvkMji4taHR0cHM6Ly9hbGljZS5idGMuY2FsZW5kYXIub3BlbnRpbWVzdGFtcHMub3Jn",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "b6ba40b9d4c16d87c3fb1dbdb3d713ee02194efff71a86b6197a759e5c7670e7",
+      "previousBlockHash": "00006f6f72f613f4bfa6a0c0fa1fe009a28f59b7bf57b8c58fff77329479b4f3",
+      "signatureHash": "15ec41860d737c09d8e50543e48dca4ea8ed560b49c6dcf454104f1841c39a9b",
+      "ipfsCid": "8369446f8923804f1e60af4083529a04"
+    },
+    "checksums": {
+      "sha256": "ee38915f494484e41357e7beee6616be0106dfa9f0270721314178f0b901dfd2",
+      "sha512": "d789b46ce91ab765beac47821f1cad2d3ed02036b5b8d894078e05c7e7ac5bc3b075e564bf64ceebfa0f8ff1206d1f42dc3f7101014294609b683120a71307ef",
+      "blake2b": "94d22afcd192c5af0b48a4bfc13848767a30b4e8c09c59efaa59586a571612e01dbb137ee3f7e5072ba04eb1f87c7971146522e09e7e9fcb067f7b67f18830e3"
+    },
+    "entityId": "CL2026VS53",
+    "dataType": "case_filing",
+    "distributedProofs": [],
+    "createdAt": "2026-01-31T15:04:28.080Z",
+    "updatedAt": "2026-01-31T15:04:28.080Z",
+    "__v": 0
+  },
+  {
+    "_id": "697e1c306e60ddbd2b1a98b4",
+    "blockIndex": 34,
+    "blockHash": "0000849a61c9bed1470056bf66c4aa218abf21a2e6c2948b7a89e1459ba230f8",
+    "dataFingerprint": "3203e3d49e184a6fc43963f15d8d1396c42c7bb6c53c27324a6ec6e6f1e875d6ea55ed664542d973b7ffc651dd63369bdcdcc89b454059cd0610fe2386202dd2",
+    "timestampProof": {
+      "ots": {
+        "proof": "8Ai64/Y5+/RQjwjwECAy8haHag+zz820mKYqlqgI8SA1FUlqUwVB2T6qzZl4rIwKMawTqTYLYop/TJlB02yV9AjxBGl+HDDwCNFNtzjhxkQaAIPf4w0u+QyOLi1odHRwczovL2FsaWNlLmJ0Yy5jYWxlbmRhci5vcGVudGltZXN0YW1wcy5vcmc=",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "a72102bcbe7cc6e43d202b2f697c78b7f4c35eeef8d68ea70129d00ddac0acfb",
+      "previousBlockHash": "0000e5fbca38dcbcfb3d670926ea74ca68cd534327441d4382fc2ce5949817ea",
+      "signatureHash": "190ce7e353017eced68f109f4637bc1b072b9496ba0ad599e9f3b600efd7fb3c",
+      "ipfsCid": "4e67813db60e405d67f76ae7ff3a7685"
+    },
+    "checksums": {
+      "sha256": "697d0581c5486ef8ade0fac05183680ca5ac10ad41131e0bb85f7902f7bb72a1",
+      "sha512": "9c7b88d1dc9f06b5bf0a87840b3c244d4f996ce6a3d3b2bdf35be046254cde7eb40d8e40100b815e454d83f3e25c64aeb28dbb2ae380990eb36941e0222de534",
+      "blake2b": "41de1623782c4e6fd7f2a2f26c5744327042beec67146f7f848724067b244c5e96be7a774d0342f748787a67531a93eb61b404d7f11d3cd28f134650605f8922"
+    },
+    "entityId": "CL2026VS53",
+    "dataType": "hearing_added",
+    "distributedProofs": [],
+    "createdAt": "2026-01-31T15:13:52.478Z",
+    "updatedAt": "2026-01-31T15:13:52.478Z",
+    "__v": 0
+  },
+  {
+    "_id": "697e3268f304b4427ddc419c",
+    "blockIndex": 35,
+    "blockHash": "00008b2b8cdaac9e21e93bef6ff09ac7f6dfceabfe3e74a39a09a4464524f169",
+    "dataFingerprint": "cf7149734477f7be2ed8e568627b84c2fcfeb5d700b2b13b17098ba1a62d777f07ba420bc94b2db6c6a7a1d88dda434b10239055d94041e649fee95e1bfe7678",
+    "timestampProof": {
+      "ots": {
+        "proof": "8AhqXfts5h7FeQjwEB5heneVavI59uAbPAAkZaoI8SCuXuhNMPEgWkKePwBRS3HZz6tVfbatspClM8qRU7wdDQjwIBlwkL2OYrT7r7lvfm30efiq+1C/OtUSHFqGhuoNsk1wCPEEaX4yaPAI6z/HzJENxcoAg9/jDS75DI4uLWh0dHBzOi8vYWxpY2UuYnRjLmNhbGVuZGFyLm9wZW50aW1lc3RhbXBzLm9yZw==",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "b4c4741011c70e26c9f46cb23596a7cc2fd507670a3b19e892612fd3a3d0ef3b",
+      "previousBlockHash": "0000849a61c9bed1470056bf66c4aa218abf21a2e6c2948b7a89e1459ba230f8",
+      "signatureHash": "95d0b7134d9982def56be52847ce561658221174f08d949237255118503fef92",
+      "ipfsCid": "eac541c66eb4627d4d35b742410ac78c"
+    },
+    "checksums": {
+      "sha256": "8052a9e4b6b528d01fd9004334472423c986a3791e6b0e52390c6789fb391b9a",
+      "sha512": "d907282124029f76584c48e825a7e25eb906b12ba5a17a7f9fc1dd32e7d10c6b7af5b5e16dc934206fcd1ac58229f105b65683429b13a51a790a45757dd5b71c",
+      "blake2b": "baedf7ad4d816b67844588c96bcc4389238fb268c74161e240460d6eaeaf34252e63bad625bd3f52afcd1b7dbb5caccf9ac3900a07b03c5fa336c66c0be51c7e"
+    },
+    "entityId": "CL2026VS53",
+    "dataType": "case_status_update",
+    "distributedProofs": [],
+    "createdAt": "2026-01-31T16:48:40.715Z",
+    "updatedAt": "2026-01-31T16:48:40.715Z",
+    "__v": 0
+  },
+  {
+    "_id": "6980679c7d135dd27d75c6b2",
+    "blockIndex": 36,
+    "blockHash": "0000b26fede9f8b7527aad1ce20c1a78bba54cab47d3738c933ee78a89715864",
+    "dataFingerprint": "031181481a525a2467490a30f89aab1787026a84df5e4186381c1e7b0bd30577e7dbadebb5f62374d0d3c108a7afff93bbf5435aadfd40c56b621b74654a6abb",
+    "timestampProof": {
+      "ots": {
+        "proof": "8Ah1t/MA0EqAgAjwEKw6k84TaMiWYQT6+RmbMAoI8SDU3PrGWEv0oNBZmerGggUZMZO3Urn+ivjw0HApl741xQjxINOuxm3oKyZ+w2C3pbLTLiPiGcFx03gXBI0EN7J1X3rMCPEEaYBnm/AIVWa3f8cYW1sAg9/jDS75DI4uLWh0dHBzOi8vYWxpY2UuYnRjLmNhbGVuZGFyLm9wZW50aW1lc3RhbXBzLm9yZw==",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "94ef52d8ef67d0eb1b8a7a735c17d127f880358cadb73bfa4d877ca9b9677999",
+      "previousBlockHash": "00008b2b8cdaac9e21e93bef6ff09ac7f6dfceabfe3e74a39a09a4464524f169",
+      "signatureHash": "13e0337df629e3b9f8e9d611f7539052aa648a04423e4027dd0f1e40c3728b61",
+      "ipfsCid": "3ad2912d2df2f9b20920f204c8560138"
+    },
+    "checksums": {
+      "sha256": "13801636ce4b9eaec93ba48240e843e840e55240fbc3e4fce6cd2281838d205d",
+      "sha512": "c632ae164e3140fc3fd8f37c668de8ea23038b730ae9a7d9d9ba8a6a6ab11981d82828b77db44d16af5c374e8a32dafcff3f951716a48cce5885078649bf2b13",
+      "blake2b": "3aaece1780e813d27ccccb08d73593405b7f8006befffb50935bd974c247f483aef585114d3faa6fbd96b4b3c1eef2a810f6ece677a3ffc939731719b23a252d"
+    },
+    "entityId": "MAC20267G82",
+    "dataType": "case_status_update",
+    "distributedProofs": [],
+    "createdAt": "2026-02-02T09:00:12.814Z",
+    "updatedAt": "2026-02-02T09:00:12.814Z",
+    "__v": 0
+  },
+  {
+    "_id": "698668c8e927a640301d2c81",
+    "blockIndex": 37,
+    "blockHash": "0000f20bf83d695cd4ae7ff858d1b6798441e9110086e9197bcabeb2d97e2686",
+    "dataFingerprint": "58ac151792585796f7257440c57423fa3f61b120dea9370b8e3259cf85e7288953ee5a681a518458bb48341ec911addef49a35f6003247cd5818b17d132bc51c",
+    "timestampProof": {
+      "ots": {
+        "proof": "8AhjyHTZndSHwQjwELaT0e2NsNdtZDq9VOLAkIAI8SAyAQtFXIvVUL5Y8r1uNOtSZ+3C+8Kv3H3aKw0RVcHmjwjxBGmGaMfwCDnd75CSO2npAIPf4w0u+QyOLi1odHRwczovL2FsaWNlLmJ0Yy5jYWxlbmRhci5vcGVudGltZXN0YW1wcy5vcmc=",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "dcb452dbca4932760596c09b295ef922a405b4d88459947273ebfb2bbf641966",
+      "previousBlockHash": "0000b26fede9f8b7527aad1ce20c1a78bba54cab47d3738c933ee78a89715864",
+      "signatureHash": "56e711356f8e87de7fed97e2a90361bea297cc4578c82e35a7f0949f4380a455",
+      "ipfsCid": "2094ce1c5b348f829524305d7c626780"
+    },
+    "checksums": {
+      "sha256": "2d065fadd2cc2fe860ae87181d36e8c39f84a167957c793c68d7909391ba43be",
+      "sha512": "74af2eaccca294e63e2de5c79cf9cc63d67649ee5b5b6aaaf52771b867945b1af2ceb500fb3b7bf9274be15d222a4aa5d308c5e7a8318fb17ef609147157585a",
+      "blake2b": "480f8111267fdacf70dca3d220c27f6eefdfbdbfebdef79f895c68fde2114897970df892534ae2ad68e839836835b0cb05ea965d2a6fa752fbdeb1324787035d"
+    },
+    "entityId": "MAC20267G82",
+    "dataType": "case_approval",
+    "distributedProofs": [],
+    "createdAt": "2026-02-06T22:18:48.109Z",
+    "updatedAt": "2026-02-06T22:18:48.109Z",
+    "__v": 0
+  },
+  {
+    "_id": "69866db77d9f47cfa48aa8a2",
+    "blockIndex": 38,
+    "blockHash": "0000a8f16bb1dd744f95e530c65a5dfead1cbde86446a85cb0867a934e5bbf0a",
+    "dataFingerprint": "fbd9e6b871faa06fd4c57bd46991a03da88fae11170f48ec2eddae2b0ba053d0b571533680717b9f62c4fecd95cdf648a56523c7582a38fa01adae9df7c9edbb",
+    "timestampProof": {
+      "ots": {
+        "proof": "8Aiu2HWgKtQlqgjwEH5XbBfhls56mPosxCCDAOUI8SDu3zX3ayNOEcxPJfXUQnZ5no3X2FuoMoU9sTWcRz13NQjwIC/bWOv53u/v99qAzWRO/dD9NW7CaPkX/BJlkOJg2/eACPEEaYZtt/AITsf9QE2uqc8Ag9/jDS75DI4uLWh0dHBzOi8vYWxpY2UuYnRjLmNhbGVuZGFyLm9wZW50aW1lc3RhbXBzLm9yZw==",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "dd3246e20d4659c569e1d4fe11ee925ad96c60c2704443a8ec7cd5f65722b4e4",
+      "previousBlockHash": "0000f20bf83d695cd4ae7ff858d1b6798441e9110086e9197bcabeb2d97e2686",
+      "signatureHash": "267a7b680dda12ef36bb8e9f3fc30702a245f62cac20acc2d7dae6655d6270d2",
+      "ipfsCid": "05576475ad71700fe4b7abc8cba836ef"
+    },
+    "checksums": {
+      "sha256": "e5bb6e5914097a3a072d95c3cbba2b1473ead07ba4bc425c76596484c4e10a2a",
+      "sha512": "4bbeb5eb71c1f3dbc5710cd14416265cb5c1f250c9445694f8c58e65b34b7ef0d7b60f361d2070c37157b52098fd056f042e446e84832b212e16600e4791b539",
+      "blake2b": "2ed0e84d2a48185bff12201ebfc4aa48562cea687bf97c9b97ae103fe811b35b220c1dbe8ec8e1f1f39245c937f563e4991b9908a96f443442b42f386c256daf"
+    },
+    "entityId": "MAC20267G82",
+    "dataType": "document_requested",
+    "distributedProofs": [],
+    "createdAt": "2026-02-06T22:39:51.940Z",
+    "updatedAt": "2026-02-06T22:39:51.940Z",
+    "__v": 0
+  },
+  {
+    "_id": "6986735a73a3781ef81390df",
+    "blockIndex": 39,
+    "blockHash": "00003bc7a9b7b4da0f8b3e1c35cf630e84485a75972303dedc14a695d8d7a973",
+    "dataFingerprint": "41dfa91b68d5450fc4f1edb4adcbf7de279a8adbe62604bbf30fbfb6b2f817b5fe9fe1782f83dd8a5aa19701e5996026d06f0879091ccecb50477d8845f61a3f",
+    "timestampProof": {
+      "ots": {
+        "proof": "8AhsXH/eegaOrQjwEPbhXNgNOtPhHHBFtaONET8I8CCm/SqvH2b2ST/WnpoMyZnGm4rRdK4gpVi0S31ItcsUKgjxIN1XVDbAso3W4+uCbAzQZp91cSbXqNEyX5scuXZukiMgCPEEaYZzWfAIYV4euw1bL4MAg9/jDS75DI4uLWh0dHBzOi8vYWxpY2UuYnRjLmNhbGVuZGFyLm9wZW50aW1lc3RhbXBzLm9yZw==",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "c218b6e114639551997316b10100435b7ed9a995b8b14de9fc2ca159b7fb7b12",
+      "previousBlockHash": "0000a8f16bb1dd744f95e530c65a5dfead1cbde86446a85cb0867a934e5bbf0a",
+      "signatureHash": "4058954639b6d6611311c487f7c16c82789c78c13d9b151cb4627d1b8d8f1ff9",
+      "ipfsCid": "d19c643e7ff7cf27ddd37840cd18884e"
+    },
+    "checksums": {
+      "sha256": "4262ba00bed1052a45617a209d9679e752bab75d07849938e19d8fa2177204f7",
+      "sha512": "28b5ff7142a109e42111d266c9774ac3c9fd6cdd6e65dfc5ddf4b4688d6ba735a4593a5a7e24957f99f98c974f9db3e1964ca9acf9885dc5b8365546669ca677",
+      "blake2b": "8901babaa2f92308f0c3bde1183f00539405d1a63e7a1d986680809ad6f21a3665c17c87a844e9e84f841ad0df015e743d7ed43a8bd152f13f431c89c7d90241"
+    },
+    "entityId": "MAC20267G82",
+    "dataType": "document_upload",
+    "distributedProofs": [],
+    "createdAt": "2026-02-06T23:03:54.114Z",
+    "updatedAt": "2026-02-06T23:03:54.114Z",
+    "__v": 0
+  },
+  {
+    "_id": "69867f79e0aa008ef60f5675",
+    "blockIndex": 40,
+    "blockHash": "0000d08b710cdab14278b180a8d3787553d277e039d6cf9dbc132e861b1210cb",
+    "dataFingerprint": "3c011715be51a5bce36772cfba2a4340bec025e69204745bf5990edf6ab73d1e0ab6b72a29289d8432f7741e60fd1dbdb1e6ea2e33a8abbb6b6aff44586aeaef",
+    "timestampProof": {
+      "ots": {
+        "proof": "8Ai2FX3KuNLnuAjwEM75mVf3sdAPVba7pFwiHloI8SCeFRSSDJRZyv85NIXrUOSeaOR2+FBjXb+q64lx1dP7uwjwIIyk8l9mFt9ToDf9u+7Rp0Ys+tOvS2Js9FGUxACNigefCPEEaYZ/efAIci9u3uZkiMwAg9/jDS75DI4uLWh0dHBzOi8vYWxpY2UuYnRjLmNhbGVuZGFyLm9wZW50aW1lc3RhbXBzLm9yZw==",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "31abd4e9251dcad7f3c9fd565e080d0034d9fd231fb9884ffe74ff02a0ad31f4",
+      "previousBlockHash": "00003bc7a9b7b4da0f8b3e1c35cf630e84485a75972303dedc14a695d8d7a973",
+      "signatureHash": "9dce824161939770841f608b9272deb8711f300b1526a0a800cbb31ac68fe8de",
+      "ipfsCid": "83572e4c8753d5f2b7e93a0f976a3648"
+    },
+    "checksums": {
+      "sha256": "189c39fee51a650ff25cc35d537a96cc93b64b776ca9acfd330f74ae28e0b017",
+      "sha512": "6d9a6e7b0a530b76f0dbc83b8685af1122b8ac7482c8c65057c5b381d2cdcd3f282f397357fe1052cd99b2fdf8ffcdb1c2ac60be6d0d62fb285c1b3d9b23a970",
+      "blake2b": "b2870b5d33ce7d855b64cc72cc1ecc5de8af6d73c35feec72506618824870ad4426230fff5f36bc4345df235059ba84a53b813d3eaef400456b0376825778604"
+    },
+    "entityId": "MAC20267G82",
+    "dataType": "document_rejected",
+    "distributedProofs": [],
+    "createdAt": "2026-02-06T23:55:37.884Z",
+    "updatedAt": "2026-02-06T23:55:37.884Z",
+    "__v": 0
+  },
+  {
+    "_id": "69868bca5a179dc714981b8e",
+    "blockIndex": 41,
+    "blockHash": "0000dcaa0356007ad60c11403d0b1f64aaa5914d887ea85c028823955561fb1b",
+    "dataFingerprint": "b055524f69d04116428345d79a4840bd68a229967ef9b53702dface8b1cbb3383a18bd110065ead0681f4fd0ac24e7e81b2c195bf8bbae727ab78bba509db716",
+    "timestampProof": {
+      "ots": {
+        "proof": "8AgK2kY5O4eHAwjxILgUpSRYNViSscjYtYklkOB/xklwbWQLVsC2I8zwlKbUCPAQUduub7c6GrWYkbEchyx92wjwIF02rrKzGMbjiAa9/XjfYoDTeKUaooTNKYHiBwlcdHKpCPAg22/pBeIt79u4BewdlPBBKSYK5A5CbaR9+/1w8Ndo7pUI8CDdwJEPRj+mkpKj26m5+JDkEP+hh6zny21LpbH/4S4TkgjxBGmGi8nwCDJb8z3YReWkAIPf4w0u+QyOLi1odHRwczovL2FsaWNlLmJ0Yy5jYWxlbmRhci5vcGVudGltZXN0YW1wcy5vcmc=",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "55c84ddd344edf51fa5dcc61a01717be6da331128a415b8eb687fe95b04620ef",
+      "previousBlockHash": "0000d08b710cdab14278b180a8d3787553d277e039d6cf9dbc132e861b1210cb",
+      "signatureHash": "583ec543ff1d0ef51498fd5a3d0ecf776eeb4c05e30556cbc78ea4e695bea20d",
+      "ipfsCid": "6b705e3a1e396d5a5bff3780d05db2e5"
+    },
+    "checksums": {
+      "sha256": "e690e855f94f2865a99c57199a35c823d9a594cbb68c2670c1913ea439c0b9ae",
+      "sha512": "3e3c0f6f31b1c36ea7777ad0fc8e4e716629f8c8fc32f0f6b2ee9daf996010f45ba642376e3c717c4bc1248ab677d05c8f4de668cf885f09e0827ffa193ded3f",
+      "blake2b": "82312bc641b47848938dd7df994c23bea091148951b6da22205ce752f48d5671c6f7bd591da64991e57d8825242359f7723bc0e3dc520d3c7db9c8836459156c"
+    },
+    "entityId": "MAC20267G82",
+    "dataType": "document_verified",
+    "distributedProofs": [],
+    "createdAt": "2026-02-07T00:48:10.045Z",
+    "updatedAt": "2026-02-07T00:48:10.045Z",
+    "__v": 0
+  },
+  {
+    "_id": "69868be45a179dc714981baa",
+    "blockIndex": 42,
+    "blockHash": "0000df0a22510c217519a676a4b2fc4bea8408f8de3999f6dde9a8cbb2ba4374",
+    "dataFingerprint": "c3bc72f26495fdea91391236d2384509c27d634c63555949d327ecd3ddebbad640581d32a5dedad81909934c84b08cbd076f3ff1b030fa3f0ef618e1d33d1a49",
+    "timestampProof": {
+      "ots": {
+        "proof": "8Ai3UOqyU2PLxwjwEIcRPvbWfDFCQtgXuLJa2RcI8SB6BUdABzccdi3Txy5PYzLs0pbup3OugYnM/fAUJNIwWAjwIFtTjZMBTmhl741ckqNrArY+w/3JebEojIYn+COpUSnrCPEEaYaL4/AIU/wccp/wsLYAg9/jDS75DI4uLWh0dHBzOi8vYWxpY2UuYnRjLmNhbGVuZGFyLm9wZW50aW1lc3RhbXBzLm9yZw==",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "de6e332a502b7ebdf570aa8fb1cf5d7b4962eabb4fce65cfe40e486d4b98d343",
+      "previousBlockHash": "0000dcaa0356007ad60c11403d0b1f64aaa5914d887ea85c028823955561fb1b",
+      "signatureHash": "a86b642bfa7d4bffbe59c43925e7a57dc0a221be01e4f5a570690389ac65c6b0",
+      "ipfsCid": "4e1106016bba8dce2b999a6e9c0939cd"
+    },
+    "checksums": {
+      "sha256": "63fa5c0b4a93a42ddfb735c09dc3f52e5f54918bb4d3b5d05fedc6ba75581287",
+      "sha512": "5828bb2381452a47bf50209a72274e72a98b6ba21248db0c2ff0f3d586e11486c1f2f8f9a7a095a2bccc4865c77e35c517acdb3d40a1d3fb28e31e1e5e6b7451",
+      "blake2b": "eda0438fcaf3b335d1f31944e433eb17d43f9c2818768ec776f1ee7a5a8bf1046738cc773b436e3a6575565d0af24ec62c4e843f7ebd969ea98e02b4c1181731"
+    },
+    "entityId": "MAC20267G82",
+    "dataType": "document_verified",
+    "distributedProofs": [],
+    "createdAt": "2026-02-07T00:48:36.145Z",
+    "updatedAt": "2026-02-07T00:48:36.145Z",
+    "__v": 0
+  },
+  {
+    "_id": "698690ced02286a36207c13a",
+    "blockIndex": 43,
+    "blockHash": "0000300e500ca3d5863a73dc6f9b738a8dc50dc23a7707715620329490c7b2dd",
+    "dataFingerprint": "147a7131d54016f62f8209cfa20106354bd3037a4c7821a415c84ea1ba54e4c689c09d80c5ec06e0fb75643a79385550519031a3e16cd0539e0c828be6798099",
+    "timestampProof": {
+      "ots": {
+        "proof": "8Aiy9+Zp3mEpMgjwIITCLnGC/M5n2kH9W7s3HocWxWugEq6kTVdBimEIIyfkCPEgoLczDOzozpGF/ZBHtwHF1ZmiaKz3YVc814zG65qMtmUI8BC20M8AAjC2QqStK+oPDlJtCPEgRlOZdHMqkC7XsMua3FQB/Byl0fSRs0yYG7sLl1J+rmAI8SBcNDpOft8KMMCHFkvU7Q2yPfh8ycVcU/L7lHUo5XYQbwjxBGmGkM3wCMWf/66ELicNAIPf4w0u+QyOLi1odHRwczovL2FsaWNlLmJ0Yy5jYWxlbmRhci5vcGVudGltZXN0YW1wcy5vcmc=",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "6cac250e6c336f84cd7c6500a146918624e60e9897a5a08e9507b34bd12051df",
+      "previousBlockHash": "0000df0a22510c217519a676a4b2fc4bea8408f8de3999f6dde9a8cbb2ba4374",
+      "signatureHash": "1905e9dfe5d1a409cd272df34705fe40b1fd669a5e434aeb88c67ff94c9f2eb7",
+      "ipfsCid": "fd36856ec41fb42395cd64ebd2ae8dd9"
+    },
+    "checksums": {
+      "sha256": "cf1b8b988080c707bad51e00214917db38f3931f46ebcd115caccf19029ec069",
+      "sha512": "d7b039802b2544adffceafdf0fc0ef29d9ec6567cc66b0fbfc071ae94d5a1d21c79df197ed7d1945cde5e0139265d015a762a1d60f9b7a436b9d529f4c83759b",
+      "blake2b": "b1b1b30b49e5e6d546f7ff79bfa1a5caf12c62aa9073245e210c5eccbf427e99a077bbd90e96ab58488d028b56a80811364604a0fe7f3dc1877c4584a920e34d"
+    },
+    "entityId": "MAC20267G82",
+    "dataType": "document_requested",
+    "distributedProofs": [],
+    "createdAt": "2026-02-07T01:09:34.269Z",
+    "updatedAt": "2026-02-07T01:09:34.269Z",
+    "__v": 0
+  },
+  {
+    "_id": "6986916dd02286a36207c26d",
+    "blockIndex": 44,
+    "blockHash": "0000634c3926b4d81a78e3eb89cef7647f4faeeb3be2a5795a03077f3d811609",
+    "dataFingerprint": "0443bbd89319702f67ff80c55540a4ede47da8a5af890409b13e2250e8c353e1304e0127fcf76fd985936c1c738d11cd605c7260d99536365843248c867e9245",
+    "timestampProof": {
+      "ots": {
+        "proof": "8AhJbg0o3wOqxAjwIMHAqBudSrUkUCQolqERRk9wIqsEEM1xQLbFFFi2LcCCCPAgSBzAIS36C9ohE5hieIDEqD9XG37iHRLsB24o/igGkdoI8BCM1enEeTGIDlBO4eP2WbouCPEg2aM4R4j/IZMdS75XAMd4gnYiEBpIOpyjjLoSr7ej6/wI8CCffOmnD7kuswNPMy18QpQtZOH8We7UIKyEhzlEHrQDUgjxBGmGkWzwCKSSVHP+/AN2AIPf4w0u+QyOLi1odHRwczovL2FsaWNlLmJ0Yy5jYWxlbmRhci5vcGVudGltZXN0YW1wcy5vcmc=",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "f6d40911760bc18838d6328e88e20a8b04cef7b6c55d63296b069b65cf447342",
+      "previousBlockHash": "0000300e500ca3d5863a73dc6f9b738a8dc50dc23a7707715620329490c7b2dd",
+      "signatureHash": "accaa0cb0dd8698f9f46f35719b47a17db184acbb4d1abd29460a71914bad3c1",
+      "ipfsCid": "c08e4111648575f68b48b5454a8dbf2f"
+    },
+    "checksums": {
+      "sha256": "0e7079307a89cb05405611cd63b18e4929e4b9734fc5453c0850a2205ede33dc",
+      "sha512": "4f58f4cb08c1ecdaa5cee2966f238700f0e125b1551f099132986d44463a6fe75fe6dd154439f4cdfe56b0f22d996dcb9cf4d5fabcafe923dc90d4a344c4198f",
+      "blake2b": "3b2dfca22059e11f0c819158eb098150875ee9e0483311623b6c5232cc4f5aab0da5c1823e337af986dfd0598f201a72ca85cfb9ade06b8e664da1e266769139"
+    },
+    "entityId": "MAC20267G82",
+    "dataType": "document_verified",
+    "distributedProofs": [],
+    "createdAt": "2026-02-07T01:12:13.173Z",
+    "updatedAt": "2026-02-07T01:12:13.173Z",
+    "__v": 0
+  },
+  {
+    "_id": "69869a127b76d3e2d941715b",
+    "blockIndex": 45,
+    "blockHash": "000076e70632500af8f1e640b42772db6c91aa06bb551da78672602460dd077b",
+    "dataFingerprint": "3cf0b6c350687163e6a3479dcc478623e83cb0d42a46cb5408f76415a52a9ecff71438e82659693872c20e9b1ba5911d973050641f7345feb4090bdefd93c061",
+    "timestampProof": {
+      "ots": {
+        "proof": "8AhqkUFb6wUvcQjwIJsyq3odfDR9M8BSoX2wVVZPaDkEK3uzVppVtiQGbknHCPAgGBMgQAdMzylO5zbGnyyLO0bSYsaGkxF59dyEiEBBwboI8BCBF3kotgKTPj+hMDSByYlWCPAgseA/xFgxUaWpBid95hQkUS/Tzdyx+5BvRh5Xq3qIspUI8SAeOR0zQZXrmPS2GKzVEEkQ2OszWvVvoM7XSINboLhF5wjwIJIDnRB6bCdnSgnKt26RdqGKCa/jSGuXsuQTbhiG/38LCPEEaYaaEvAISEo8nBcvuVkAg9/jDS75DI4uLWh0dHBzOi8vYWxpY2UuYnRjLmNhbGVuZGFyLm9wZW50aW1lc3RhbXBzLm9yZw==",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "834196cad7e201e316ac5ce2e06e221780129861154538450c68a61f21bd4573",
+      "previousBlockHash": "0000634c3926b4d81a78e3eb89cef7647f4faeeb3be2a5795a03077f3d811609",
+      "signatureHash": "a3701ab8d869a9b1b4ba79c0ae6fc42ef7612e613dc68bdcd3141f3d9c512d4c",
+      "ipfsCid": "6e57921ba4f406d18976951ef23aced8"
+    },
+    "checksums": {
+      "sha256": "7b3d5bea5b23392ae5460342ec68dc1f729b10bab4bc736895d2bbf98f56f3ef",
+      "sha512": "01dbe222a8a4467a2f5304b5f8d3bdea864c451f4ffdae5683edfce8dea476c5d3d8be9a8af26f730a3d1b85d79fca53c1340bee17fe4904e41eeaf388686087",
+      "blake2b": "da437dc7bbad8d114987dd27854499ae471763552b3e62ff60bc92b811e960ae4edb536d9d133b43c014c2a3535150a380e2690a695557296f1ed0c8bbac5470"
+    },
+    "entityId": "MAC20267G82",
+    "dataType": "document_requested",
+    "distributedProofs": [],
+    "createdAt": "2026-02-07T01:49:06.678Z",
+    "updatedAt": "2026-02-07T01:49:06.678Z",
+    "__v": 0
+  },
+  {
+    "_id": "69869b467b76d3e2d941726f",
+    "blockIndex": 46,
+    "blockHash": "0000b54386f1dcbaa4802d73efcab5dac80d8bd716432d91c7eb8bee14e9cef0",
+    "dataFingerprint": "19671109725e19f8ba53d01f8f8a38c795668c9a71b4078ba6f996237e527089a86ba8b5cfaa4d07ac6db0fcd7a93c2ae5e6a7031a2fe3586ecd95e42f7a5a23",
+    "timestampProof": {
+      "ots": {
+        "proof": "8Aj3pPMqdMGQLAjxIArdF9ziOVQnqSlLzhcF55GoYZurshTR/ONVHeKeNxcrCPAg2tNzn9UobDICyQB3gJif1igRGwPMjlKQa+JkL3SZphwI8BDJrQiaCD/FwBjzinMxYjmTCPEgQdknle/Weg+J0SDGqaHcGbm5fS2ehRWzY7Jj/XIZRSoI8QRphptG8AiVFSOT0Wdb/QCD3+MNLvkMji4taHR0cHM6Ly9hbGljZS5idGMuY2FsZW5kYXIub3BlbnRpbWVzdGFtcHMub3Jn",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "9cfd0adeebef1cea3b0b0cec3ae3ac71ef1dd1acd5c608003b783c96df1a8b30",
+      "previousBlockHash": "000076e70632500af8f1e640b42772db6c91aa06bb551da78672602460dd077b",
+      "signatureHash": "e30b6b0f7b544b2b60f49ce486d34d1238285a933f00d30fe77ebb61879af3a0",
+      "ipfsCid": "cd30460f51c8b314c6acf6bf11f6df3b"
+    },
+    "checksums": {
+      "sha256": "ecd25ae375c301847f51ca5db5865fa58904f07fc5523bcfef96612c48af2276",
+      "sha512": "62f78a5d5a22c83ff490f3dd3d0036e36c6f692fc7bd83d8cfd4fa541af75539739287702e04ed2aa75f177b8a557ab71817598300de38f19c8cc414dc86cb42",
+      "blake2b": "b7160fba081696587c8960d484e3ebf60ced32f10c21f1c52dffe8d7b7498aacaa2d55ecff558e40aa6ebaae92d3b2c441241b8cf307567278563e9050694d01"
+    },
+    "entityId": "MAC20267G82",
+    "dataType": "document_verified",
+    "distributedProofs": [],
+    "createdAt": "2026-02-07T01:54:14.894Z",
+    "updatedAt": "2026-02-07T01:54:14.894Z",
+    "__v": 0
+  },
+  {
+    "_id": "69869d4e6ae99342cd9879f2",
+    "blockIndex": 47,
+    "blockHash": "0000e219eb4aa8cbfb3d824d8f53d1e7af8940d43403c82590b790c368db0d3b",
+    "dataFingerprint": "6750990c3a826aa619eeb24ac6cb60553a289c7d388804ae168f2ccf9ba25f37c7736398c05206b2c48d92e9c19e3f4fdcd19c46ffe56e014f177dc18346a0b6",
+    "timestampProof": {
+      "ots": {
+        "proof": "8AhAsTVFvW5HuAjwEHf2nfvGd+jX81j7V6gmnDII8CAJG4aG3MkpZVMja82tDBtUGDdVujON0JHbwGEGDp/wrwjwIBz/E/vTmrrTEG70dZdXQEgCBt6R/i1hDwbQnfAnO6ouCPEEaYadTvAIsbB8/5jbALEAg9/jDS75DI4uLWh0dHBzOi8vYWxpY2UuYnRjLmNhbGVuZGFyLm9wZW50aW1lc3RhbXBzLm9yZw==",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "1f97b5ccf6232e14feee2b86a6927aa44586681a394cc09a2bbaf3c49f6efc29",
+      "previousBlockHash": "0000b54386f1dcbaa4802d73efcab5dac80d8bd716432d91c7eb8bee14e9cef0",
+      "signatureHash": "fbf100f56b3c3e5e39ba30863c29069277bc0de0bdf2913eda13bc76091d939f",
+      "ipfsCid": "a22d32c1afe6edb945541d1c52026430"
+    },
+    "checksums": {
+      "sha256": "3fd3e261e0c4d4d6b2c5757d3b67ff9f6b3712f553db437c262edc03bb2022c1",
+      "sha512": "64d7433fcb59df2ede9799dca689fe83c0f79b2c74d6bc6a560b784a63fc1d7f6eeff37dc7c7ed56b9d0a1acde6a4269c412ce2c889709f6f4279e5f63197f0e",
+      "blake2b": "2f683501f1dbe55d0acf4c5a20ffaf31cf612420d3d03bdc817fecd590407108054f49e136606ce01534f9b7d8f8c5677ea7dbb7b648eb9ec4cd11c69f45a49d"
+    },
+    "entityId": "MAC20267G82",
+    "dataType": "document_requested",
+    "distributedProofs": [],
+    "createdAt": "2026-02-07T02:02:54.567Z",
+    "updatedAt": "2026-02-07T02:02:54.567Z",
+    "__v": 0
+  },
+  {
+    "_id": "6988b04e7bca1dd07d3608a5",
+    "blockIndex": 48,
+    "blockHash": "000064d4fe1f16b31ff9b2dafb34b37966be1b70f56d38eb0ffab8cbd45b0f6a",
+    "dataFingerprint": "9538c4b20d543d9230748f1af453e8ef727b929f1296ebc853a3acb538a04322b02c2c59af2a3b2674a055e9656589843e5692daa908cd1aae14b0b980fc1c06",
+    "timestampProof": {
+      "ots": {
+        "proof": "8AjyndMYIQxJcwjwEG8xcv4uIkzQpJXbayTp5yMI8SCMgprht73d6jWjmMgYalOkD4DS7O6BQUkTU+i8MsNYpQjwIPiY5KEorclAX6S71ys7cMKmz/hI3ZdkMeWQdLXA21IJCPEEaYiwT/AIqGFhYRyLq7cAg9/jDS75DI4uLWh0dHBzOi8vYWxpY2UuYnRjLmNhbGVuZGFyLm9wZW50aW1lc3RhbXBzLm9yZw==",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "31c87be177377bf34a0f496a5e753031b96f794259e78b17568947d5fb9dbef5",
+      "previousBlockHash": "0000e219eb4aa8cbfb3d824d8f53d1e7af8940d43403c82590b790c368db0d3b",
+      "signatureHash": "8b974c10af7f34dc1bc7a25ec8f0d95dca802f0516fabbb351b258e3e56c3d54",
+      "ipfsCid": "8886a2f64bde9f476c20698508d169f0"
+    },
+    "checksums": {
+      "sha256": "6d8adff8498b3816a81890c9bf00a96dba6c020d8cdaf0016bf0df40d6717475",
+      "sha512": "459ed81bc90e247f3e429898ea3e21bfbf027662916fce87d2ca8626dfe7a3872dc683601a23c838bff8423f83dd0faac779d7198259ed6f0615265a5ab9c611",
+      "blake2b": "ef30a1818d4c3e36dcca5d2e99780c4317be715e19daf1141d5ee975980374e46edb5c896766accc6a864cb220459cfa0dfa2b1dee38a10827c4109d92d6f7c9"
+    },
+    "entityId": "MAC20267G82",
+    "dataType": "document_requested",
+    "distributedProofs": [],
+    "createdAt": "2026-02-08T15:48:30.862Z",
+    "updatedAt": "2026-02-08T15:48:30.862Z",
+    "__v": 0
+  },
+  {
+    "_id": "6988be0e0222290fa27ad141",
+    "blockIndex": 49,
+    "blockHash": "00095ee4d1e35a4b786bb19e869c459cc6d7b54f2ff72d1382b8b6bcce7fb283",
+    "dataFingerprint": "ac2a6b519b33bd4633d937ae8793d8d2845a604d99ca66b2ec33b4fbe0ddd3a7e8a1e4924c0b4d475e2752c398cdc4b1fb8cddab14ce0dfff4e8590e2c9eced9",
+    "timestampProof": {
+      "ots": {
+        "proof": "8Agt7gkd42K3WwjwEDKNVHxVVRvSFRZD/vzv0HMI8SCOCpl2nLohQjEaZtcyZzgJmnFcx12fsUEun4qLHTugoAjwIJshYK0GfAR878RF+uwYa5jbJgrDL9EhRWxYWon8HThACPEEaYi+D/AItWs77q0odA8Ag9/jDS75DI4uLWh0dHBzOi8vYWxpY2UuYnRjLmNhbGVuZGFyLm9wZW50aW1lc3RhbXBzLm9yZw==",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "a0bdf28464f78f656cb78a9953886392f013aac28a3bf28a6ab89416f2be8138",
+      "previousBlockHash": "000064d4fe1f16b31ff9b2dafb34b37966be1b70f56d38eb0ffab8cbd45b0f6a",
+      "signatureHash": "ec0ca13adce3912aac9d1a25f6195cb25115a2564227dab1d556d558b538feef",
+      "ipfsCid": "2241758dfab951f65d12aeda9df7961b"
+    },
+    "checksums": {
+      "sha256": "ef45f35812a490e8965896b121e8c0cdde8e8b7171b52fa799b18e263f7b5950",
+      "sha512": "cdc0bd881400044cac611a94fd7b69ee8a17c30a9a63e72b494970dc979c3b6d43bbbb7e47af398ffee5ec5b89139682a48b65d8d9a3ecd62cf061c2d02f7c66",
+      "blake2b": "47b8f4ff3898562ef08c232186c2a5bfa61a7c6a4577ff877f84e441b95e5b790ff2b7c8dd147793cd5e77033cbdce8af2778ffccadcf26c3679f4b74a8a1268"
+    },
+    "entityId": "MAC20267G82",
+    "dataType": "case_status_update",
+    "distributedProofs": [],
+    "createdAt": "2026-02-08T16:47:10.396Z",
+    "updatedAt": "2026-02-08T16:47:10.396Z",
+    "__v": 0
+  },
+  {
+    "_id": "6988be6d0222290fa27ad1af",
+    "blockIndex": 50,
+    "blockHash": "000ebbb579711de2ece30680630e079b01e252be090b2a6fb478c9558c7441dc",
+    "dataFingerprint": "34910a438bb3202ef6da5c4c202cd26ee40708c013694a22b78c7396c531eef904f7063a8c2c2e52e16a80e51fa4fa6a783be4e46efcd2027827f1c53f30bd1e",
+    "timestampProof": {
+      "ots": {
+        "proof": "8AgLALTQcnUK0gjwELeJ6euii1aqWWisYAC9Id4I8SCmdoe+n9qTeZIN+zqb92Hm2VduAnRNXbA4LX9BErcXtQjxIPTAvMlXpIYlL8CZtu41W7QUzV1B9wQaxctKHeQRC1yECPAg7FFvhm/EViSuZ22h3RQ7/8r1JgTxkvwblV3NxSRBvKMI8QRpiL5u8Aih1B6ZnRPT8QCD3+MNLvkMji4taHR0cHM6Ly9hbGljZS5idGMuY2FsZW5kYXIub3BlbnRpbWVzdGFtcHMub3Jn",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "2026e452945dcbde2c4edb76b3901a125069477bfb5b88e6759e9108d003f3a5",
+      "previousBlockHash": "00095ee4d1e35a4b786bb19e869c459cc6d7b54f2ff72d1382b8b6bcce7fb283",
+      "signatureHash": "410239a28eab3909e6247d43fbd2e51d69d019cc1e5de0a19d7354894a9b828a",
+      "ipfsCid": "d83542af9336643b9708d60b9b394319"
+    },
+    "checksums": {
+      "sha256": "62981aa5dd144e247e56bf75cce78681f8b125872069064ff8bd6b0f5ba138d3",
+      "sha512": "9543f5e2e85d2234fe24b0972fd2c78cc0e52ce2f4837ceb5666d5d79bd64f8d323106f9ae1440b67355c98d5441123f1c9eae5eb46978d07e47d1628206cfb8",
+      "blake2b": "7148b32781fdbbc9969894e4c416098f7ad07796df13071642da163a950facf312828dbb7d66fe9cefd12f660729558dd203dd172c9c55b3266b282403df0b29"
+    },
+    "entityId": "MAC20267G82",
+    "dataType": "case_status_update",
+    "distributedProofs": [],
+    "createdAt": "2026-02-08T16:48:45.817Z",
+    "updatedAt": "2026-02-08T16:48:45.817Z",
+    "__v": 0
+  },
+  {
+    "_id": "6988be9a0222290fa27ad1ee",
+    "blockIndex": 51,
+    "blockHash": "000397bc9369571114c12527b6291b8bc06279112960c3aed5e3114e2b3368b2",
+    "dataFingerprint": "75d39c82fd3a4a807f0e02babbf934bc89cf51fddce0c71d568e11531e4355bf93ae1cc5bdeae0f6fab054e5988eb19e0411080598ea7926a3ceb12765236933",
+    "timestampProof": {
+      "ots": {
+        "proof": "8AgTK2CDGuFqCAjwEPR7Pp1zraMSnSP3mWCGOfwI8CBZ3PNr/pwugKKgro21RR7+3/hpdZYsj8+jN+cwKwl8ywjwIDMq9UiRwKuiTB3jMCuH2HxrcQKBxM52qU9IfFPp5kvWCPEEaYi+m/AIWipm4bwozU8Ag9/jDS75DI4uLWh0dHBzOi8vYWxpY2UuYnRjLmNhbGVuZGFyLm9wZW50aW1lc3RhbXBzLm9yZw==",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "2fc34ee470716b4f6edb658fb577ea3412a21cc41132b7ab3b27a92b1de05543",
+      "previousBlockHash": "000ebbb579711de2ece30680630e079b01e252be090b2a6fb478c9558c7441dc",
+      "signatureHash": "62fc51b12d7e2b27fe4882aef8933574fdb0611a8ceadea90a9ea51a06505b5a",
+      "ipfsCid": "4305898a4bdda583b806111b7bbd5247"
+    },
+    "checksums": {
+      "sha256": "ff2ea565b3cff77e2f6caa5763e0472f5ed2009a66aee7a865dc20e43a2e477c",
+      "sha512": "03102d6f831db4440edda370d5a8f56bbcd6c637b96ad5adf5ef1b9981803fb3f1b54422bd250d4d87875ae19f3a5fdba43579e51d4dfc81ef57b602051fc4c8",
+      "blake2b": "82bdf3e4ea5e6d76a26a61fabcbe72d2e491c777efca559909ee4b7de05f8e30bea3c4c85a0429096eb3a82ddec377b9f7fde93f3259b78b401599b145a5a483"
+    },
+    "entityId": "MAC20267G82",
+    "dataType": "document_requested",
+    "distributedProofs": [],
+    "createdAt": "2026-02-08T16:49:30.933Z",
+    "updatedAt": "2026-02-08T16:49:30.933Z",
+    "__v": 0
+  },
+  {
+    "_id": "6989073bdc1e181b49708014",
+    "blockIndex": 52,
+    "blockHash": "0008879de00e1174d0df592d0f3912fcd7381185c32461a4ab11a213cecdae0b",
+    "dataFingerprint": "18afdcffe69a3b5388962759d10e7a881173fb667d483a0ba7c405228e82b6fabddb540a3cdce8e582949966e5a5f17db7c3a5a8f287dd054bb1c2f2f59cbb90",
+    "timestampProof": {
+      "ots": {
+        "proof": "8AgQEsLN0MHrsgjwIEogse3hR1+N/msn3g0nNKRuCq4Nsol9kLb7Z45h3myKCPAgpGHnEbFRLsmBvcYk4HInx/fsb5bgVv35HVYSzKADkDgI8BA86XGtRBQUhagV+PE1gpb/CPEgMTCT8dcAVLGFpyD9vxlQXN/IsRgpd1x/NddtvPl4jhYI8QRpiQc88AiBLw4vQovT1QCD3+MNLvkMji4taHR0cHM6Ly9hbGljZS5idGMuY2FsZW5kYXIub3BlbnRpbWVzdGFtcHMub3Jn",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "2a95b7d1d04c02dfc906dc04a3d52bf6280e7eb0ad2ef68a0fb1b543f473cb2c",
+      "previousBlockHash": "000397bc9369571114c12527b6291b8bc06279112960c3aed5e3114e2b3368b2",
+      "signatureHash": "30bc61524055829364480db2589b1a90f29a0f931f495270297dbf45bc773f60",
+      "ipfsCid": "aca6c59466dc03e436ea08182f42f026"
+    },
+    "checksums": {
+      "sha256": "ecd3e07ed814478d036b34721012bdae0cebaeda2228c7450d901335bedb35a1",
+      "sha512": "cec08d2e0b095997a027bef257ddddc9b2c9223fe9e5a925be633020b983d0b159d7b02a9568e71a622fb097a55b58b1525d199e65ebe10d02c00f7d191cff69",
+      "blake2b": "cf141602606f84ef97341b3087b8f2ac7373c625a677f87850a447fdccc557b3613cf7af5ec209bcf2ce764b89158a1a6e15eb770dddae681329d96009dc6f3c"
+    },
+    "entityId": "CL20265B47",
+    "dataType": "document_requested",
+    "distributedProofs": [],
+    "createdAt": "2026-02-08T21:59:23.490Z",
+    "updatedAt": "2026-02-08T21:59:23.490Z",
+    "__v": 0
+  },
+  {
+    "_id": "69890aec52701fb207ae81c3",
+    "blockIndex": 53,
+    "blockHash": "000455152dcbe35c1a761a4c84730d4a859e466231b6d2e09b95e7e71f08a5b8",
+    "dataFingerprint": "622f346eb6902bb98a195bad734d5d51f5bbe220c258a7fed5f8426563d104288470de44c8d1c0596ffc2af919e6a81a62a2123de077b48ef0193475d74e0bce",
+    "timestampProof": {
+      "ots": {
+        "proof": "8AgFwtBoao5hSgjxIN5mcEd3km1QxfWbTS66yxWpOdSpSOAJueDHN0hR8AhaCPAQoUUwd3zjWVw70TviqeyFzAjwIFmIFFTmBpiqm/szZXw9AWtJDJoFx1uLH/x0J/UYhFI0CPAgoGqDHvK7lNSbKoXGYF6lVP9ERsAgL+Nqfq82n4nIw+cI8QRpiQrs8AidfI8TZ/67bgCD3+MNLvkMji4taHR0cHM6Ly9hbGljZS5idGMuY2FsZW5kYXIub3BlbnRpbWVzdGFtcHMub3Jn",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "22c0c702ada675add2034bf06f5c4f7035df506bea6fa40f16110d7d0bc0b96b",
+      "previousBlockHash": "0008879de00e1174d0df592d0f3912fcd7381185c32461a4ab11a213cecdae0b",
+      "signatureHash": "adf14b75f8a0e77a0017b3362c1ad90ab9dd3f6a00cef45a2c4b02f9eea56029",
+      "ipfsCid": "bce4f841aecdb1a44bfa5c28961a20df"
+    },
+    "checksums": {
+      "sha256": "b3268af75ee0f264f5f1c4dda173390171d67a0cdaf194a4b32b8796fb76ef9a",
+      "sha512": "e0e14ad31c2e78d3bc5bda11a09c13550bb22902484bd32f9916ad5270dc7f1a3d6a2b447a62a4e7dfc0954c6990773013ce0fa60fcf0b9307b755953405aab2",
+      "blake2b": "4378bac504a07a51d346d703e28a1a85c29a81398ed38b54318ac582a5b86b7b69f5b3f6d90b680dbeaaa0ea89ee21078306ccbe813d8cf72a2e9dd9c23dbe00"
+    },
+    "entityId": "CL20265B47",
+    "dataType": "document_requested",
+    "distributedProofs": [],
+    "createdAt": "2026-02-08T22:15:08.327Z",
+    "updatedAt": "2026-02-08T22:15:08.327Z",
+    "__v": 0
+  },
+  {
+    "_id": "69890b8652701fb207ae8274",
+    "blockIndex": 54,
+    "blockHash": "000f3e68b44a1b90ee6622d31ea2a43240b8de86d28bbdfcc2eb2548c497322d",
+    "dataFingerprint": "ba12d75407ec6db81f97e7051186b409dbacb429692888c237f3873d01f49fcb11964fb0e99f8aea0775afa91a4ac76e2c9d5ea1f6deb23f782be9ee1c5960be",
+    "timestampProof": {
+      "ots": {
+        "proof": "8AgszzNRT0+XsQjwEJhX1x0+2ijdtXnQiZUBQZII8SDX9m7ybiWH2pxGbR27yjk73g7GfhAA2CpObJUjZdivfgjwIC7PMgh7eG17eUuw5KE9hCYD7+R6pbL5A6kF7ZVFfOrWCPEEaYkLh/AIU3Rc449nWLUAg9/jDS75DI4uLWh0dHBzOi8vYWxpY2UuYnRjLmNhbGVuZGFyLm9wZW50aW1lc3RhbXBzLm9yZw==",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "e9419071439e1f2ad444ffe41285c44fd432fd8baef858261bacd000d78e2cff",
+      "previousBlockHash": "000455152dcbe35c1a761a4c84730d4a859e466231b6d2e09b95e7e71f08a5b8",
+      "signatureHash": "bf6d2defc1e4a39c9c3cb0fc062528c6f32b394a3614d81e3b468771af367a47",
+      "ipfsCid": "448c57629ab2f5cc26d7998c7492832b"
+    },
+    "checksums": {
+      "sha256": "dc919da092795efdd96c97ceff14d29ae2bcb433672d17174d3b9c61f3062f99",
+      "sha512": "ac4d9b20cc3bba0b763b4ff3a908d5de7d73069db9636a0644bf1f8bdfcb56530ba0247de497871eb459c577872d5c934f6539667d7094b30571750b20a690bc",
+      "blake2b": "4ca667cea4b39b64d58a0629702a94ef3a002371e463d43ccaebf6f7189c642ac0b0ba617c4018b483de5226dd595926079d30ac36d9da47997972e124437a0f"
+    },
+    "entityId": "CL20265B47",
+    "dataType": "document_upload",
+    "distributedProofs": [],
+    "createdAt": "2026-02-08T22:17:42.828Z",
+    "updatedAt": "2026-02-08T22:17:42.828Z",
+    "__v": 0
+  },
+  {
+    "_id": "69890c4652701fb207ae82d3",
+    "blockIndex": 55,
+    "blockHash": "0009502735ba0e66a3b97de656514717d466ca0322b222b502de973c359bf7e8",
+    "dataFingerprint": "068a5719700463793f315b8426354742978ca4adc47882392582b8dcca973e572f44964b9f2fab225a2e284c129144e1257363dacfc836662e6aedd1d39d5331",
+    "timestampProof": {
+      "ots": {
+        "proof": "8Ag+iMWHbGPTowjwEF9t0uhkdFXM2CTVGLMBWQ0I8CCsEA+WBgUzXAWJSjR/5yZbYkHwvKW8KT2qRZRbwsD62QjxIPTq1yNfbwBjaAGFZuPgCx2ThhE7a9eAgGmnWgP0G/MRCPAgXBAtI77DHfkRQIdpIjDyFkAWjVjoRNp43+DsLRVfzC8I8QRpiQxH8AgWmSnRgaQ8VQCD3+MNLvkMji4taHR0cHM6Ly9hbGljZS5idGMuY2FsZW5kYXIub3BlbnRpbWVzdGFtcHMub3Jn",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "0b6deb1399cb095a059006f2753fb7ecc82ce9597ea0f5059234fb3a53aaa74f",
+      "previousBlockHash": "000f3e68b44a1b90ee6622d31ea2a43240b8de86d28bbdfcc2eb2548c497322d",
+      "signatureHash": "55ac93664ed236c998f0d905e790b93d382ae94c4f9e36522c8f2d8d936971b9",
+      "ipfsCid": "f9c829dd6204124f114e932b947cec7a"
+    },
+    "checksums": {
+      "sha256": "4e6b5c33dfb0bca7a889628baaee36a694be92474f5cbfa8369e858a53042119",
+      "sha512": "6edb80bd41f19d2935e4aea19cf5141c3084a7fc20f40fda57cc80be6c703e755cb691e59a314665fdae0e219110222924ba3f8fb4ba95c0aa4a6f248bcb0756",
+      "blake2b": "4631a7702a60c36f018974cc0cc94ecde1732cb254514ac69752c073a63c99c83307ff851df7423963774c8152f78e9419f13801a1ff516eee7b5b9bec07c04b"
+    },
+    "entityId": "CL20265B47",
+    "dataType": "document_requested",
+    "distributedProofs": [],
+    "createdAt": "2026-02-08T22:20:54.692Z",
+    "updatedAt": "2026-02-08T22:20:54.692Z",
+    "__v": 0
+  },
+  {
+    "_id": "69891105993b3a1910272d81",
+    "blockIndex": 56,
+    "blockHash": "00090cc0964725b1029e691026246de599dbbcc9622e3842b6fa029f7aaf8006",
+    "dataFingerprint": "a435c4bde9d2d4b78b0797c0fdfe2c4ba65f73a22589e0615d022272efd2efa8dd5658cda6e3eb7de9af9098928b216a85b54ee789e084c653441ee376db6512",
+    "timestampProof": {
+      "ots": {
+        "proof": "8AhJ0yDsw4gU5wjxIPXLOHFRgpRBQYKK/Vx4iy9btzi+KVPeHjCQmmvrSTBFCPAgPs+ExMEFXy46gyIz0Th95TABpz5eJ2zbqwH3CssayM4I8CCTugBt8w3f0UwZ6KdJGbbjHXh/ZkO0NIuCqg4sI6jqowjwEMgfvbAF+XXN8Eay6b7O7BkI8SDFTrFel1kasx1cdMAAITOL5xtXqe7fxdWEmDwNiNkcZAjwICerN0TRgL6zAFZT1x5CFsKTtqSHQP8Uyn8zgXu5c3kmCPAg+56moqpE/Gq0GFM21tsWTDgVng/q1glD5si3bLBPPVkI8QRpiREF8AiHFwcw5vYXcQCD3+MNLvkMji4taHR0cHM6Ly9hbGljZS5idGMuY2FsZW5kYXIub3BlbnRpbWVzdGFtcHMub3Jn",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "567e7ffe0e3ad2b17a27b7f269a312f6861220a9670795cb207c0f9973fc73bc",
+      "previousBlockHash": "0009502735ba0e66a3b97de656514717d466ca0322b222b502de973c359bf7e8",
+      "signatureHash": "ba27232cc3ebdc073a749fba1e9388b96341b10abc7c0345bd80961eba068eb4",
+      "ipfsCid": "6f6dc09beda7c71ad76fffe90c844d1f"
+    },
+    "checksums": {
+      "sha256": "aadd6f10217c7fe4b0d86454b4e130f69dbd0e1c0c8b8bcb5829b53b5f37b911",
+      "sha512": "9cff493f235423074325e9cd0d54a1e266af4d51f776d9f87d3156185e1fecd443f7a18eda5866b9dfe68bf896e4ba442ff4514583e7de1dffad19b090896764",
+      "blake2b": "022edbeed339d916947dc30cf9194841f89b0f89eadca9d5c655b3717273216ac3440bded5f039daee94ea8105b28492cfe12548ae237d1ce30819d5610b41b4"
+    },
+    "entityId": "CL20265B47",
+    "dataType": "document_requested",
+    "distributedProofs": [],
+    "createdAt": "2026-02-08T22:41:09.279Z",
+    "updatedAt": "2026-02-08T22:41:09.279Z",
+    "__v": 0
+  },
+  {
+    "_id": "6989116e993b3a1910272dea",
+    "blockIndex": 57,
+    "blockHash": "000d3fb0e923bdc8ad6363412cb6d20ad6dd155e9e616223d10a7349227f726e",
+    "dataFingerprint": "84ed8e6b15c9ae0d6f91f42763f421bd249ba87ad9fd4040a47331856f246e2d746249821b11c355e9a1fd457335785ace747eeddc2012d1910e6b11cef42fd3",
+    "timestampProof": {
+      "ots": {
+        "proof": "8AiMSF3ukrr85wjwEE62BLDzVJjjN3WZgDMQ5JcI8SC+GEM2OfKiLZp6TUzX6X4a+HE0XmFqn671CJ1mV/di9AjxIB6ku/T9+WX0byPgjoPHv+rqjABybFCjcbPwym+jOixzCPAg60LpsIXNww7nJCipZnrIfjWT4ZOrzNfwiYcGuAxj8iII8QRpiRFu8Aj2QfDMhlvamQCD3+MNLvkMji4taHR0cHM6Ly9hbGljZS5idGMuY2FsZW5kYXIub3BlbnRpbWVzdGFtcHMub3Jn",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "abd2b728377202913ee731583a7c2b91f33b21a0acd6f998c645803faf39a37b",
+      "previousBlockHash": "00090cc0964725b1029e691026246de599dbbcc9622e3842b6fa029f7aaf8006",
+      "signatureHash": "d1b1e44837e0478f86ec9fb57b200790d14da38ea3aaa8fe0ef82a43fe0eb129",
+      "ipfsCid": "0378c53e23e3ad9f7b7ced77d282940e"
+    },
+    "checksums": {
+      "sha256": "7389af7f1a8b3fd81f06471c77a5c1c575b19f4cb70ff4827e74a108a8c7b5af",
+      "sha512": "50d70f66e1a47e5352c0645ed0b6f9228d984ec67a5db00c1017f88f466b38b7896ba41d75ed765b6a29075a4e199ad671eae18fce99c6ccc68a9ac1ddf4325c",
+      "blake2b": "503f230a5d3af70856d530f05846bd75020b3bf0d70a7d5c8afbfdfdf04cf9e41041617064986b906890596b42720506f4333581dcdcc9b38f64faabf1092795"
+    },
+    "entityId": "CL20265B47",
+    "dataType": "case_status_update",
+    "distributedProofs": [],
+    "createdAt": "2026-02-08T22:42:54.618Z",
+    "updatedAt": "2026-02-08T22:42:54.618Z",
+    "__v": 0
+  },
+  {
+    "_id": "69891312edea125e5a5212f1",
+    "blockIndex": 58,
+    "blockHash": "000457b6fc7f89916bc6b0f2e22ee0dea7b28fefae6ff4fcaa983420ffec3f7b",
+    "dataFingerprint": "a04f53254366aa2be16c60d8f0627d6835932f7553fd7c528b638a4f5bee6ab7f0102f73980a93147db37ed80af76061465dbeacfe783290e3d7f62eecdbdfb3",
+    "timestampProof": {
+      "ots": {
+        "proof": "8AikiLGvmty64AjxILydlk4mCmtsIeWCn17bH4ZQjlx8+zXj9XffxMq05bVKCPAQQWEjsES2yDCKYkBHuIfsWgjxIFkRyqBjerzjvtwitjW5wzOsP99vNfoiSYQLKYVB1ETNCPEgdvobGXNNZtXTxMXsrJ5/marxpWIJLORwu+vUF7dbhqkI8QRpiRMS8AgoAwErDB249ACD3+MNLvkMji4taHR0cHM6Ly9hbGljZS5idGMuY2FsZW5kYXIub3BlbnRpbWVzdGFtcHMub3Jn",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "00fe1cdff36b1b7de98d285d2311e5ede33d85311c68ad291d31cda68c23f9e5",
+      "previousBlockHash": "000d3fb0e923bdc8ad6363412cb6d20ad6dd155e9e616223d10a7349227f726e",
+      "signatureHash": "e7f22a6aa4c3e9df16807660f523111c69cbbd55b509d526ae460352339fda3b",
+      "ipfsCid": "f660f4b731155b04cf6293982fb313d3"
+    },
+    "checksums": {
+      "sha256": "69a1b0d5406bcf18eb849e061334989649dd3d64d1f448fd927447a08595068f",
+      "sha512": "44379f98750fdc24f091660df9f770a491db6dfe5755279b6c671a2e99508fc255b7500ad60006433b38e9a23cbb3ef95e4a93b5fa824ea228abea87bc6e961c",
+      "blake2b": "1f80f40ebf667cd9985a53fa6ab036ed76345aa49d954111d83457c45691e6f3ef3687b4c07f035b97cce46a60d5f5609827517fbb9355b41b193f5787464138"
+    },
+    "entityId": "CL20265B47",
+    "dataType": "document_requested",
+    "distributedProofs": [],
+    "createdAt": "2026-02-08T22:49:54.266Z",
+    "updatedAt": "2026-02-08T22:49:54.266Z",
+    "__v": 0
+  },
+  {
+    "_id": "698aa5da9e47f74711b21866",
+    "blockIndex": 59,
+    "blockHash": "000d22277397332f730158ead7f61223131911dba3cd062cc107b69d424fab8c",
+    "dataFingerprint": "caca794aae94f2667d72ea5db4dafd73a92c8c857d307c952437fb76ec05aedc8c60e2d16a0a1dee83c2c0990c8c628b4b5b2cd400a8e0f2923260bbb8eb8dcc",
+    "timestampProof": {
+      "ots": {
+        "proof": "8AgrnHagX3//sQjxIHmwOk54HvHeiuF++uPF5WhQMZLrZyXUKsIpCk0/xe8UCPAgNwD/xk+robdR4G9NcRdRqe2TiNZZheTJTxBbccQ0/AgI8BA0hOzUUOp/OxpYTbYBq2SGCPAg7YQidlx34a9tdwbpxwCHkw+LzOY6N/2mSCgESVoYz4kI8CCwmr+Y8qLeJ+mKjb5qU5bwyByoEbs38wvS3UFJAc6PrAjwIO83mJHP3w5D+0hkDmySOEVaTl0Yz46xCULjk0QC9p9yCPEEaYql2PAImBbR9R0sed0Ag9/jDS75DI4uLWh0dHBzOi8vYWxpY2UuYnRjLmNhbGVuZGFyLm9wZW50aW1lc3RhbXBzLm9yZw==",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "d5604f80fb7ffa110f5c00fd5e84de1e881724efae347e30bcc8223b68f0819c",
+      "previousBlockHash": "000457b6fc7f89916bc6b0f2e22ee0dea7b28fefae6ff4fcaa983420ffec3f7b",
+      "signatureHash": "ff07b4fdded483a2368e6ec9415aad49d1816d168dc97ef98d705286c9c00d1f",
+      "ipfsCid": "d5ed4aeeb23c2f1ee28640f11ab307be"
+    },
+    "checksums": {
+      "sha256": "030f4707b27b0e013f1438bd6036bbf2231251a454a1f2780c212f82dc24e73c",
+      "sha512": "538143d230c1762b110a3ce83ee6f781a16bfbb4bcce6c60e7776242e98d8680863c8c7e849785045d8c69ca3ef31718f878fdeb90ab27ef7cc7b622dcc3206b",
+      "blake2b": "0db4fc9e7c5371c50d7f1829a818a791714fa78de98ddcdd3ae9e5549fb33195493d044ea401cfb8009ac81a8a224031d0f1ebb7d9c24253d57957bb2507e1b3"
+    },
+    "entityId": "CL2026C452",
+    "dataType": "case_filing",
+    "distributedProofs": [],
+    "createdAt": "2026-02-10T03:28:26.210Z",
+    "updatedAt": "2026-02-10T03:28:26.210Z",
+    "__v": 0
+  },
+  {
+    "_id": "698aa64d9e47f74711b218d0",
+    "blockIndex": 60,
+    "blockHash": "000f4ff1bf5895a9a47514eb9cd2b471cbfb14380121db4ac4a3566bf929cfdf",
+    "dataFingerprint": "584aba764a8754ae011ad1f04462a8856090ebc76203f974507ffd13df7a5fcb1618b64984a9e8e9b5fcf246a741313ffc78d95abfecb3c1cfef6bc61eb528d9",
+    "timestampProof": {
+      "ots": {
+        "proof": "8AgoCz2ceVNb2wjwEMdGixpFDaO8dhaxcrCm/X0I8CA/21nPM4zETyniUHdgsWyUYFK59gNteiTvTvAamYFupwjxIMAo4XsG2kCsAlz31S62NKVol2b9ywdWn0CzuA2TcNoBCPEEaYqmSvAIY0EJ4HpN9VUAg9/jDS75DI4uLWh0dHBzOi8vYWxpY2UuYnRjLmNhbGVuZGFyLm9wZW50aW1lc3RhbXBzLm9yZw==",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "b96b5c70f670be0554d7cd8d8f96e47f7e3cb9d634c04008a9f90aede3e2c6df",
+      "previousBlockHash": "000d22277397332f730158ead7f61223131911dba3cd062cc107b69d424fab8c",
+      "signatureHash": "46db9312a512c1450ddb0124a06ed0de23c569be00b3d2b2277dd8e5de17aa28",
+      "ipfsCid": "5c734527e22f551582f1398e01991e25"
+    },
+    "checksums": {
+      "sha256": "4b3b025f57e89609bb21120a427d019d86b1e16e8bf8f85ccccb117b49600e54",
+      "sha512": "e2bd7e2f844c33f8542e89ae3b07b2724268347435a04076b7ed8aad48a1dc4cbf5c79c54f4c682b9a95b7cf025619e436f0443b80436d6c7235917497218917",
+      "blake2b": "34e3c3cd66d82f63eeffeb19591f119dec79496782a7dd45fa3e74c88175dacc9601a3918af2c143dadb4eb70b091470f9bddb9d3c04d6eb32299c22a6706e60"
+    },
+    "entityId": "CL2026IG94",
+    "dataType": "case_filing",
+    "distributedProofs": [],
+    "createdAt": "2026-02-10T03:30:21.121Z",
+    "updatedAt": "2026-02-10T03:30:21.121Z",
+    "__v": 0
+  },
+  {
+    "_id": "698aa707a96ed918097c3131",
+    "blockIndex": 61,
+    "blockHash": "000a54505226454049f6f6fc085d0736b55cd5bb81544ca5c027537972f280cb",
+    "dataFingerprint": "10e36281c9a20338931ba94ad76fbeaf3f825827803a94f06427b573f14fadd1985405673a92027e3219194a2e1c6aafb1e3817f9ce5e400d2d4d2d6c31b2647",
+    "timestampProof": {
+      "ots": {
+        "proof": "8AjjLD1PKbLfigjwEEOeNuReHsJrkzXv+x3KG6QI8CClhoY8R59xlaoTMriOktBP2pLPXA/IAj1/hgLvp7bLggjxIEaJcxvn6zCWetuN4vQ5hKFhvdC7TL+7/LSDAOwmizlpCPAgkpRFGyTuh8/wZy+/Sx5evhiYPBnAk0sdzTlyyAsAtAYI8QRpiqcF8AgjStdj0g3nFACD3+MNLvkMji4taHR0cHM6Ly9hbGljZS5idGMuY2FsZW5kYXIub3BlbnRpbWVzdGFtcHMub3Jn",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "b34069980ac7ea4c39b2d40adecc874f6d7c14a707ea2c49d7b9fc687b955cdb",
+      "previousBlockHash": "000f4ff1bf5895a9a47514eb9cd2b471cbfb14380121db4ac4a3566bf929cfdf",
+      "signatureHash": "ad26952f06dff15be23892cd9878f440a843d27629c0d7430c86ac9de45bb3a6",
+      "ipfsCid": "05f1141af888200ce6c21dceb8432631"
+    },
+    "checksums": {
+      "sha256": "07f57095c9fad7e19174162b9149c9412f4cfe5692dd52104bda899b325a0b77",
+      "sha512": "3ea87166b092663ebb94a3274cc4600159da2c3513ab9e0bcc843f1ce5161ada9f4be322ffb2ec12c4f70b9ab305524d30c49bdf47cf0ac285bf394b35839176",
+      "blake2b": "b81483ce2e79e2715914b12ba26eb3211dccecd039361923f26aa96f5f2f603859b40203453b3c4a11034f701c6de9f2b0a75d3901bc7d823ed00e27930ac3ed"
+    },
+    "entityId": "CL2026IG94",
+    "dataType": "case_status_update",
+    "distributedProofs": [],
+    "createdAt": "2026-02-10T03:33:27.335Z",
+    "updatedAt": "2026-02-10T03:33:27.335Z",
+    "__v": 0
+  },
+  {
+    "_id": "698aa7aca96ed918097c31f4",
+    "blockIndex": 62,
+    "blockHash": "0002522743fec699800930b499540d4669b778c60aeb06e62fefe389011fc601",
+    "dataFingerprint": "92e39cb03562950350779d630cb9357e303a2b9b9eb7cd3bbb2fa4b8bf6b4b802dbf091fa1baff2b9e2755ad74f28e581fda2763d81744762b109d53ad654401",
+    "timestampProof": {
+      "ots": {
+        "proof": "8AiF3Y8KFr+/IQjwEFDNVa8ldJcdc157s5Xij4AI8CBZ6jfE8sKQWFvsvMbrrgVHVIeksv2nbrx6nIOJUO6VNwjxIPzcnp3nZXUwBqkWV9ydYb2lZHLCrmKpNTX8iDL8pB0fCPEEaYqnq/AITP6TaBCyPbwAg9/jDS75DI4uLWh0dHBzOi8vYWxpY2UuYnRjLmNhbGVuZGFyLm9wZW50aW1lc3RhbXBzLm9yZw==",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "6454cdb522d91e4e1e5c71001fb54b4f99accb82ca092afc631945b2100f8a4f",
+      "previousBlockHash": "000a54505226454049f6f6fc085d0736b55cd5bb81544ca5c027537972f280cb",
+      "signatureHash": "d777ed47ff335dc0a27df62b0e39f5e840aeb7c9e01a84003c126b22a0519879",
+      "ipfsCid": "cd1789911c29d483afe384449789a665"
+    },
+    "checksums": {
+      "sha256": "91a96f48cc13549ccb49827fb61739eb739250252a36b67caa1fb7bc06bdb02f",
+      "sha512": "5bde9451b4dfa5f81a91808737209b718b8141922a6476d6e307531eca295e1c98c7bc6b4f58849196e3021453a6667880341e9eb2084d584d15829933ceb6f1",
+      "blake2b": "c944e628bf465866199f17466b77e0cb3fc84194895a43dc61e855af98328c481c664706d79c7bf0bf69e0a5c00f28741d672bfb05e6d1a59adbbf54574be102"
+    },
+    "entityId": "CL2026IG94",
+    "dataType": "hearing_added",
+    "distributedProofs": [],
+    "createdAt": "2026-02-10T03:36:12.904Z",
+    "updatedAt": "2026-02-10T03:36:12.904Z",
+    "__v": 0
+  },
+  {
+    "_id": "698ad843b7b2171bf8644a76",
+    "blockIndex": 63,
+    "blockHash": "000ec5addba47a537d198e579daadb3c61305ddc2772d8ac790318eabfb4f063",
+    "dataFingerprint": "59c6e81c3b00a2910c2be7ebbe341f21822c4a50a5161537db902428d2e820a0ebab94e9a6f26410951e16808aaba36119faa6582190ff4019135005207d759c",
+    "timestampProof": {
+      "ots": {
+        "proof": "8AhnUNJIOxDtAwjwEDiD8e7G3zlazTyqN473nOcI8SCqOHUQ1bq86cxxwaIX2fopSck43DOSCvHvbMVwQw3i/wjwIHv68wgfcYyc/xeQeeC0OKHuFNJo69zNH31kVxyWZFFACPAgD7lpYEtZEus3x3o40rIcECf6UI9w7aALMEkqYMfrFw8I8QRpithD8AibfRLKi2va/gCD3+MNLvkMji4taHR0cHM6Ly9hbGljZS5idGMuY2FsZW5kYXIub3BlbnRpbWVzdGFtcHMub3Jn",
+        "merkleRoot": null,
+        "bitcoinBlockHeight": null,
+        "verified": false,
+        "verifiedAt": null
+      }
+    },
+    "commitments": {
+      "merkleRoot": "3ab068ca176ff39b829587b3355dc43aa9a56e952716fc6998050c07b018be0c",
+      "previousBlockHash": "0002522743fec699800930b499540d4669b778c60aeb06e62fefe389011fc601",
+      "signatureHash": "936edf176da96a7fee33a2a4bd9132ea56841385acaf31a0a59521a43dc33d5f",
+      "ipfsCid": "7d66d35ffee656e7d21c066b56c19f5c"
+    },
+    "checksums": {
+      "sha256": "259f07e26209321935c58fdd6b1332b7aaffb3c7ae74d9c5ca1a13c5759d8c37",
+      "sha512": "7501b1977c8d17e59e23250ae955929cc13f189afbfd565fbe100ff13bf54492dce5d8abc147c443e454efdbd7f6a1a4bdf347a21b2d26d05c7c82700b6921f9",
+      "blake2b": "4d37fb878fbe1f90a6c46ffcf3dc1990d38b306791e5195bd6171c0379ea1df25bebda1ef9eb54d2070dd21dfdbfef5600b8e4342cd062823b54040292b2b6c6"
+    },
+    "entityId": "CM2026N884",
+    "dataType": "case_filing",
+    "distributedProofs": [],
+    "createdAt": "2026-02-10T07:03:31.513Z",
+    "updatedAt": "2026-02-10T07:03:31.513Z",
+    "__v": 0
+  }
+]

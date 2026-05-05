@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
+import { supabase } from '../services/supabaseClient';
 import '../ComponentsCSS/litigantmeeting.css';
-import { QRCodeSVG } from 'qrcode.react';  // We'll use this library for QR code generation
+import { QRCodeSVG } from 'qrcode.react';
 
 const LitigantMeetingPanel = () => {
   const [cases, setCases] = useState([]);
@@ -34,27 +34,10 @@ const LitigantMeetingPanel = () => {
   // Fetch user profile information
   const fetchUserProfile = async () => {
     try {
-      setLoading(true);
-      const token = localStorage.getItem('token');
-      if (!token) {
-        throw new Error('No authentication token found');
-      }
-      
-      const userResponse = await axios.get(
-        'https://nyaay-desk-app-backend.onrender.com/api/litigant/profile',
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      
-      setUserInfo(userResponse.data.litigant);
+      const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+      setUserInfo(userData);
     } catch (error) {
-      console.error('Error fetching profile:', error);
-      setError(error.response?.data?.message || error.message);
-      setMessage({
-        text: error.response?.data?.message || 'Failed to fetch your profile information',
-        type: 'error'
-      });
-    } finally {
-      setLoading(false);
+      console.error('Error reading profile:', error);
     }
   };
 
@@ -62,24 +45,18 @@ const LitigantMeetingPanel = () => {
   const fetchCases = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('token');
-      if (!token) {
-        throw new Error('No authentication token found');
-      }
-      
-      const casesResponse = await axios.get(
-        'https://nyaay-desk-app-backend.onrender.com/api/cases/litigant',
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      
-      setCases(casesResponse.data.cases);
+      const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+      const litigantId = userData.litigant_id || userData.party_id;
+      if (!litigantId) { setLoading(false); return; }
+      const { data, error } = await supabase
+        .from('legal_cases')
+        .select('case_num, case_type, plaintiff_details, respondent_details')
+        .or(`plaintiff_details->>party_id.eq.${litigantId},respondent_details->>party_id.eq.${litigantId}`);
+      if (error) throw error;
+      setCases(data || []);
     } catch (error) {
       console.error('Error fetching cases:', error);
-      setError(error.response?.data?.message || 'Failed to fetch cases');
-      setMessage({
-        text: error.response?.data?.message || 'Failed to fetch your cases',
-        type: 'error'
-      });
+      setMessage({ text: 'Failed to fetch your cases', type: 'error' });
     } finally {
       setLoading(false);
     }
@@ -106,57 +83,27 @@ const LitigantMeetingPanel = () => {
   const checkMeetingExists = async (caseNum) => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('token');
-      
-      try {
-        await axios.get(
-          `https://nyaay-desk-app-backend.onrender.com/api/case/${caseNum}/video-meeting`, 
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        
-        // Even if meeting exists, don't set meetingLink here
-        // Instead, store meetingData and prompt for OTP
+      const { data, error } = await supabase
+        .from('video_meetings')
+        .select('*')
+        .eq('case_number', caseNum)
+        .maybeSingle();
+      if (error) throw error;
+      if (data) {
         setMeetingData({
-          startDateTime: new Date(),
-          endDateTime: new Date(Date.now() + 3600000) // Placeholder for active meeting
+          startDateTime: new Date(data.start_time || Date.now()),
+          endDateTime: new Date(data.end_time || Date.now() + 3600000),
+          meetingLink: data.meeting_link
         });
-        
-        setMessage({
-          text: 'A meeting is scheduled. Request an OTP to access it.',
-          type: 'info'
-        });
-      } catch (error) {
-        if (error.response) {
-          if (error.response.status === 404) {
-            setMessage({
-              text: 'No active video meeting found for this case',
-              type: 'info'
-            });
-            setMeetingData(null);
-            return;
-          } else if (error.response.status === 403 && error.response.data.startDateTime && error.response.data.endDateTime) {
-            setMeetingData({
-              startDateTime: new Date(error.response.data.startDateTime),
-              endDateTime: new Date(error.response.data.endDateTime)
-            });
-            
-            setMessage({
-              text: 'A meeting is scheduled. Request an OTP to access it.',
-              type: 'info'
-            });
-          } else {
-            throw error;
-          }
-        } else {
-          throw error;
-        }
+        setMessage({ text: 'A meeting is scheduled for this case.', type: 'info' });
+        if (data.meeting_link) setMeetingLink(data.meeting_link);
+      } else {
+        setMessage({ text: 'No active video meeting found for this case', type: 'info' });
+        setMeetingData(null);
       }
     } catch (error) {
       console.error('Error checking meeting status:', error);
-      setMessage({
-        text: error.response?.data?.message || 'Unable to check meeting status',
-        type: 'error'
-      });
+      setMessage({ text: 'Unable to check meeting status', type: 'error' });
       setMeetingData(null);
     } finally {
       setLoading(false);

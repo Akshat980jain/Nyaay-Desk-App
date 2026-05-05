@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { X, Upload, FileText, AlertCircle, CheckCircle } from 'lucide-react';
+import { supabase } from '../services/supabaseClient';
+import supabaseApi from '../services/supabaseApi';
 import '../ComponentsCSS/ChangeAdvocateModal.css';
 
 const ChangeAdvocateModal = ({ isOpen, onClose, legalCase, litigantProfile, partyType }) => {
@@ -33,8 +34,9 @@ const ChangeAdvocateModal = ({ isOpen, onClose, legalCase, litigantProfile, part
     if (!legalCase) return null;
     
     const targetParty = partyTypeState === 'plaintiff' ? 'plaintiff_details' : 'respondent_details';
-    if (legalCase[targetParty] && legalCase[targetParty].advocate_id) {
-      return legalCase[targetParty].advocate_id;
+    // Handle both old schema (advocate_id) and new schema
+    if (legalCase[targetParty] && (legalCase[targetParty].advocate_id || legalCase[targetParty].advocateId)) {
+      return legalCase[targetParty].advocate_id || legalCase[targetParty].advocateId;
     }
     
     return null;
@@ -61,8 +63,8 @@ const ChangeAdvocateModal = ({ isOpen, onClose, legalCase, litigantProfile, part
       }
 
       const payload = {
-        caseId: legalCase._id,
-        litigantId: litigantProfile.party_id,
+        caseId: legalCase.case_num, // Edge function uses case_num as identifier
+        litigantId: litigantProfile.litigant_id || litigantProfile.party_id,
         existingAdvocateId: existingAdvocateId,
         hasNoc,
         requestNocFromLawyer,
@@ -70,26 +72,38 @@ const ChangeAdvocateModal = ({ isOpen, onClose, legalCase, litigantProfile, part
         reasonForNoNoc: !hasNoc ? reasonForNoNoc : undefined
       };
 
-      const token = localStorage.getItem('token');
+      // Step 1: Submit Request via Supabase Edge Function
+      const { data } = await supabaseApi.post('/api/advocate-change/request', payload);
       
-      // Step 1: Submit Request
-      const res = await axios.post('https://nyaay-desk-app-backend.onrender.com/api/advocate-change/request', payload, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      
-      const requestId = res.data.request._id;
+      const requestId = data.request.request_id || data.request.id;
       setSubmittedRequestId(requestId);
 
-      // Step 2: If NOC, upload file
+      // Step 2: If NOC, try to upload file to Supabase Storage (non-blocking)
       if (hasNoc && nocFile) {
-        const formData = new FormData();
-        formData.append('noc_document', nocFile);
-        await axios.post(`https://nyaay-desk-app-backend.onrender.com/api/advocate-change/upload-noc/${requestId}`, formData, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data'
+        try {
+          const fileExt = nocFile.name.split('.').pop();
+          const fileName = `${requestId}_noc.${fileExt}`;
+          const filePath = `noc-uploads/${fileName}`;
+
+          const { error: uploadError } = await supabase.storage
+            .from('noc-documents')
+            .upload(filePath, nocFile, { upsert: true });
+
+          if (uploadError) {
+            console.warn('NOC file upload skipped (bucket may not exist):', uploadError.message);
+          } else {
+            const { data: { publicUrl } } = supabase.storage
+              .from('noc-documents')
+              .getPublicUrl(filePath);
+
+            await supabaseApi.put(`/api/advocate-change/respond-noc/${requestId}`, {
+              noc_document_url: publicUrl,
+              action: 'attach-noc'
+            });
           }
-        });
+        } catch (uploadErr) {
+          console.warn('NOC file upload failed (non-critical):', uploadErr);
+        }
       }
 
       setStep(4); // Success step
@@ -268,10 +282,18 @@ const ChangeAdvocateModal = ({ isOpen, onClose, legalCase, litigantProfile, part
     </div>
   );
 
-  const handlePrintApplication = () => {
+  const handlePrintApplication = async () => {
     if (submittedRequestId) {
-      const API = process.env.REACT_APP_API_URL || 'http://localhost:5000';
-      window.open(`${API}/api/advocate-change/generate-application/${submittedRequestId}`, '_blank', 'width=800,height=800');
+      try {
+        const { data } = await supabaseApi.get(`/api/advocate-change/generate-application/${submittedRequestId}`);
+        if (data.url) {
+          window.open(data.url, '_blank', 'width=800,height=800');
+        } else {
+          throw new Error('Application URL not found');
+        }
+      } catch (err) {
+        setError('Failed to generate application: ' + err.message);
+      }
     }
   };
 

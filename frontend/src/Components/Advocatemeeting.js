@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import supabaseApi from '../services/supabaseApi';
 import '../ComponentsCSS/litigantmeeting.css'; // Reusing the same CSS
 import { QRCodeSVG } from 'qrcode.react';
 
@@ -39,10 +39,7 @@ const AdvocateMeetingPanel = () => {
         throw new Error('No authentication token found');
       }
       
-      const userResponse = await axios.get(
-        'https://nyaay-desk-app-backend.onrender.com/api/advocate/profile',
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const userResponse = await supabaseApi.get('/api/advocate/profile');
       
       setUserInfo(userResponse.data.advocate);
     } catch (error) {
@@ -66,10 +63,7 @@ const AdvocateMeetingPanel = () => {
         throw new Error('No authentication token found');
       }
       
-      const casesResponse = await axios.get(
-        'https://nyaay-desk-app-backend.onrender.com/api/cases/advocate',
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const casesResponse = await supabaseApi.get('/api/cases/advocate');
       
       setCases(casesResponse.data.cases);
     } catch (error) {
@@ -108,10 +102,7 @@ const AdvocateMeetingPanel = () => {
       const token = localStorage.getItem('token');
       
       try {
-        await axios.get(
-          `https://nyaay-desk-app-backend.onrender.com/api/case/${caseNum}/advocate/video-meeting`, 
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+        await supabaseApi.get(`/api/case/${caseNum}/video-meeting/advocate`);
         
         // Even if meeting exists, don't set meetingLink here
         // Instead, store meetingData and prompt for OTP
@@ -184,7 +175,7 @@ const AdvocateMeetingPanel = () => {
 
   // Request OTP for meeting access
   const requestOTP = async () => {
-    if (!selectedCase || !userInfo?.contact?.email) {
+    if (!selectedCase || !(userInfo?.email || userInfo?.contact?.email)) {
       setMessage({
         text: 'Unable to identify your email address',
         type: 'error'
@@ -196,14 +187,14 @@ const AdvocateMeetingPanel = () => {
       setLoading(true);
       setMessage({ text: '', type: '' });
       
-      const response = await axios.post(
-        `https://nyaay-desk-app-backend.onrender.com/api/case/${selectedCase}/advocate/video-meeting/request-access`, 
-        { email: userInfo.contact.email }
+      const response = await supabaseApi.post(
+        `/api/case/${selectedCase}/video-meeting/advocate/request-access`,
+        { email: userInfo.email || userInfo.contact?.email }
       );
       
       setOtpSent(true);
       setMessage({
-        text: `OTP sent to ${userInfo.contact.email}. Please check and enter below.`,
+        text: `OTP sent. Please check your registered email.`,
         type: 'success'
       });
     } catch (error) {
@@ -219,7 +210,7 @@ const AdvocateMeetingPanel = () => {
 
   // Verify OTP to get meeting link
   const verifyOTP = async () => {
-    if (!selectedCase || !userInfo?.contact?.email || !otp) {
+    if (!selectedCase || !(userInfo?.email || userInfo?.contact?.email) || !otp) {
       setMessage({
         text: 'Please enter the OTP you received',
         type: 'error'
@@ -231,9 +222,9 @@ const AdvocateMeetingPanel = () => {
       setLoading(true);
       setMessage({ text: '', type: '' });
       
-      const response = await axios.post(
-        `https://nyaay-desk-app-backend.onrender.com/api/case/${selectedCase}/advocate/video-meeting/verify-otp`, 
-        { email: userInfo.contact.email, otp: otp }
+      const response = await supabaseApi.post(
+        `/api/case/${selectedCase}/video-meeting/advocate/verify-otp`,
+        { email: userInfo.email || userInfo.contact?.email, otp: otp }
       );
       
       setMeetingLink(response.data.meetingLink);

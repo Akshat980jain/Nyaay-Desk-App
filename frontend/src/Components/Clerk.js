@@ -17,6 +17,9 @@ const ClerkAuthPage = () => {
           <Link to="/clerklogin" className="auth-button auth-login">
             Login
           </Link>
+          <Link to="/clerkregister" className="auth-button auth-register">
+            Register
+          </Link>
         </div>
         <div className="auth-secured">
           <svg

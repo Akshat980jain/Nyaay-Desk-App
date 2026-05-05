@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { supabase } from '../services/supabaseClient';
+import supabaseApi from '../services/supabaseApi';
 import { ShieldCheck, FileText, CheckCircle, XCircle, AlertCircle, Eye } from 'lucide-react';
 import '../ComponentsCSS/AdvocateChangeReview.css';
 
@@ -8,26 +9,34 @@ const AdvocateChangeReview = ({ profile }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedRequest, setSelectedRequest] = useState(null);
-  
-  // Review form state
   const [remarks, setRemarks] = useState('');
   const [actionLoading, setActionLoading] = useState(false);
+  const [toast, setToast] = useState(null);
 
   useEffect(() => {
     fetchPendingRequests();
   }, []);
 
+  const showToast = (message, type = 'success') => {
+    setToast({ message, type });
+    setTimeout(() => setToast(null), 4500);
+  };
+
   const fetchPendingRequests = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('token');
-      const response = await axios.get('https://nyaay-desk-app-backend.onrender.com/api/advocate-change/court-pending', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setRequests(response.data);
+      const { data, error: err } = await supabase
+        .from('advocate_change_requests')
+        .select('*')
+        .in('status', ['Under Court Review', 'NOC Signed', 'Application Filed', 'NOC Submitted', 'NOC Requested', 'Draft', 'pending'])
+        .order('created_at', { ascending: false });
+
+      if (err) throw err;
+      setRequests(data || []);
       setError(null);
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to load requests');
+      console.error('Error fetching requests:', err);
+      setError('Failed to load requests: ' + err.message);
     } finally {
       setLoading(false);
     }
@@ -35,33 +44,33 @@ const AdvocateChangeReview = ({ profile }) => {
 
   const handleAction = async (action) => {
     if (!selectedRequest) return;
-    
+
     if (action === 'Reject' && remarks.length < 10) {
-      alert("Please provide remarks for rejection (min 10 chars).");
+      showToast('Please provide remarks for rejection (min 10 chars).', 'warning');
       return;
     }
 
     try {
       setActionLoading(true);
-      const token = localStorage.getItem('token');
-      const payload = {
-        action,
-        remarks,
-        adminId: profile?.admin_id || 'Admin'
-      };
 
-      await axios.put(
-        `https://nyaay-desk-app-backend.onrender.com/api/advocate-change/review/${selectedRequest._id}`,
-        payload,
-        { headers: { Authorization: `Bearer ${token}` } }
+      await supabaseApi.put('/api/advocate-change/review', {
+        requestId: selectedRequest.request_id,
+        reviewAction: action,
+        remarks: remarks
+      });
+
+      showToast(
+        action === 'Approve' 
+          ? '✅ Advocate change approved! The old advocate has been discharged from the case.' 
+          : '❌ Request has been rejected.',
+        action === 'Approve' ? 'success' : 'error'
       );
 
-      // Reset state and refresh list
       setSelectedRequest(null);
       setRemarks('');
       fetchPendingRequests();
     } catch (err) {
-      alert(err.response?.data?.message || 'Action failed');
+      showToast('Action failed: ' + err.message, 'error');
     } finally {
       setActionLoading(false);
     }
@@ -69,23 +78,53 @@ const AdvocateChangeReview = ({ profile }) => {
 
   const openNocDocument = (url) => {
     if (!url) return;
-    const API = process.env.REACT_APP_API_URL || 'http://localhost:5000';
-    const fileUrl = `${API}/${url.replace(/\\\\/g, '/')}`;
-    window.open(fileUrl, '_blank');
-  };
-
-  const viewGeneratedApplication = (id) => {
-    const API = process.env.REACT_APP_API_URL || 'http://localhost:5000';
-    window.open(`${API}/api/advocate-change/generate-application/${id}`, '_blank', 'width=800,height=800');
+    window.open(url, '_blank');
   };
 
   if (loading) return <div className="adv-review-loading">Loading pending requests...</div>;
-  if (error) return <div className="adv-review-error">{error}</div>;
+
+  if (error) return (
+    <div className="adv-review-error">
+      <AlertCircle size={20} />
+      <span>{error}</span>
+    </div>
+  );
 
   return (
     <div className="adv-review-container">
       <h2>Advocate Change Requests (NOC)</h2>
-      
+
+      {/* In-app Toast Notification */}
+      {toast && (
+        <div style={{
+          position: 'fixed',
+          top: '24px',
+          right: '24px',
+          zIndex: 10000,
+          padding: '16px 24px',
+          borderRadius: '12px',
+          color: '#fff',
+          fontSize: '14px',
+          fontWeight: 500,
+          maxWidth: '440px',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.22)',
+          animation: 'toastSlideIn 0.35s ease-out',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '12px',
+          background: toast.type === 'success' ? 'linear-gradient(135deg, #22c55e, #16a34a)' 
+            : toast.type === 'warning' ? 'linear-gradient(135deg, #f59e0b, #d97706)' 
+            : 'linear-gradient(135deg, #ef4444, #dc2626)',
+        }}>
+          {toast.type === 'success' ? <CheckCircle size={22} /> : toast.type === 'warning' ? <AlertCircle size={22} /> : <XCircle size={22} />}
+          <span style={{ flex: 1 }}>{toast.message}</span>
+          <button 
+            onClick={() => setToast(null)} 
+            style={{ background: 'rgba(255,255,255,0.2)', border: 'none', color: '#fff', cursor: 'pointer', borderRadius: '50%', width: '28px', height: '28px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '16px' }}
+          >×</button>
+        </div>
+      )}
+
       {requests.length === 0 ? (
         <div className="adv-review-empty">No pending advocate change requests at the moment.</div>
       ) : (
@@ -102,17 +141,21 @@ const AdvocateChangeReview = ({ profile }) => {
             </thead>
             <tbody>
               {requests.map(req => (
-                <tr key={req._id}>
-                  <td>{req.caseId?.case_num || 'Unknown'}</td>
-                  <td><span className={`status-badge ${req.status.replace(/\\s+/g, '-').toLowerCase()}`}>{req.status}</span></td>
+                <tr key={req.request_id}>
+                  <td>{req.case_id || 'Unknown'}</td>
                   <td>
-                    {req.hasNoc ? (
+                    <span className={`status-badge ${(req.status || '').replace(/\s+/g, '-').toLowerCase()}`}>
+                      {req.status}
+                    </span>
+                  </td>
+                  <td>
+                    {req.has_noc ? (
                       <span className="noc-yes"><CheckCircle size={16}/> Yes</span>
                     ) : (
                       <span className="noc-no"><AlertCircle size={16}/> No</span>
                     )}
                   </td>
-                  <td>{new Date(req.createdAt).toLocaleDateString()}</td>
+                  <td>{req.created_at ? new Date(req.created_at).toLocaleDateString() : 'N/A'}</td>
                   <td>
                     <button className="review-btn" onClick={() => setSelectedRequest(req)}>
                       <Eye size={16} /> Review
@@ -131,44 +174,43 @@ const AdvocateChangeReview = ({ profile }) => {
           <div className="adv-review-modal-content">
             <div className="modal-header">
               <h3>Review Advocate Change</h3>
-              <button className="close-btn" onClick={() => {
-                setSelectedRequest(null);
-                setRemarks('');
-              }}>×</button>
+              <button className="close-btn" onClick={() => { setSelectedRequest(null); setRemarks(''); }}>×</button>
             </div>
-            
+
             <div className="modal-body">
               <div className="info-grid">
                 <div className="info-item">
                   <label>Case Number:</label>
-                  <span>{selectedRequest.caseId?.case_num}</span>
+                  <span>{selectedRequest.case_id}</span>
                 </div>
                 <div className="info-item">
                   <label>Litigant ID:</label>
-                  <span>{selectedRequest.litigantId}</span>
+                  <span>{selectedRequest.litigant_id}</span>
                 </div>
                 <div className="info-item">
                   <label>Discharging Advocate:</label>
-                  <span>{selectedRequest.existingAdvocateId}</span>
+                  <span>{selectedRequest.existing_advocate_id}</span>
+                </div>
+                <div className="info-item">
+                  <label>New Advocate:</label>
+                  <span>{selectedRequest.new_advocate_id || '—'}</span>
                 </div>
               </div>
 
               <div className="review-section mt-4">
                 <h4>Legal Documentation</h4>
                 <div className="doc-actions">
-                  <button className="btn-outline" onClick={() => viewGeneratedApplication(selectedRequest._id)}>
-                    <FileText size={18} /> View Formal Court Application
-                  </button>
-                  
-                  {selectedRequest.hasNoc ? (
+                  {selectedRequest.has_noc ? (
                     <div className="noc-details-box mt-3">
                       <h5><CheckCircle size={18} color="green" /> NOC Details Provided</h5>
-                      <p><strong>Advocate:</strong> {selectedRequest.nocDetails?.advocateName}</p>
-                      <p><strong>Enrollment:</strong> {selectedRequest.nocDetails?.enrollmentNumber}</p>
-                      <p><strong>Date Signed:</strong> {new Date(selectedRequest.nocDetails?.dateSigned).toLocaleDateString()}</p>
-                      {selectedRequest.nocDocumentUrl && (
-                        <button className="btn-outline mt-2" onClick={() => openNocDocument(selectedRequest.nocDocumentUrl)}>
-                          View Uploaded NOC PDF
+                      <p><strong>Advocate:</strong> {selectedRequest.noc_details?.advocateName}</p>
+                      <p><strong>Enrollment:</strong> {selectedRequest.noc_details?.enrollmentNumber}</p>
+                      {selectedRequest.noc_details?.dateSigned && (
+                        <p><strong>Date Signed:</strong> {new Date(selectedRequest.noc_details.dateSigned).toLocaleDateString()}</p>
+                      )}
+                      {selectedRequest.noc_document_url && (
+                        <button className="btn-outline mt-2" onClick={() => openNocDocument(selectedRequest.noc_document_url)}>
+                          <FileText size={16} /> View Uploaded NOC PDF
                         </button>
                       )}
                     </div>
@@ -177,7 +219,7 @@ const AdvocateChangeReview = ({ profile }) => {
                       <h5><AlertCircle size={18} color="#d97706" /> Proceeding Without NOC</h5>
                       <p className="mt-2"><strong>Litigant's Justification:</strong></p>
                       <div className="justification-text">
-                        "{selectedRequest.reasonForNoNoc}"
+                        "{selectedRequest.reason_for_no_noc}"
                       </div>
                     </div>
                   )}
@@ -186,37 +228,43 @@ const AdvocateChangeReview = ({ profile }) => {
 
               <div className="review-action-form mt-4">
                 <h4>Court Decision</h4>
-                <textarea 
-                  rows="3" 
+                <textarea
+                  rows="3"
                   placeholder="Enter remarks/orders (required for rejection)"
                   value={remarks}
                   onChange={(e) => setRemarks(e.target.value)}
                 />
-                
+
                 <div className="action-buttons mt-3">
-                  <button 
-                    className="btn-approve" 
+                  <button
+                    className="btn-approve"
                     onClick={() => handleAction('Approve')}
                     disabled={actionLoading}
                   >
-                    <ShieldCheck size={18} /> Approve & Discharge Advocate
+                    <ShieldCheck size={18} /> {actionLoading ? 'Processing...' : 'Approve & Discharge Advocate'}
                   </button>
-                  
-                  <button 
-                    className="btn-reject" 
+
+                  <button
+                    className="btn-reject"
                     onClick={() => handleAction('Reject')}
                     disabled={actionLoading}
                   >
-                    <XCircle size={18} /> Reject Request
+                    <XCircle size={18} /> {actionLoading ? 'Processing...' : 'Reject Request'}
                   </button>
                 </div>
               </div>
-
             </div>
           </div>
         </div>
       )}
 
+      {/* Toast animation */}
+      <style>{`
+        @keyframes toastSlideIn {
+          from { transform: translateX(120%); opacity: 0; }
+          to { transform: translateX(0); opacity: 1; }
+        }
+      `}</style>
     </div>
   );
 };

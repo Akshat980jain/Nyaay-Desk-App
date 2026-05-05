@@ -1,0 +1,494 @@
+[
+  {
+    "_id": "6819cc94ee1679ef080691f4",
+    "blog": "6819c4368831baa4c5313b13",
+    "user": {
+      "name": "aaditiya",
+      "email": "tyagiaaditiya123@gmail.com"
+    },
+    "content": "Deep analysis",
+    "status": "approved",
+    "createdAt": "2025-05-06T08:47:16.189Z",
+    "__v": 0
+  },
+  {
+    "_id": "6819fcb6cc39d8a92891df47",
+    "blog": "6819c4368831baa4c5313b13",
+    "user": {
+      "name": "Akshay",
+      "email": "tyagiaaditiya123@gmail.com"
+    },
+    "content": "Good job",
+    "status": "approved",
+    "createdAt": "2025-05-06T12:12:38.049Z",
+    "__v": 0
+  },
+  {
+    "_id": "681f58637b327eeb6fb24fa2",
+    "blog": "681e4179ace41f6b1326f852",
+    "user": {
+      "name": "Akshay",
+      "email": "tyagiaaditiya123@gmail.com"
+    },
+    "content": "Agree on that",
+    "status": "approved",
+    "createdAt": "2025-05-10T13:45:07.288Z",
+    "__v": 0,
+    "repliesCount": 1,
+    "reactionCounts": {
+      "likes": 2,
+      "dislikes": 0
+    }
+  },
+  {
+    "_id": "68237d4165d8dbfa7b6ca1ac",
+    "blog": "682359642f26e8e790be6a04",
+    "user": {
+      "name": "Anmol",
+      "email": "aaditiyatyagi123@gmail.com"
+    },
+    "content": "Very nice analysis",
+    "status": "approved",
+    "createdAt": "2025-05-13T17:11:29.538Z",
+    "__v": 0,
+    "repliesCount": 1
+  },
+  {
+    "_id": "6843c9aedcaed2e264892ea5",
+    "blog": "6842823c8d637eea2d2602bd",
+    "user": {
+      "name": "Aaditiya Tyagi",
+      "email": "tyagiaaditiya123@gmail.com"
+    },
+    "content": "Growth of Technology in India",
+    "status": "approved",
+    "createdAt": "2025-06-07T05:10:06.308Z",
+    "__v": 0
+  },
+  {
+    "_id": "685251b1cc0e468e4629412a",
+    "blog": "6842823c8d637eea2d2602bd",
+    "user": {
+      "name": "Akshay",
+      "email": "tyagiaaditiya123@gmail.com"
+    },
+    "content": "Good Analysis",
+    "status": "approved",
+    "createdAt": "2025-06-18T05:42:09.327Z",
+    "__v": 0,
+    "reactionCounts": {
+      "likes": 1,
+      "dislikes": 0
+    }
+  },
+  {
+    "_id": "685938a6dc59b8ba2a6cb721",
+    "blog": "68583bc229e3d8d955a593eb",
+    "user": {
+      "name": "Aaditiya Tyagi",
+      "email": "tyagiaaditiya123@gmail.com"
+    },
+    "content": "Share your valuable thoughts on this",
+    "status": "rejected",
+    "createdAt": "2025-06-23T11:21:10.389Z",
+    "__v": 0,
+    "isAuthorComment": false
+  },
+  {
+    "_id": "685c29de79d45a5ba8224c65",
+    "blog": "68583bc229e3d8d955a593eb",
+    "user": {
+      "name": "Aaditiya Tyagi",
+      "email": "tyagiaaditiya123@gmail.com"
+    },
+    "content": "Do read and share your thoughts even when you find them controversial",
+    "status": "approved",
+    "isAuthorComment": true,
+    "createdAt": "2025-06-25T16:54:54.542Z",
+    "__v": 0,
+    "reactionCounts": {
+      "likes": 1,
+      "dislikes": 0
+    }
+  },
+  {
+    "_id": "685cfa52063f87dc1d314c7a",
+    "blog": "6842823c8d637eea2d2602bd",
+    "user": {
+      "name": "Aaditiya Tyagi",
+      "email": "tyagiaaditiya123@gmail.com"
+    },
+    "content": "Read and share your valuable thoughts",
+    "status": "approved",
+    "isAuthorComment": true,
+    "parentComment": null,
+    "repliesCount": 0,
+    "reactionCounts": {
+      "likes": 1,
+      "dislikes": 0
+    },
+    "createdAt": "2025-06-26T07:44:18.703Z",
+    "__v": 0
+  },
+  {
+    "_id": "685d25a5de3bafb978f8b543",
+    "blog": "681e4179ace41f6b1326f852",
+    "user": {
+      "name": "Aaditiya Tyagi",
+      "email": "tyagiaaditiya123@gmail.com"
+    },
+    "content": "🙏🙏🙏",
+    "status": "approved",
+    "isAuthorComment": true,
+    "parentComment": "681f58637b327eeb6fb24fa2",
+    "repliesCount": 0,
+    "reactionCounts": {
+      "likes": 2,
+      "dislikes": 0
+    },
+    "createdAt": "2025-06-26T10:49:09.988Z",
+    "__v": 0
+  },
+  {
+    "_id": "685d26aede3bafb978f8b6be",
+    "blog": "685bb5adbd4217433b664659",
+    "user": {
+      "name": "Aaditiya Tyagi",
+      "email": "tyagiaaditiya123@gmail.com"
+    },
+    "content": "Read and share your valuable thoughts",
+    "status": "approved",
+    "isAuthorComment": true,
+    "parentComment": null,
+    "repliesCount": 0,
+    "reactionCounts": {
+      "likes": 3,
+      "dislikes": 0
+    },
+    "createdAt": "2025-06-26T10:53:34.323Z",
+    "__v": 0
+  },
+  {
+    "_id": "685d40bade3bafb978f8ccdc",
+    "blog": "681e403face41f6b1326f81a",
+    "user": {
+      "name": "Aaditiya Tyagi",
+      "email": "tyagiaaditiya123@gmail.com"
+    },
+    "content": "Do read and share your thoughts!",
+    "status": "approved",
+    "isAuthorComment": true,
+    "parentComment": null,
+    "repliesCount": 0,
+    "reactionCounts": {
+      "likes": 1,
+      "dislikes": 0
+    },
+    "createdAt": "2025-06-26T12:44:42.953Z",
+    "__v": 0
+  },
+  {
+    "_id": "6860efb442fbd95ca08c0445",
+    "blog": "682359642f26e8e790be6a04",
+    "user": {
+      "name": "Aaditiya Tyagi",
+      "email": "tyagiaaditiya123@gmail.com"
+    },
+    "content": "Thank you",
+    "status": "approved",
+    "isAuthorComment": true,
+    "parentComment": "68237d4165d8dbfa7b6ca1ac",
+    "repliesCount": 0,
+    "reactionCounts": {
+      "likes": 0,
+      "dislikes": 0
+    },
+    "createdAt": "2025-06-29T07:48:04.898Z",
+    "__v": 0
+  },
+  {
+    "_id": "68650629fcc13102e0de4db7",
+    "blog": "6864ff44fcc13102e0de4c11",
+    "user": {
+      "name": "Aaditiya Tyagi",
+      "email": "tyagiaaditiya123@gmail.com"
+    },
+    "content": "Git vs Github ,  read and share your valuable comments",
+    "status": "approved",
+    "isAuthorComment": true,
+    "parentComment": null,
+    "repliesCount": 0,
+    "reactionCounts": {
+      "likes": 1,
+      "dislikes": 0
+    },
+    "createdAt": "2025-07-02T10:12:57.132Z",
+    "__v": 0
+  },
+  {
+    "_id": "686615ac198a34d7160c1b1c",
+    "blog": "68660bbc198a34d7160c1847",
+    "user": {
+      "name": "Aaditiya Tyagi",
+      "email": "tyagiaaditiya123@gmail.com"
+    },
+    "content": "Read and share your valuable insights on the rise of deepfake and how we can tackle it",
+    "status": "approved",
+    "isAuthorComment": true,
+    "parentComment": null,
+    "repliesCount": 0,
+    "reactionCounts": {
+      "likes": 2,
+      "dislikes": 0
+    },
+    "createdAt": "2025-07-03T05:31:24.172Z",
+    "__v": 0
+  },
+  {
+    "_id": "686676574ffa8e15dfd6eecf",
+    "blog": "68660bbc198a34d7160c1847",
+    "user": {
+      "name": "Vikas Tyagi",
+      "email": "aaditiya.2226cs1189@kiet.edu"
+    },
+    "content": "👍👍👍",
+    "status": "approved",
+    "isAuthorComment": false,
+    "parentComment": null,
+    "repliesCount": 1,
+    "reactionCounts": {
+      "likes": 0,
+      "dislikes": 0
+    },
+    "createdAt": "2025-07-03T12:23:51.845Z",
+    "__v": 0
+  },
+  {
+    "_id": "686677bc4ffa8e15dfd6ef41",
+    "blog": "68660bbc198a34d7160c1847",
+    "user": {
+      "name": "Aaditiya Tyagi",
+      "email": "tyagiaaditiya123@gmail.com"
+    },
+    "content": "🙏🙏",
+    "status": "approved",
+    "isAuthorComment": true,
+    "parentComment": "686676574ffa8e15dfd6eecf",
+    "repliesCount": 0,
+    "reactionCounts": {
+      "likes": 0,
+      "dislikes": 0
+    },
+    "createdAt": "2025-07-03T12:29:48.356Z",
+    "__v": 0
+  },
+  {
+    "_id": "686679054ffa8e15dfd6f079",
+    "blog": "68660bbc198a34d7160c1847",
+    "user": {
+      "name": "Suhail",
+      "email": "ssssssss@gmail.com"
+    },
+    "content": "Good keep it up bro",
+    "status": "approved",
+    "isAuthorComment": false,
+    "parentComment": null,
+    "repliesCount": 1,
+    "reactionCounts": {
+      "likes": 2,
+      "dislikes": 0
+    },
+    "createdAt": "2025-07-03T12:35:17.431Z",
+    "__v": 0
+  },
+  {
+    "_id": "686680ba9cb2527a8f5f0787",
+    "blog": "68660bbc198a34d7160c1847",
+    "user": {
+      "name": "Aaditiya Tyagi",
+      "email": "tyagiaaditiya123@gmail.com"
+    },
+    "content": "Thanks",
+    "status": "approved",
+    "isAuthorComment": true,
+    "parentComment": "686679054ffa8e15dfd6f079",
+    "repliesCount": 0,
+    "reactionCounts": {
+      "likes": 0,
+      "dislikes": 0
+    },
+    "createdAt": "2025-07-03T13:08:10.678Z",
+    "__v": 0
+  },
+  {
+    "_id": "6868fb1182de2b1d7ecf78b8",
+    "blog": "685bb5adbd4217433b664659",
+    "user": {
+      "name": "Aaditiya Tyagi",
+      "email": "tyagiaaditiya123@gmail.com"
+    },
+    "content": "Get a way to achieve digital minimalism",
+    "status": "approved",
+    "isAuthorComment": true,
+    "parentComment": null,
+    "repliesCount": 0,
+    "reactionCounts": {
+      "likes": 0,
+      "dislikes": 0
+    },
+    "createdAt": "2025-07-05T10:14:41.052Z",
+    "__v": 0
+  },
+  {
+    "_id": "686bc1c9c8310c2288a60065",
+    "blog": "686bb7a5c8310c2288a5fc07",
+    "user": {
+      "name": "Aaditiya Tyagi",
+      "email": "tyagiaaditiya123@gmail.com"
+    },
+    "content": "Share your thoughts on the moral policing nowadays in India",
+    "status": "approved",
+    "isAuthorComment": true,
+    "parentComment": null,
+    "repliesCount": 0,
+    "reactionCounts": {
+      "likes": 1,
+      "dislikes": 0
+    },
+    "createdAt": "2025-07-07T12:47:05.174Z",
+    "__v": 0
+  },
+  {
+    "_id": "687756dabe3a2c53177fffae",
+    "blog": "681e4179ace41f6b1326f852",
+    "user": {
+      "name": "Suhail",
+      "email": "ssssssss@gmail.com"
+    },
+    "content": "Good",
+    "status": "approved",
+    "isAuthorComment": false,
+    "parentComment": null,
+    "repliesCount": 1,
+    "reactionCounts": {
+      "likes": 1,
+      "dislikes": 0
+    },
+    "createdAt": "2025-07-16T07:38:02.079Z",
+    "__v": 0
+  },
+  {
+    "_id": "6877578abe3a2c5317800095",
+    "blog": "681e4179ace41f6b1326f852",
+    "user": {
+      "name": "Aaditiya Tyagi",
+      "email": "tyagiaaditiya123@gmail.com"
+    },
+    "content": "Thanks 🙏🙏🙏",
+    "status": "approved",
+    "isAuthorComment": true,
+    "parentComment": "687756dabe3a2c53177fffae",
+    "repliesCount": 0,
+    "reactionCounts": {
+      "likes": 0,
+      "dislikes": 0
+    },
+    "createdAt": "2025-07-16T07:40:58.244Z",
+    "__v": 0
+  },
+  {
+    "_id": "68806e52c0f161565a3517b6",
+    "blog": "68806d04c0f161565a3516d8",
+    "user": {
+      "name": "Aaditiya Tyagi",
+      "email": "tyagiaaditiya123@gmail.com"
+    },
+    "content": "Read and share your insights and suggestions to improve",
+    "status": "approved",
+    "isAuthorComment": true,
+    "parentComment": null,
+    "repliesCount": 0,
+    "reactionCounts": {
+      "likes": 1,
+      "dislikes": 0
+    },
+    "createdAt": "2025-07-23T05:08:34.550Z",
+    "__v": 0
+  },
+  {
+    "_id": "68f1d0d458f0887d8ed3da58",
+    "blog": "68f1cbaa58f0887d8ed3d804",
+    "user": {
+      "name": "Aaditiya Tyagi",
+      "email": "aaditiyatyagi123@gmail.com"
+    },
+    "content": "This is my interview experience, many other candidates have other experiences so don't blindly follow this structure.",
+    "status": "approved",
+    "isAuthorComment": true,
+    "parentComment": null,
+    "repliesCount": 0,
+    "reactionCounts": {
+      "likes": 1,
+      "dislikes": 0
+    },
+    "createdAt": "2025-10-17T05:15:00.366Z",
+    "__v": 0
+  },
+  {
+    "_id": "6903921da235da105575b47c",
+    "blog": "68f1cbaa58f0887d8ed3d804",
+    "user": {
+      "name": "Akshay Tyagi",
+      "email": "tyagiaaditiya123@gmail.com"
+    },
+    "content": "Great Bro!",
+    "status": "approved",
+    "isAuthorComment": false,
+    "parentComment": null,
+    "repliesCount": 1,
+    "reactionCounts": {
+      "likes": 1,
+      "dislikes": 0
+    },
+    "createdAt": "2025-10-30T16:28:13.669Z",
+    "__v": 0
+  },
+  {
+    "_id": "690468b4403dee3d523b78ca",
+    "blog": "68f1cbaa58f0887d8ed3d804",
+    "user": {
+      "name": "Aaditiya Tyagi",
+      "email": "aaditiyatyagi123@gmail.com"
+    },
+    "content": "Thanks brother! 🙏",
+    "status": "approved",
+    "isAuthorComment": true,
+    "parentComment": "6903921da235da105575b47c",
+    "repliesCount": 0,
+    "reactionCounts": {
+      "likes": 0,
+      "dislikes": 0
+    },
+    "createdAt": "2025-10-31T07:43:48.011Z",
+    "__v": 0
+  },
+  {
+    "_id": "690e1acb18fc70309d7ccd2c",
+    "blog": "690e13cb18fc70309d7cc954",
+    "user": {
+      "name": "Aaditiya Tyagi",
+      "email": "tyagiaaditiya123@gmail.com"
+    },
+    "content": "Do read and share your thoughts.",
+    "status": "approved",
+    "isAuthorComment": true,
+    "parentComment": null,
+    "repliesCount": 0,
+    "reactionCounts": {
+      "likes": 1,
+      "dislikes": 0
+    },
+    "createdAt": "2025-11-07T16:14:03.315Z",
+    "__v": 0
+  }
+]

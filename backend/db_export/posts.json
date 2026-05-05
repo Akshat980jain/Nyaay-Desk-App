@@ -1,0 +1,84 @@
+[
+  {
+    "_id": "6822d8d9c1ff03ac0cd78f5e",
+    "author": "681880c6ba051359c6aded22",
+    "caption": "HAving a great feel",
+    "image": {
+      "filename": "image-1747114201822-168623173.jpg",
+      "path": "/uploads/image-1747114201822-168623173.jpg",
+      "mimetype": "image/jpeg",
+      "size": 235991
+    },
+    "tags": [],
+    "location": "Bharat, India",
+    "likes": {
+      "count": 3,
+      "users": [
+        {
+          "userId": "aaditiyatyagi123@gmail.com",
+          "name": "Aaditiya Tyagi",
+          "timestamp": "2025-05-13T06:05:27.193Z",
+          "_id": "6822e127c1ff03ac0cd79040"
+        },
+        {
+          "userId": "a",
+          "name": "aaditiya",
+          "timestamp": "2025-05-13T06:06:10.268Z",
+          "_id": "6822e152c1ff03ac0cd7905d"
+        },
+        {
+          "userId": "a",
+          "name": "Kunal",
+          "timestamp": "2025-05-13T06:17:32.053Z",
+          "_id": "6822e3fcc1ff03ac0cd790e8"
+        }
+      ]
+    },
+    "commentsCount": 0,
+    "status": "active",
+    "createdAt": "2025-05-13T05:30:01.863Z",
+    "updatedAt": "2025-05-13T05:30:01.864Z",
+    "__v": 5
+  },
+  {
+    "_id": "6822dc39c1ff03ac0cd78fb2",
+    "author": "681880c6ba051359c6aded22",
+    "caption": "Greta",
+    "image": {
+      "filename": "image-1747115065574-447891898.png",
+      "path": "/uploads/image-1747115065574-447891898.png",
+      "mimetype": "image/png",
+      "size": 2634106
+    },
+    "tags": [],
+    "location": "Bharat, India",
+    "likes": {
+      "count": 3,
+      "users": [
+        {
+          "userId": "aaditiyatyagi123@gmail.com",
+          "name": "Aaditiya Tyagi",
+          "timestamp": "2025-05-13T06:05:17.061Z",
+          "_id": "6822e11dc1ff03ac0cd7903d"
+        },
+        {
+          "userId": "a",
+          "name": "aaditiya",
+          "timestamp": "2025-05-13T06:06:12.019Z",
+          "_id": "6822e154c1ff03ac0cd79061"
+        },
+        {
+          "userId": "a",
+          "name": "Kunal",
+          "timestamp": "2025-05-13T06:17:29.294Z",
+          "_id": "6822e3f9c1ff03ac0cd790de"
+        }
+      ]
+    },
+    "commentsCount": 1,
+    "status": "active",
+    "createdAt": "2025-05-13T05:44:25.624Z",
+    "updatedAt": "2025-05-13T05:45:37.719Z",
+    "__v": 7
+  }
+]
