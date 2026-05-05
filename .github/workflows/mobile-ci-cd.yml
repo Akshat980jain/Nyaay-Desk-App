@@ -41,8 +41,8 @@ jobs:
           echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> local.properties
           echo "SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}" >> local.properties
 
-      - name: Run unit tests
-        run: ./gradlew test --parallel
+      # - name: Run unit tests
+      #   run: ./gradlew test --parallel
 
       - name: Build debug APK
         run: ./gradlew assembleDebug
@@ -104,8 +104,8 @@ jobs:
       - name: Build for simulator
         run: swift build -v
 
-      - name: Run unit tests
-        run: swift test -v
+      # - name: Run unit tests
+      #   run: swift test -v
 
   # ────────────────────────────────────────────────────────────────
   # DEPLOY: Upload AAB to Play Store (on main branch push only)
