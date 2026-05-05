@@ -26,7 +26,7 @@ const ClerkLogin = ({ expectedRole = 'clerk' }) => {
   const [turnstileToken, setTurnstileToken] = useState(isDev ? 'dev-bypass' : null);
   const turnstileRef = useRef(null);
 
-  const siteKey = '0x4AAAAAABUex35iY9OmXSBB';
+  const siteKey = process.env.REACT_APP_TURNSTILE_SITE_KEY || "0x4AAAAAAAU56i0A4rZ8Qv6i";
 
   // Derive display title from the prop
   const pageTitle = expectedRole === 'admin' ? 'Admin Login' : 'Court Clerk Login';

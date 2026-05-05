@@ -25,7 +25,7 @@ const LitigantLogin = () => {
   const isDev = window.location.hostname === 'localhost';
   const [turnstileToken, setTurnstileToken] = useState(isDev ? 'dev-bypass' : null);
   const turnstileRef = useRef(null);
-  const siteKey = process.env.REACT_APP_TURNSTILE_SITE_KEY || "0x4AAAAAABUex35iY9OmXSBB";
+  const siteKey = process.env.REACT_APP_TURNSTILE_SITE_KEY || "0x4AAAAAAAU56i0A4rZ8Qv6i";
 
   const handleLoginChange = (e) => setLoginData({ ...loginData, [e.target.name]: e.target.value });
 

@@ -21,7 +21,7 @@ const AdvocateLogin = () => {
   const isDev = window.location.hostname === 'localhost';
   const [turnstileToken, setTurnstileToken] = useState(isDev ? 'dev-bypass' : null);
   const turnstileRef = useRef(null);
-  const siteKey = process.env.REACT_APP_TURNSTILE_SITE_KEY;
+  const siteKey = process.env.REACT_APP_TURNSTILE_SITE_KEY || "0x4AAAAAAAU56i0A4rZ8Qv6i";
 
   const handleLogin = async (e) => {
     e.preventDefault();

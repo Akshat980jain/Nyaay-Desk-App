@@ -37,7 +37,7 @@ const AdminLogin = () => {
   const turnstileRef = useRef(null);
 
   // Use the direct site key instead of environment variable
-  const siteKey = "0x4AAAAAABUex35iY9OmXSBB";
+  const siteKey = process.env.REACT_APP_TURNSTILE_SITE_KEY || "0x4AAAAAAAU56i0A4rZ8Qv6i";
   
   const handleLoginChange = (e) => {
     setLoginData({
