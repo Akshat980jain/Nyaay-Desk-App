@@ -125,7 +125,7 @@ private fun TodayCauseListItem(case: CaseEntity, onClick: () -> Unit) {
         Row(modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            Icon(Icons.Default.Gavel, null, tint = NavyBlue, Modifier.size(24.dp))
+            Icon(Icons.Default.Gavel, null, modifier = Modifier.size(24.dp), tint = NavyBlue)
             Column(modifier = Modifier.weight(1f)) {
                 Text(case.caseTitle, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold)
                 Text(case.cnrNumber ?: case.caseNumber, style = MaterialTheme.typography.bodySmall,

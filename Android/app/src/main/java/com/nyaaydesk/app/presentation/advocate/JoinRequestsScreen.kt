@@ -23,6 +23,7 @@ import com.nyaaydesk.app.presentation.theme.*
  * - List of pending requests from Litigants.
  * - Atomic Accept/Reject operations calling Supabase Edge Functions/RPC.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun JoinRequestsScreen(
     onBack: () -> Unit,
