@@ -41,13 +41,13 @@ interface CaseDao {
     suspend fun insertAll(cases: List<CaseEntity>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertCase(case: CaseEntity)
+    suspend fun insertCase(caseEntity: CaseEntity)
 
     @Update
-    suspend fun updateCase(case: CaseEntity)
+    suspend fun updateCase(caseEntity: CaseEntity)
 
     @Delete
-    suspend fun deleteCase(case: CaseEntity)
+    suspend fun deleteCase(caseEntity: CaseEntity)
 
     @Query("DELETE FROM cases")
     suspend fun clearAll()
