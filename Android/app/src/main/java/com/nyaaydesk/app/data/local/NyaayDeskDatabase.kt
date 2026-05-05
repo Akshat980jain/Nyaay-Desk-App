@@ -22,7 +22,7 @@ import com.nyaaydesk.app.data.local.entity.UserEntity
         UserEntity::class
     ],
     version = 1,
-    exportSchema = true
+    exportSchema = false
 )
 @TypeConverters(RoomTypeConverters::class)
 abstract class NyaayDeskDatabase : RoomDatabase() {

@@ -2,6 +2,7 @@ package com.nyaaydesk.app.data.local.entity
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
 /** Local Room entity mirroring the `hearings` table in Supabase. */
@@ -14,7 +15,8 @@ import androidx.room.PrimaryKey
             childColumns = ["caseId"],
             onDelete = ForeignKey.CASCADE
         )
-    ]
+    ],
+    indices = [Index(value = ["caseId"])]
 )
 data class HearingEntity(
     @PrimaryKey val id: String,
