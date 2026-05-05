@@ -13,8 +13,8 @@ hilt = "2.51.1"
 hiltNavigation = "1.2.0"
 ksp = "2.0.0-1.0.22"
 room = "2.6.1"
-supabase = "2.5.0"
-ktor = "2.3.11"
+supabase = "3.0.0"
+ktor = "3.0.0"
 datastore = "1.1.1"
 biometric = "1.1.0"
 mlkitDocumentScanner = "16.0.0-beta1"
@@ -53,7 +53,7 @@ room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 supabase-postgrest = { group = "io.github.jan-tennert.supabase", name = "postgrest-kt", version.ref = "supabase" }
-supabase-auth = { group = "io.github.jan-tennert.supabase", name = "gotrue-kt", version.ref = "supabase" }
+supabase-auth = { group = "io.github.jan-tennert.supabase", name = "auth-kt", version.ref = "supabase" }
 supabase-realtime = { group = "io.github.jan-tennert.supabase", name = "realtime-kt", version.ref = "supabase" }
 supabase-storage = { group = "io.github.jan-tennert.supabase", name = "storage-kt", version.ref = "supabase" }
 ktor-client-android = { group = "io.ktor", name = "ktor-client-android", version.ref = "ktor" }
