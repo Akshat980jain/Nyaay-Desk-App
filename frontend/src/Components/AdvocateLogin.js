@@ -1,7 +1,6 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import authService from '../services/authService';
-import { Turnstile } from '@marsidev/react-turnstile';
 import '../ComponentsCSS/Login.css';
 
 const AdvocateLogin = () => {
@@ -18,29 +17,17 @@ const AdvocateLogin = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const isDev = window.location.hostname === 'localhost';
-  const [turnstileToken, setTurnstileToken] = useState(isDev ? 'dev-bypass' : null);
-  const turnstileRef = useRef(null);
-  const siteKey = process.env.REACT_APP_TURNSTILE_SITE_KEY || "0x4AAAAAAAU56i0A4rZ8Qv6i";
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
-    if (!isDev && !turnstileToken) {
-      setError('Please complete the CAPTCHA verification');
-      setLoading(false);
-      return;
-    }
-
     try {
       await authService.loginAdvocate(formData.email, formData.password);
       navigate('/advdash');
     } catch (err) {
       setError(err.message || 'Login failed');
-      setTurnstileToken(null);
-      if (turnstileRef.current) turnstileRef.current.reset();
     } finally {
       setLoading(false);
     }
@@ -49,9 +36,9 @@ const AdvocateLogin = () => {
   return (
     <div className="advocate-container">
       <div className="advocate-login-box">
-        <img 
-          src="../images/aadiimage4.svg" 
-          alt="Official Logo" 
+        <img
+          src="../images/aadiimage4.svg"
+          alt="Official Logo"
           className="official-logo"
         />
         <div className="secure-authentication">
@@ -86,35 +73,10 @@ const AdvocateLogin = () => {
               required
             />
           </div>
-          <div className="advocate-form-group turnstile-container">
-            {!isDev && (
-              <Turnstile
-                ref={turnstileRef}
-                siteKey={siteKey}
-                onSuccess={(token) => {
-                  setTurnstileToken(token);
-                  setError('');
-                }}
-                onError={() => {
-                  setError('CAPTCHA verification failed. Please try again.');
-                  setTurnstileToken(null);
-                }}
-                onExpire={() => {
-                  setError('CAPTCHA expired. Please verify again.');
-                  setTurnstileToken(null);
-                }}
-                theme="light"
-                size="normal"
-                responseField={false}
-                refreshExpired="auto"
-                appearance="interaction-only"
-              />
-            )}
-          </div>
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="advocate-submit-btn"
-            disabled={loading || !turnstileToken}
+            disabled={loading}
           >
             {loading ? 'Processing...' : 'Login'}
           </button>

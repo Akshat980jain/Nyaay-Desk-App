@@ -1,67 +1,45 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import authService from '../services/authService';
-import { Turnstile } from '@marsidev/react-turnstile';
 import '../ComponentsCSS/LitigantLogin.css';
-
-// Ensure React is loaded correctly
-if (!React.useState) {
-  console.error('React is not properly loaded. Check for multiple React instances or version mismatches.');
-}
 
 const AdminLogin = () => {
   const navigate = useNavigate();
-  
+
   const [view, setView] = useState('login');
   const [animating, setAnimating] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [email, setEmail] = useState('');
-  
-  const [loginData, setLoginData] = useState({
-    email: '',
-    password: ''
-  });
-  
-  const [resetData, setResetData] = useState({
+
+  const [loginData, setLoginData] = useState({ email: '', password: '' });
+  const [resetData, setResetData] = useState({ newPassword: '', confirmPassword: '' });
+  const [passwordStrength, setPasswordStrength] = useState(0);
+
+  const [changePasswordData, setChangePasswordData] = useState({
+    currentPassword: '',
     newPassword: '',
     confirmPassword: ''
   });
 
-  const [passwordStrength, setPasswordStrength] = useState(0);
-  // Auto-bypass Turnstile on localhost (production site key won't work locally)
-  const [turnstileToken, setTurnstileToken] = useState(
-    window.location.hostname === 'localhost' ? 'dev-bypass' : null
-  );
-  const turnstileRef = useRef(null);
-
-  // Use the direct site key instead of environment variable
-  const siteKey = process.env.REACT_APP_TURNSTILE_SITE_KEY || "0x4AAAAAAAU56i0A4rZ8Qv6i";
-  
   const handleLoginChange = (e) => {
-    setLoginData({
-      ...loginData,
-      [e.target.name]: e.target.value
-    });
+    setLoginData({ ...loginData, [e.target.name]: e.target.value });
   };
-  
+
   const handleResetChange = (e) => {
     const { name, value } = e.target;
-    setResetData({
-      ...resetData,
-      [name]: value
-    });
-    if (name === 'newPassword') {
-      checkPasswordStrength(value);
-    }
+    setResetData({ ...resetData, [name]: value });
+    if (name === 'newPassword') checkPasswordStrength(value);
   };
-  
+
+  const handleChangePasswordChange = (e) => {
+    const { name, value } = e.target;
+    setChangePasswordData({ ...changePasswordData, [name]: value });
+    if (name === 'newPassword') checkPasswordStrength(value);
+  };
+
   const checkPasswordStrength = (password) => {
-    if (!password) {
-      setPasswordStrength(0);
-      return;
-    }
+    if (!password) { setPasswordStrength(0); return; }
     let strength = 0;
     if (password.length >= 8) strength += 1;
     if (/[A-Z]/.test(password) && /[a-z]/.test(password)) strength += 1;
@@ -69,7 +47,7 @@ const AdminLogin = () => {
     if (/[^A-Za-z0-9]/.test(password)) strength += 1;
     setPasswordStrength(strength >= 4 ? 3 : (strength >= 2 ? 2 : 1));
   };
-  
+
   const changeView = (newView) => {
     setAnimating(true);
     setTimeout(() => {
@@ -77,41 +55,23 @@ const AdminLogin = () => {
       setError('');
       setMessage('');
       setAnimating(false);
-      setTurnstileToken(null); // Reset token on view change
-      if (turnstileRef.current) {
-        turnstileRef.current.reset();
-      }
     }, 300);
   };
-  
+
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
-
-    if (window.location.hostname !== 'localhost' && !turnstileToken) {
-      setError('Please complete the CAPTCHA verification');
-      setLoading(false);
-      return;
-    }
-
     try {
       await authService.loginAdmin(loginData.email, loginData.password);
       navigate('/admindash');
     } catch (err) {
       setError(err.message || 'Login failed');
-      // Reset turnstile — on localhost keep the bypass token so button stays enabled
-      if (window.location.hostname === 'localhost') {
-        setTurnstileToken('dev-bypass');
-      } else {
-        setTurnstileToken(null);
-        if (turnstileRef.current) turnstileRef.current.reset();
-      }
     } finally {
       setLoading(false);
     }
   };
-  
+
   const handleForgotPassword = async () => {
     if (!loginData.email) {
       setError('Please enter your email address first');
@@ -120,54 +80,69 @@ const AdminLogin = () => {
     setError('');
     setMessage('');
     setLoading(true);
-
     try {
       const res = await authService.forgotPassword(loginData.email);
-      setEmail(loginData.email);
       setMessage(res.message);
       changeView('resetPassword');
     } catch (err) {
       setError(err.message || 'Failed to process request');
-      setTurnstileToken(null);
-      if (turnstileRef.current) {
-        turnstileRef.current.reset();
-      }
     } finally {
       setLoading(false);
     }
   };
-  
+
   const handleResetSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setMessage('');
     setLoading(true);
-
     if (resetData.newPassword !== resetData.confirmPassword) {
       setError('Passwords do not match');
       setLoading(false);
       return;
     }
-
     if (passwordStrength < 2) {
       setError('Please use a stronger password');
       setLoading(false);
       return;
     }
-
     try {
       const res = await authService.resetPassword(resetData.newPassword);
       setMessage(res.message);
-      setTimeout(() => {
-        changeView('login');
-      }, 3000);
+      setTimeout(() => changeView('login'), 3000);
     } catch (err) {
       setError(err.message || 'Password reset failed');
     } finally {
       setLoading(false);
     }
   };
-  
+
+  const handleChangePasswordSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+    setMessage('');
+    setLoading(true);
+    if (changePasswordData.newPassword !== changePasswordData.confirmPassword) {
+      setError('Passwords do not match');
+      setLoading(false);
+      return;
+    }
+    if (passwordStrength < 2) {
+      setError('Please use a stronger password');
+      setLoading(false);
+      return;
+    }
+    try {
+      const res = await authService.resetPassword(changePasswordData.newPassword);
+      setMessage(res.message);
+      setTimeout(() => changeView('login'), 3000);
+    } catch (err) {
+      setError(err.message || 'Failed to change password');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const getPasswordStrengthClass = () => {
     switch (passwordStrength) {
       case 1: return 'strength-weak';
@@ -176,7 +151,7 @@ const AdminLogin = () => {
       default: return '';
     }
   };
-  
+
   const getPasswordStrengthLabel = () => {
     switch (passwordStrength) {
       case 1: return 'Weak';
@@ -185,7 +160,7 @@ const AdminLogin = () => {
       default: return '';
     }
   };
-  
+
   const renderLoginForm = () => (
     <div className={`view-transition ${animating ? 'fade-out' : 'fade-in'}`}>
       <h2 className="litigant-title">Court Clerk Login</h2>
@@ -215,43 +190,15 @@ const AdminLogin = () => {
             required
           />
         </div>
-        <div className="litigant-form-group turnstile-container">
-          {window.location.hostname !== 'localhost' && (
-            <Turnstile
-              ref={turnstileRef}
-              siteKey={siteKey}
-              onSuccess={(token) => {
-                setTurnstileToken(token);
-                setError(''); // Clear any previous CAPTCHA errors
-              }}
-              onError={() => {
-                setError('CAPTCHA verification failed. Please try again.');
-                setTurnstileToken(null);
-              }}
-              onExpire={() => {
-                setError('CAPTCHA expired. Please verify again.');
-                setTurnstileToken(null);
-              }}
-              theme="light"
-              size="normal"
-              responseField={false}
-              refreshExpired="auto"
-              appearance="interaction-only"
-            />
-          )}
-        </div>
         <div className="forgot-password-link">
-          <span 
-            onClick={handleForgotPassword}
-            className="text-link"
-          >
+          <span onClick={handleForgotPassword} className="text-link">
             Forgot Password?
           </span>
         </div>
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           className="litigant-submit-btn"
-          disabled={loading || (window.location.hostname !== 'localhost' && !turnstileToken)}
+          disabled={loading}
         >
           {loading ? (
             <>
@@ -263,7 +210,7 @@ const AdminLogin = () => {
       </form>
     </div>
   );
-  
+
   const renderResetPasswordForm = () => (
     <div className={`view-transition ${animating ? 'fade-out' : 'fade-in'}`}>
       <h2 className="litigant-title">Reset Password</h2>
@@ -280,9 +227,7 @@ const AdminLogin = () => {
             autoFocus
             placeholder="Enter token from email"
           />
-          <div className="form-hint">
-            Enter the token from the reset link sent to your email
-          </div>
+          <div className="form-hint">Enter the token from the reset link sent to your email</div>
         </div>
         <div className="litigant-form-group">
           <label className="litigant-label">New Password</label>
@@ -299,7 +244,7 @@ const AdminLogin = () => {
               <div className="password-strength">
                 <div className={`password-strength-meter ${getPasswordStrengthClass()}`}></div>
               </div>
-              <div style={{textAlign: 'right', fontSize: '0.8rem', marginTop: '0.25rem', color: passwordStrength === 1 ? '#dc3545' : passwordStrength === 2 ? '#ffc107' : '#198754'}}>
+              <div style={{ textAlign: 'right', fontSize: '0.8rem', marginTop: '0.25rem', color: passwordStrength === 1 ? '#dc3545' : passwordStrength === 2 ? '#ffc107' : '#198754' }}>
                 {getPasswordStrengthLabel()}
               </div>
             </>
@@ -316,21 +261,17 @@ const AdminLogin = () => {
             required
           />
           {resetData.confirmPassword && resetData.newPassword !== resetData.confirmPassword && (
-            <div style={{color: '#dc3545', fontSize: '0.8rem', marginTop: '0.25rem'}}>
+            <div style={{ color: '#dc3545', fontSize: '0.8rem', marginTop: '0.25rem' }}>
               Passwords do not match
             </div>
           )}
         </div>
         <div className="form-actions">
-          <button 
-            type="button" 
-            className="litigant-secondary-btn"
-            onClick={() => changeView('login')}
-          >
+          <button type="button" className="litigant-secondary-btn" onClick={() => changeView('login')}>
             Back to Login
           </button>
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="litigant-submit-btn"
             disabled={loading || resetData.newPassword !== resetData.confirmPassword || passwordStrength < 2}
           >
@@ -340,7 +281,7 @@ const AdminLogin = () => {
       </form>
     </div>
   );
-  
+
   const renderChangePasswordForm = () => (
     <div className={`view-transition ${animating ? 'fade-out' : 'fade-in'}`}>
       <h2 className="litigant-title">Change Password</h2>
@@ -374,7 +315,7 @@ const AdminLogin = () => {
               <div className="password-strength">
                 <div className={`password-strength-meter ${getPasswordStrengthClass()}`}></div>
               </div>
-              <div style={{textAlign: 'right', fontSize: '0.8rem', marginTop: '0.25rem', color: passwordStrength === 1 ? '#dc3545' : passwordStrength === 2 ? '#ffc107' : '#198754'}}>
+              <div style={{ textAlign: 'right', fontSize: '0.8rem', marginTop: '0.25rem', color: passwordStrength === 1 ? '#dc3545' : passwordStrength === 2 ? '#ffc107' : '#198754' }}>
                 {getPasswordStrengthLabel()}
               </div>
             </>
@@ -391,21 +332,17 @@ const AdminLogin = () => {
             required
           />
           {changePasswordData.confirmPassword && changePasswordData.newPassword !== changePasswordData.confirmPassword && (
-            <div style={{color: '#dc3545', fontSize: '0.8rem', marginTop: '0.25rem'}}>
+            <div style={{ color: '#dc3545', fontSize: '0.8rem', marginTop: '0.25rem' }}>
               Passwords do not match
             </div>
           )}
         </div>
         <div className="form-actions">
-          <button 
-            type="button" 
-            className="litigant-secondary-btn"
-            onClick={() => changeView('login')}
-          >
+          <button type="button" className="litigant-secondary-btn" onClick={() => changeView('login')}>
             Back to Login
           </button>
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="litigant-submit-btn"
             disabled={loading || changePasswordData.newPassword !== changePasswordData.confirmPassword || passwordStrength < 2}
           >
@@ -415,59 +352,9 @@ const AdminLogin = () => {
       </form>
     </div>
   );
-  
-  // Add state and handlers for change password functionality
-  const [changePasswordData, setChangePasswordData] = useState({
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: ''
-  });
-  
-  const handleChangePasswordChange = (e) => {
-    const { name, value } = e.target;
-    setChangePasswordData({
-      ...changePasswordData,
-      [name]: value
-    });
-    if (name === 'newPassword') {
-      checkPasswordStrength(value);
-    }
-  };
-  
-  const handleChangePasswordSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-    setMessage('');
-    setLoading(true);
-    
-    if (changePasswordData.newPassword !== changePasswordData.confirmPassword) {
-      setError('Passwords do not match');
-      setLoading(false);
-      return;
-    }
-    
-    if (passwordStrength < 2) {
-      setError('Please use a stronger password');
-      setLoading(false);
-      return;
-    }
-    
-    try {
-      // Uses Supabase Auth to update the password directly (no backend needed)
-      const res = await authService.resetPassword(changePasswordData.newPassword);
-      setMessage(res.message);
-      setTimeout(() => {
-        changeView('login');
-      }, 3000);
-    } catch (err) {
-      setError(err.message || 'Failed to change password');
-    } finally {
-      setLoading(false);
-    }
-  };
-  
+
   const renderCurrentView = () => {
-    switch(view) {
+    switch (view) {
       case 'resetPassword':
         return renderResetPasswordForm();
       case 'changePassword':
@@ -480,9 +367,9 @@ const AdminLogin = () => {
   return (
     <div className="litigant-container">
       <div className="litigant-login-box">
-        <img 
-          src="../images/aadiimage4.svg" 
-          alt="Official Logo" 
+        <img
+          src="../images/aadiimage4.svg"
+          alt="Official Logo"
           className="official-logo"
         />
         <div className="secure-authentication">

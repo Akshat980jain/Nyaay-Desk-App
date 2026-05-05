@@ -1,7 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import authService from '../services/authService';
-import { Turnstile } from '@marsidev/react-turnstile';
 import '../ComponentsCSS/LitigantLogin.css';
 
 const LitigantLogin = () => {
@@ -21,11 +20,6 @@ const LitigantLogin = () => {
   const [loginData, setLoginData] = useState({ email: '', password: '' });
   const [resetData, setResetData] = useState({ newPassword: '', confirmPassword: '' });
   const [passwordStrength, setPasswordStrength] = useState(0);
-
-  const isDev = window.location.hostname === 'localhost';
-  const [turnstileToken, setTurnstileToken] = useState(isDev ? 'dev-bypass' : null);
-  const turnstileRef = useRef(null);
-  const siteKey = process.env.REACT_APP_TURNSTILE_SITE_KEY || "0x4AAAAAAAU56i0A4rZ8Qv6i";
 
   const handleLoginChange = (e) => setLoginData({ ...loginData, [e.target.name]: e.target.value });
 
@@ -49,24 +43,17 @@ const LitigantLogin = () => {
     setAnimating(true);
     setTimeout(() => {
       setView(newView); setError(''); setMessage(''); setAnimating(false);
-      setTurnstileToken(isDev ? 'dev-bypass' : null);
-      if (turnstileRef.current) turnstileRef.current.reset();
     }, 300);
   };
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     setError(''); setLoading(true);
-    if (!isDev && !turnstileToken) {
-      setError('Please complete the CAPTCHA verification'); setLoading(false); return;
-    }
     try {
       await authService.loginLitigant(loginData.email, loginData.password);
       navigate('/litidash');
     } catch (err) {
       setError(err.message || 'Login failed');
-      setTurnstileToken(null);
-      if (turnstileRef.current) turnstileRef.current.reset();
     } finally { setLoading(false); }
   };
 
@@ -98,7 +85,7 @@ const LitigantLogin = () => {
       setError(err.message || 'Password reset failed');
     } finally { setLoading(false); }
   };
-  
+
   const getPasswordStrengthClass = () => {
     switch (passwordStrength) {
       case 1: return 'strength-weak';
@@ -107,7 +94,7 @@ const LitigantLogin = () => {
       default: return '';
     }
   };
-  
+
   const getPasswordStrengthLabel = () => {
     switch (passwordStrength) {
       case 1: return 'Weak';
@@ -116,7 +103,7 @@ const LitigantLogin = () => {
       default: return '';
     }
   };
-  
+
   const renderLoginForm = () => (
     <div className={`view-transition ${animating ? 'fade-out' : 'fade-in'}`}>
       <h2 className="litigant-title">Litigant Login</h2>
@@ -146,50 +133,22 @@ const LitigantLogin = () => {
             required
           />
         </div>
-        <div className="litigant-form-group turnstile-container">
-          {window.location.hostname !== 'localhost' && (
-            <Turnstile
-              ref={turnstileRef}
-              siteKey={siteKey}
-              onSuccess={(token) => {
-                setTurnstileToken(token);
-                setError(''); // Clear any previous CAPTCHA errors
-              }}
-              onError={() => {
-                setError('CAPTCHA verification failed. Please try again.');
-                setTurnstileToken(null);
-              }}
-              onExpire={() => {
-                setError('CAPTCHA expired. Please verify again.');
-                setTurnstileToken(null);
-              }}
-              theme="light"
-              size="normal"
-              responseField={false}
-              refreshExpired="auto"
-              appearance="interaction-only" // Using a more modern appearance
-            />
-          )}
-        </div>
         <div className="forgot-password-link">
-          <span 
-            onClick={handleForgotPassword}
-            className="text-link"
-          >
+          <span onClick={handleForgotPassword} className="text-link">
             Forgot Password?
           </span>
         </div>
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           className="litigant-submit-btn"
-          disabled={loading || !turnstileToken}
+          disabled={loading}
         >
           {loading ? 'Processing...' : 'Login'}
         </button>
       </form>
     </div>
   );
-  
+
   const renderEnterOTPForm = () => (
     <div className={`view-transition ${animating ? 'fade-out' : 'fade-in'}`}>
       <h2 className="litigant-title">Reset Password</h2>
@@ -208,9 +167,7 @@ const LitigantLogin = () => {
             autoFocus
             maxLength="6"
           />
-          <div className="form-hint">
-            Enter the OTP sent to your registered email address
-          </div>
+          <div className="form-hint">Enter the OTP sent to your registered email address</div>
         </div>
         <div className="litigant-form-group">
           <label className="litigant-label">New Password</label>
@@ -227,7 +184,7 @@ const LitigantLogin = () => {
               <div className="password-strength">
                 <div className={`password-strength-meter ${getPasswordStrengthClass()}`}></div>
               </div>
-              <div style={{textAlign: 'right', fontSize: '0.8rem', marginTop: '0.25rem', color: passwordStrength === 1 ? '#dc3545' : passwordStrength === 2 ? '#ffc107' : '#198754'}}>
+              <div style={{ textAlign: 'right', fontSize: '0.8rem', marginTop: '0.25rem', color: passwordStrength === 1 ? '#dc3545' : passwordStrength === 2 ? '#ffc107' : '#198754' }}>
                 {getPasswordStrengthLabel()}
               </div>
             </>
@@ -244,33 +201,29 @@ const LitigantLogin = () => {
             required
           />
           {resetData.confirmPassword && resetData.newPassword !== resetData.confirmPassword && (
-            <div style={{color: '#dc3545', fontSize: '0.8rem', marginTop: '0.25rem'}}>
+            <div style={{ color: '#dc3545', fontSize: '0.8rem', marginTop: '0.25rem' }}>
               Passwords do not match
             </div>
           )}
         </div>
         <div className="form-actions">
-          <button 
-            type="button" 
-            className="litigant-secondary-btn"
-            onClick={() => changeView('login')}
-          >
+          <button type="button" className="litigant-secondary-btn" onClick={() => changeView('login')}>
             Back to Login
           </button>
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="litigant-submit-btn"
             disabled={loading || resetData.newPassword !== resetData.confirmPassword || passwordStrength < 2}
           >
-            {loading  ? 'Processing...' : 'Reset Password'}
+            {loading ? 'Processing...' : 'Reset Password'}
           </button>
         </div>
       </form>
     </div>
   );
-  
+
   const renderCurrentView = () => {
-    switch(view) {
+    switch (view) {
       case 'enterOTP':
         return renderEnterOTPForm();
       default:
@@ -281,14 +234,8 @@ const LitigantLogin = () => {
   return (
     <div className="litigant-container">
       <div className="litigant-login-box">
-        <img 
-          src="../images/aadiimage4.svg" 
-          alt="Official Logo" 
-          className="official-logo"
-        />
-        <div className="secure-authentication">
-          Secure Authentication
-        </div>
+        <img src="../images/aadiimage4.svg" alt="Official Logo" className="official-logo" />
+        <div className="secure-authentication">Secure Authentication</div>
         {renderCurrentView()}
       </div>
     </div>
