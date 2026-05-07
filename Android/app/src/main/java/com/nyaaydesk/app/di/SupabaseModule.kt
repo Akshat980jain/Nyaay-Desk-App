@@ -15,6 +15,7 @@ import io.github.jan.supabase.realtime.realtime
 import io.github.jan.supabase.storage.Storage
 import io.github.jan.supabase.storage.storage
 import io.github.jan.supabase.createSupabaseClient
+import io.ktor.client.engine.android.Android
 import javax.inject.Singleton
 
 /**
@@ -33,7 +34,7 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object SupabaseModule {
-
+    
     @Provides
     @Singleton
     fun provideSupabaseClient(): SupabaseClient {
@@ -41,7 +42,11 @@ object SupabaseModule {
             supabaseUrl = BuildConfig.SUPABASE_URL,
             supabaseKey = BuildConfig.SUPABASE_ANON_KEY
         ) {
-            install(Auth)
+            httpEngine = Android.create()
+            
+            install(Auth) {
+                alwaysAutoRefresh = true
+            }
             install(Postgrest)
             install(Realtime)
             install(Storage)

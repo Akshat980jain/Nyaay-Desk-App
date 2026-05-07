@@ -9,27 +9,30 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
+import androidx.compose.ui.graphics.Color
+
 private val LightColorScheme = lightColorScheme(
-    primary = NavyBlue,
-    onPrimary = OffWhite,
-    primaryContainer = NavyBlueLight,
-    secondary = GoldAmber,
-    onSecondary = NavyBlueDark,
-    background = OffWhite,
-    surface = OffWhite,
-    onBackground = NavyBlueDark,
-    onSurface = NavyBlueDark
+    primary = GovNavyBlue,
+    onPrimary = Color.White,
+    primaryContainer = GovNavyBlueLight,
+    onPrimaryContainer = Color.White,
+    secondary = AccentBronze,
+    onSecondary = Color.White,
+    background = BackgroundLight,
+    surface = SurfaceLight,
+    onBackground = OnBackgroundLight,
+    onSurface = OnSurfaceLight
 )
 
 private val DarkColorScheme = darkColorScheme(
-    primary = NavyBlueLight,
-    onPrimary = OffWhite,
-    secondary = GoldAmber,
-    onSecondary = DeepCharcoal,
-    background = DeepCharcoal,
-    surface = SurfaceDark,
-    onBackground = OffWhite,
-    onSurface = OffWhite
+    primary = GovNavyBlueLight,
+    onPrimary = Color.White,
+    secondary = AccentBronze,
+    onSecondary = Color.White,
+    background = BackgroundDark,
+    surface = SurfaceDarkFrontend,
+    onBackground = OnBackgroundDark,
+    onSurface = OnSurfaceDark
 )
 
 @Composable

@@ -2,11 +2,13 @@ package com.nyaaydesk.app.data.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.serialization.Serializable
 
 /**
  * Local Room entity mirroring the `cases` table in the Supabase PostgreSQL database.
  * All columns match the snake_case schema used by the web application.
  */
+@Serializable
 @Entity(tableName = "cases")
 data class CaseEntity(
     @PrimaryKey val id: String,

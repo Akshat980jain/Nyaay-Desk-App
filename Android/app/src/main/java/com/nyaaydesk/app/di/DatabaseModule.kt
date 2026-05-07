@@ -26,6 +26,9 @@ object DatabaseModule {
     @Provides
     @Singleton
     fun provideNyaayDeskDatabase(@ApplicationContext context: Context): NyaayDeskDatabase {
+        // Load SQLCipher native libraries explicitly before any database operation
+        SQLiteDatabase.loadLibs(context)
+        
         // SQLCipher passphrase — in production this would be retrieved from Android Keystore
         val passphrase: ByteArray = SQLiteDatabase.getBytes("nyaaydesk_secure_passphrase".toCharArray())
         val factory = SupportFactory(passphrase)

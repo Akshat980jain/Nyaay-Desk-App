@@ -45,10 +45,16 @@ fun SplashScreen(
         onAnimationFinished()
     }
 
+    val isDark = androidx.compose.foundation.isSystemInDarkTheme()
+    val bgStart = if (isDark) BackgroundDark else BackgroundLight
+    val bgEnd = if (isDark) SurfaceDarkFrontend else SurfaceLight
+    val textColor = if (isDark) OnBackgroundDark else OnBackgroundLight
+    val accentColor = if (isDark) AccentBronze else GovNavyBlue
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Brush.verticalGradient(listOf(NavyBlueDark, NavyBlue))),
+            .background(Brush.verticalGradient(listOf(bgStart, bgEnd))),
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -65,12 +71,12 @@ fun SplashScreen(
                 "NyaayDesk",
                 style = MaterialTheme.typography.displayMedium,
                 fontWeight = FontWeight.ExtraBold,
-                color = GoldAmber
+                color = accentColor
             )
             Text(
                 "न्याय your way",
                 style = MaterialTheme.typography.titleMedium,
-                color = OffWhite.copy(alpha = 0.7f),
+                color = textColor.copy(alpha = 0.7f),
                 letterSpacing = 2.sp
             )
         }

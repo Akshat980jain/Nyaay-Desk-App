@@ -53,20 +53,27 @@ fun NyaayAuthScaffold(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Form Card
+            // Form Card Container
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .clip(RoundedCornerShape(topStart = 28.dp, topEnd = 28.dp))
-                    .background(MaterialTheme.colorScheme.background)
+                    .padding(horizontal = 16.dp, vertical = 24.dp),
+                contentAlignment = Alignment.TopCenter
             ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 24.dp, vertical = 32.dp)
-                        .verticalScroll(rememberScrollState()),
-                    content = content
-                )
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(16.dp),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp, vertical = 32.dp)
+                            .verticalScroll(rememberScrollState()),
+                        content = content
+                    )
+                }
             }
         }
     }

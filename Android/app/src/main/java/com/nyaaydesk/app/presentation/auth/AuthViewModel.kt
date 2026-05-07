@@ -11,6 +11,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+import io.github.jan.supabase.postgrest.postgrest
+
 data class AuthUiState(
     val isLoading: Boolean = false,
     val isSuccess: Boolean = false,
@@ -48,9 +50,24 @@ class AuthViewModel @Inject constructor(
 
                 val session = supabase.auth.currentSessionOrNull()
                 val metadata = session?.user?.userMetadata
-                val userType = metadata?.get("user_type")?.toString()?.trim('"')
+                var userType = metadata?.get("user_type")?.toString()?.trim('"')
 
-                if (userType == null) {
+                // Fallback: If metadata doesn't have the role, query the users table directly
+                if (userType == null || userType == "null") {
+                    val userId = session?.user?.id
+                    if (userId != null) {
+                        try {
+                            val profile = supabase.postgrest["users"]
+                                .select { filter { eq("id", userId) } }
+                                .decodeSingleOrNull<com.nyaaydesk.app.data.remote.dto.UserProfileDto>()
+                            userType = profile?.userType
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    }
+                }
+
+                if (userType == null || userType == "null") {
                     _uiState.value = AuthUiState(errorMessage = "Could not determine user role. Please contact support.")
                     return@launch
                 }

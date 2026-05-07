@@ -2,18 +2,35 @@ package com.nyaaydesk.app.presentation.theme
 
 import androidx.compose.ui.graphics.Color
 
-// NyaayDesk Brand Colors
-val NavyBlue = Color(0xFF0F2C59)
-val NavyBlueLight = Color(0xFF1A3F7A)
+// Professional Government & Frontend Theme Colors
+val GovNavyBlue = Color(0xFF0F2C59)
+val GovNavyBlueLight = Color(0xFF1A3F7A)
+val AccentBronze = Color(0xFF9B6B43) // Claude.ai inspired accent from frontend
+
+// Light Theme Colors
+val BackgroundLight = Color(0xFFFFFFFF)
+val SurfaceLight = Color(0xFFF9FAFB)
+val OnBackgroundLight = Color(0xFF1F2937)
+val OnSurfaceLight = Color(0xFF1F2937)
+
+// Dark Theme Colors
+val BackgroundDark = Color(0xFF111827)
+val SurfaceDarkFrontend = Color(0xFF1F2937)
+val OnBackgroundDark = Color(0xFFF9FAFB)
+val OnSurfaceDark = Color(0xFFF9FAFB)
+
+// Legacy Aliases mapped to new clean theme
+val NavyBlue = GovNavyBlue
+val NavyBlueLight = GovNavyBlueLight
 val NavyBlueDark = Color(0xFF081D3B)
-val GoldAmber = Color(0xFFDAC0A3)
-val GoldAmberDark = Color(0xFFB8967A)
-val OffWhite = Color(0xFFF8F0E5)
-val DeepCharcoal = Color(0xFF121212)
-val SurfaceDark = Color(0xFF1E1E1E)
+val GoldAmber = AccentBronze
+val GoldAmberDark = Color(0xFF795333)
+val OffWhite = Color(0xFFFFFFFF)
+val DeepCharcoal = BackgroundDark
+val SurfaceDark = SurfaceDarkFrontend
 
 // Semantic Status Colors
-val StatusPending = Color(0xFFFFC107)    // Yellow/Amber
-val StatusDisposed = Color(0xFF4CAF50)   // Green
-val StatusStayed = Color(0xFFF44336)     // Red
-val StatusActive = Color(0xFF2196F3)     // Blue
+val StatusPending = Color(0xFFFFC107)
+val StatusDisposed = Color(0xFF059669) // Green from frontend
+val StatusStayed = Color(0xFFDC2626) // Red from frontend
+val StatusActive = Color(0xFF2196F3)

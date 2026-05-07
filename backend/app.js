@@ -28,7 +28,7 @@ const { verifyDocumentSignature } = require('./utils/documentSignature');
 // CORS Configuration
 const allowedOrigins = process.env.CORS_ORIGINS
   ? process.env.CORS_ORIGINS.split(',')
-  : ['http://localhost:3000', 'http://192.168.1.39:3000'];
+  : ['http://localhost:3000', 'http://192.168.1.39:3000', 'https://nyaay-desk-app-frontend.onrender.com'];
 
 app.use(cors({
   origin: allowedOrigins,
@@ -63,7 +63,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: ['http://localhost:3000', 'http://192.168.1.39:3000'],
+    origin: allowedOrigins,
     credentials: true
   }
 });
