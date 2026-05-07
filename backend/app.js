@@ -1,4 +1,5 @@
 const express = require('express');
+const { Server } = require('socket.io');
 const supabase = require('./supabaseClient');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -51,14 +52,6 @@ app.use(cors({
 
 app.use('/api', generalLimiter);
 app.use(express.json());
-
-// Modular Routes
-app.use('/api/advocate', advocateRoutes);
-app.use('/api/litigant', litigantRoutes);
-app.use('/api/clerk', clerkRoutes);
-app.use('/api/advocate-change', advocateChangeRoutes);
-app.use('/api', Gemini);
-app.use('/api/blockchain', blockchainRoutes);
 
 // Health Check
 app.get('/', (req, res) => {
