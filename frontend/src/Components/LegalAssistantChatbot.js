@@ -156,18 +156,24 @@ const toggleSpeech = () => {
   };
 
 const callGeminiAPI = async (prompt) => {
-  const response = await fetch("https://nyaay-desk-app-backend.onrender.com/api/gemini", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ prompt })
-  });
+  const response = await fetch(
+    "https://pnneversthhxilensrzq.supabase.co/functions/v1/gemini-chat",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "apikey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBubmV2ZXJzdGhoeGlsZW5zcnpxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc2MDc2NzUsImV4cCI6MjA5MzE4MzY3NX0.XENFITdSfqoMyjEETvGDVaEXlajRoHzINue8X6vfWoU"
+      },
+      body: JSON.stringify({ prompt })
+    }
+  );
 
   if (!response.ok) {
-    throw new Error("Failed to fetch from Gemini API");
+    throw new Error("Failed to connect to AI service");
   }
 
   const data = await response.json();
-  return data.text;
+  return data.text || "Sorry, I couldn't get a response. Please try again.";
 };
 
   const determineIntent = async (userInput) => {
