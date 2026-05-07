@@ -144,9 +144,9 @@ const NyaySaathi = () => {
   };
 
   // ==================== LLAMA API WITH STREAMING ====================
-  const callLlamaStreamingAPI = async (prompt, onToken, controller) => {
+  const callGeminiAPI = async (prompt, controller) => {
     try {
-      const response = await fetch("https://nyaay-desk-app-backend.onrender.com/api/llama/stream", {
+      const response = await fetch("https://nyaay-desk-app-backend.onrender.com/api/gemini", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt }),
@@ -157,31 +157,8 @@ const NyaySaathi = () => {
         throw new Error("Failed to connect to backend API");
       }
 
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder("utf-8");
-      let fullText = "";
-
-      while (true) {
-        const { value, done } = await reader.read();
-        if (done) break;
-
-        const chunk = decoder.decode(value);
-        const lines = chunk.split("\n").filter(Boolean);
-
-        for (const line of lines) {
-          try {
-            const data = JSON.parse(line);
-            if (data.response) {
-              fullText += data.response;
-              onToken(fullText);
-            }
-          } catch {
-            continue;
-          }
-        }
-      }
-
-      return fullText;
+      const data = await response.json();
+      return data.text;
     } catch (error) {
       if (error.name === 'AbortError') {
         throw new Error('Generation stopped by user');
@@ -230,19 +207,19 @@ YOUR DETAILED RESPONSE:`;
         return [...prev, { type: 'bot', content: '', timestamp: new Date(), isGenerating: true }];
       });
 
-      await callLlamaStreamingAPI(legalPrompt, (streamedText) => {
-        setMessages(prev => {
-          const updated = [...prev];
-          updated[botMessageIndex] = { 
-            type: 'bot', 
-            content: streamedText,
-            timestamp: updated[botMessageIndex].timestamp,
-            isGenerating: true
-          };
-          return updated;
-        });
-        scrollToBottom();
-      }, controller);
+      const finalMessage = await callGeminiAPI(legalPrompt, controller);
+      
+      setMessages(prev => {
+        const updated = [...prev];
+        updated[botMessageIndex] = { 
+          type: 'bot', 
+          content: finalMessage,
+          timestamp: updated[botMessageIndex].timestamp,
+          isGenerating: true
+        };
+        return updated;
+      });
+      scrollToBottom();
 
       setMessages(prev => {
         const updated = [...prev];

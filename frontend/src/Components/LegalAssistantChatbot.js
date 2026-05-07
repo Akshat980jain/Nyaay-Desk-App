@@ -155,38 +155,19 @@ const toggleSpeech = () => {
     setIsProcessing(false);
   };
 
-const callLlamaStreamingAPI = async (prompt, onToken) => {
-  const response = await fetch("https://nyaay-desk-app-backend.onrender.com/api/llama/stream", {
+const callGeminiAPI = async (prompt) => {
+  const response = await fetch("https://nyaay-desk-app-backend.onrender.com/api/gemini", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ prompt })
   });
 
-  const reader = response.body.getReader();
-  const decoder = new TextDecoder("utf-8");
-  let fullText = "";
-
-  while (true) {
-    const { value, done } = await reader.read();
-    if (done) break;
-
-    const chunk = decoder.decode(value);
-    const lines = chunk.split("\n").filter(Boolean);
-
-    for (const line of lines) {
-      try {
-        const data = JSON.parse(line);
-        if (data.response) {
-          fullText += data.response;
-          onToken(fullText);
-        }
-      } catch {
-        continue;
-      }
-    }
+  if (!response.ok) {
+    throw new Error("Failed to fetch from Gemini API");
   }
 
-  return fullText;
+  const data = await response.json();
+  return data.text;
 };
 
   const determineIntent = async (userInput) => {
@@ -217,7 +198,7 @@ User input: "${userInput}"
 Respond with ONLY the category name, nothing else.`;
 
     try {
-      const response = await callLlamaAPI(prompt);
+      const response = await callGeminiAPI(prompt);
       const intent = response.trim().toLowerCase().replace(/[^a-z_]/g, '');
       
       const validIntents = ['create_case', 'find_hearing', 'find_documents', 'check_calendar', 'find_meeting'];
@@ -768,12 +749,11 @@ Keep your response concise (2-3 sentences max) and helpful. If it's a legal ques
       return [...prev, { type: 'bot', content: '' }];
     });
 
-    await callLlamaStreamingAPI(prompt, (text) => {
-      setMessages(prev => {
-        const updated = [...prev];
-        updated[botIndex] = { type: 'bot', content: text };
-        return updated;
-      });
+    const text = await callGeminiAPI(prompt);
+    setMessages(prev => {
+      const updated = [...prev];
+      updated[botIndex] = { type: 'bot', content: text };
+      return updated;
     });
 
   } catch (error) {
