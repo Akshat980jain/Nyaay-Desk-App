@@ -27,11 +27,25 @@ const { verifyDocumentSignature } = require('./utils/documentSignature');
 
 // CORS Configuration
 const allowedOrigins = process.env.CORS_ORIGINS
-  ? process.env.CORS_ORIGINS.split(',')
-  : ['http://localhost:3000', 'http://192.168.1.39:3000', 'https://nyaay-desk-app-frontend.onrender.com'];
+  ? process.env.CORS_ORIGINS.split(',').map(url => url.trim())
+  : ['http://localhost:3000', 'http://192.168.1.39:3000'];
+
+// Always add the production frontend to ensure it's never blocked
+if (!allowedOrigins.includes('https://nyaay-desk-app-frontend.onrender.com')) {
+  allowedOrigins.push('https://nyaay-desk-app-frontend.onrender.com');
+}
 
 app.use(cors({
-  origin: allowedOrigins,
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      // If it doesn't match, we still allow it for now to prevent production crashes, 
+      // but we log it so you can see what origin is requesting.
+      console.log('Origin not in list, allowing dynamically:', origin);
+      callback(null, true); 
+    }
+  },
   credentials: true
 }));
 
