@@ -36,13 +36,26 @@ if (!allowedOrigins.includes('https://nyaay-desk-app-frontend.onrender.com')) {
   allowedOrigins.push('https://nyaay-desk-app-frontend.onrender.com');
 }
 
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (['http://localhost:3000', 'http://192.168.1.39:3000', 'https://nyaay-desk-app-frontend.onrender.com'].includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  next();
+});
+
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      // If it doesn't match, we still allow it for now to prevent production crashes, 
-      // but we log it so you can see what origin is requesting.
       console.log('Origin not in list, allowing dynamically:', origin);
       callback(null, true); 
     }
