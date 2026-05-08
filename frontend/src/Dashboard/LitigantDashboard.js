@@ -166,38 +166,41 @@ const [popup, setPopup] = useState({ isOpen: false, message: '', type: 'success'
     }
   }, [navigate]);
 
-  // Fetch cases from Supabase — match by party_id OR by plaintiff/respondent email
+  // Fetch cases from Supabase — robust client-side filter to handle all JSONB edge cases
   const fetchCases = async () => {
     if (!profile) return;
     setCasesLoading(true);
     try {
-      const litigantId = profile?.litigant_id || profile?.party_id || '';
-      const litigantEmail = profile?.email || '';
+      const litigantId = (profile?.litigant_id || profile?.party_id || '').trim();
+      const litigantEmail = (profile?.email || '').toLowerCase().trim();
 
-      // Build or-filter: match party_id OR email in plaintiff OR respondent
-      const orFilters = [];
-      if (litigantId) {
-        orFilters.push(`plaintiff_details->>party_id.eq.${litigantId}`);
-        orFilters.push(`respondent_details->>party_id.eq.${litigantId}`);
-      }
-      if (litigantEmail) {
-        orFilters.push(`plaintiff_details->>email.eq.${litigantEmail}`);
-        orFilters.push(`respondent_details->>email.eq.${litigantEmail}`);
-      }
-
-      if (orFilters.length === 0) {
-        setCases([]);
-        setCasesLoading(false);
-        return;
-      }
-
+      // Fetch all cases (limited to 500 most recent) then filter client-side.
+      // This avoids PostgREST JSONB ->> operator issues with nested equality.
       const { data, error: casesError } = await supabase
         .from('legal_cases')
         .select('*')
-        .or(orFilters.join(','));
+        .order('created_at', { ascending: false })
+        .limit(500);
 
       if (casesError) throw casesError;
-      setCases(data || []);
+
+      // Client-side filter: case belongs to this litigant if their id OR email
+      // appears in either plaintiff_details or respondent_details
+      const myCases = (data || []).filter(c => {
+        const p = c.plaintiff_details || {};
+        const r = c.respondent_details || {};
+
+        const pId = (p.party_id || '').trim();
+        const rId = (r.party_id || '').trim();
+        const pEmail = (p.email || '').toLowerCase().trim();
+        const rEmail = (r.email || '').toLowerCase().trim();
+
+        if (litigantId && (pId === litigantId || rId === litigantId)) return true;
+        if (litigantEmail && (pEmail === litigantEmail || rEmail === litigantEmail)) return true;
+        return false;
+      });
+
+      setCases(myCases);
     } catch (error) {
       console.error('Failed to fetch cases:', error);
       setError('Failed to fetch cases');
