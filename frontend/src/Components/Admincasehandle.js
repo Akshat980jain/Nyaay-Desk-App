@@ -625,28 +625,7 @@ const handleDocumentDownload = async (documentId) => {
       setError('Failed to add attachments: ' + err.message);
     }
   };
-      
-      // Update selected case with updated hearing
-      const updatedCase = { 
-        ...selectedCase, 
-        hearings: updatedHearings 
-      };
-      
-      // Update cases list
-      setCases(cases.map(c => 
-        c.case_num === selectedCase.case_num ? updatedCase : c
-      ));
-      
-      // Update selected case
-      setSelectedCase(updatedCase);
-      
-      alert('Attachments added successfully');
-    } catch (err) {
-      setError('Failed to add attachments');
-      console.error('Error adding attachments:', err);
-    }
-  };
-  // Handle document download
+
   
   // Render loading state
   if (loading) {
