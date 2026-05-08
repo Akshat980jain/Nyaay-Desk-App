@@ -3,21 +3,21 @@ import { useNavigate } from 'react-router-dom';
 import authService from '../services/authService';
 import axios from 'axios';
 import { supabase } from '../services/supabaseClient';
-import { 
-  LogOut, 
-  Database, 
-  FileText, 
-  Calendar, 
-  Settings, 
-  Info, 
-  User, 
-  ShieldCheck, 
-  Users, 
-  PanelLeft, 
-  Clipboard, 
-  UserPlus, 
-  Check, 
-  X 
+import {
+  LogOut,
+  Database,
+  FileText,
+  Calendar,
+  Settings,
+  Info,
+  User,
+  ShieldCheck,
+  Users,
+  PanelLeft,
+  Clipboard,
+  UserPlus,
+  Check,
+  X
 } from 'lucide-react';
 
 // Import components (assuming same component structure as ClerkDashboard)
@@ -303,7 +303,7 @@ const AdminDashboard = () => {
             </div>
             <div className="crt_adm_stat_card_9a76bc">
               <h3 className="crt_adm_stat_heading_37c2ef">Advocates Pending Verification</h3>
-              <p className="crt_adm_stat_value_482d1c" style={{color: stats?.unverifiedAdvocates > 0 ? '#dc2626' : 'inherit'}}>
+              <p className="crt_adm_stat_value_482d1c" style={{ color: stats?.unverifiedAdvocates > 0 ? '#dc2626' : 'inherit' }}>
                 {stats ? stats.unverifiedAdvocates : '…'}
               </p>
             </div>
@@ -369,10 +369,10 @@ const AdminDashboard = () => {
             </div>
           </div>
         );
-     
+
       case 'admincasemanagement':
         return <CourtAdminCaseHandle />;
-     
+
       case 'meetings':
         return <Adminmeet />;
       case 'usercalendar':
@@ -380,7 +380,7 @@ const AdminDashboard = () => {
       case 'usernoticeboard':
         return <NoticeBoard />;
       case 'notifications':
-        return <CourtAdminLiveDashboard/>;
+        return <CourtAdminLiveDashboard />;
       case 'advocate-change':
         return <AdvocateChangeReview profile={profile} />;
       default:
@@ -409,7 +409,7 @@ const AdminDashboard = () => {
               <div className="crt_adm_logo_placeholder_text_5c78a2">Court Admin</div>
             </div>
           </div>
-          <h1 className="crt_adm_main_title_heading_3fa8c4">Court Admin Panel</h1>
+          <h1 className="crt_adm_main_title_heading_3fa8c4">Clerk Panel</h1>
         </div>
         <div className="crt_adm_header_right_section_24d6f7">
           <div className="crt_adm_logout_buttons_group_a97c36">
@@ -450,8 +450,8 @@ const AdminDashboard = () => {
               <Database className="crt_adm_nav_icon_display_7c8d33" />
               Dashboard
             </button>
-          
-            
+
+
             <button
               className={`crt_adm_nav_menu_button_2d6f74 ${activeComponent === 'meetings' ? 'crt_adm_nav_active_state_e8d237' : ''}`}
               onClick={() => handleNavigation('meetings')}
@@ -459,7 +459,7 @@ const AdminDashboard = () => {
               <Users className="crt_adm_nav_icon_display_7c8d33" />
               Schedule Meetings
             </button>
-            
+
             <button
               className={`crt_adm_nav_menu_button_2d6f74 ${activeComponent === 'usercalendar' ? 'crt_adm_nav_active_state_e8d237' : ''}`}
               onClick={() => handleNavigation('usercalendar')}
@@ -479,7 +479,7 @@ const AdminDashboard = () => {
               onClick={() => handleNavigation('admincasemanagement')}
             >
               <Clipboard className="crt_adm_nav_icon_display_7c8d33" />
-               Handle Cases
+              Handle Cases
             </button>
             <button
               className={`crt_adm_nav_menu_button_2d6f74 ${activeComponent === 'notifications' ? 'crt_adm_nav_active_state_e8d237' : ''}`}
@@ -504,7 +504,7 @@ const AdminDashboard = () => {
         </main>
       </div>
 
-      
+
 
       {/* Profile Modal */}
       {isProfileOpen && (
