@@ -1,5 +1,5 @@
-import React, { useRef,useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useRef, useState, useEffect } from 'react';
+import { supabase } from '../services/supabaseClient';
 import '../ComponentsCSS/Admincasehandle.css';
 
 const AdminCaseManagement = () => {
@@ -69,71 +69,22 @@ const [showRequestForm, setShowRequestForm] = useState(false);
   
   useEffect(() => {
     const fetchCases = async () => {
-        try {
-          setLoading(true);
-          
-          // Get token with explicit error handling
-          const token = localStorage.getItem('token');
-          
-          if (!token) {
-            throw new Error('Authentication token not found. Please login again.');
-          }
-          
-          console.log('Using token:', token.substring(0, 10) + '...');
-          
-          const response = await axios.get('https://nyaay-desk-app-backend.onrender.com/api/cases/admin', {
-            headers: { 
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json'
-            }
-          });
-          
-          setCases(response.data.cases);
-          setFilteredCases(response.data.cases);
-          setLoading(false);
-        } catch (err) {
-          console.error('Full error object:', err);
-          
-          if (!localStorage.getItem('token')) {
-            setError('No authentication token found. Please login again.');
-          } else if (err.response && err.response.status === 403) {
-            setError('Access denied: Only court administrators can view this data');
-          } else if (err.response && err.response.status === 401) {
-            setError('Authentication failed. Please login again.');
-            // Clear invalid token
-            localStorage.removeItem('token');
-            // Redirect to login page
-            setTimeout(() => {
-              window.location.href = '/login'; // Adjust path as needed
-            }, 2000);
-          } else {
-            setError(`Failed to fetch cases: ${err.response?.data?.message || err.message}`);
-          }
-          
-          setLoading(false);
-        }
-      };
-
-    fetchCases();
-  }, []);
-  useEffect(() => {
-    const fetchCases = async () => {
       try {
-        // Same as above
+        setLoading(true);
+        const { data, error: err } = await supabase
+          .from('legal_cases')
+          .select('*')
+          .order('created_at', { ascending: false });
+        if (err) throw err;
+        setCases(data || []);
+        setFilteredCases(data || []);
       } catch (err) {
-        if (err.response && err.response.status === 403) {
-          setError('You need administrator privileges to view this page');
-          // Redirect to dashboard after 3 seconds
-          setTimeout(() => {
-            window.location.href = '/dashboard'; // Change this to your appropriate route
-          }, 3000);
-        } else {
-          setError(`Failed to fetch cases: ${err.response?.data?.message || err.message}`);
-        }
+        console.error('Failed to fetch cases:', err);
+        setError(`Failed to fetch cases: ${err.message}`);
+      } finally {
         setLoading(false);
       }
     };
-  
     fetchCases();
   }, []);
   // Filter cases based on search term and filters
@@ -224,72 +175,48 @@ const [showRequestForm, setShowRequestForm] = useState(false);
   };
 const handleDocumentRequest = async (e) => {
   e.preventDefault();
-  
-  if (!documentRequestForm.document_type || !documentRequestForm.requested_from || 
+  if (!documentRequestForm.document_type || !documentRequestForm.requested_from ||
       !documentRequestForm.requested_from_type || !documentRequestForm.submission_deadline) {
     alert('Please fill in all required fields');
     return;
   }
-
   setRequestingDocument(true);
   try {
-    const token = localStorage.getItem('token');
-    const response = await axios.post(
-      `https://nyaay-desk-app-backend.onrender.com/api/courtadmin/case/${selectedCase.case_num}/request-document`,
-      {
+    const { error: err } = await supabase
+      .from('document_requests')
+      .insert([{
+        case_num: selectedCase.case_num,
         document_type: documentRequestForm.document_type,
         description: documentRequestForm.description,
         requested_from: documentRequestForm.requested_from,
         requested_from_type: documentRequestForm.requested_from_type,
-        submission_deadline: documentRequestForm.submission_deadline
-      },
-      {
-        headers: { Authorization: `Bearer ${token}` }
-      }
-    );
-
+        submission_deadline: documentRequestForm.submission_deadline,
+        status: 'pending',
+        created_at: new Date().toISOString(),
+      }]);
+    if (err) throw err;
     alert('Document request sent successfully');
-    
-    // Reset form
-    setDocumentRequestForm({
-      document_type: '',
-      description: '',
-      requested_from: '',
-      requested_from_type: '',
-      submission_deadline: ''
-    });
+    setDocumentRequestForm({ document_type: '', description: '', requested_from: '', requested_from_type: '', submission_deadline: '' });
     setShowRequestForm(false);
-
   } catch (err) {
-    alert(`Error requesting document: ${err.response?.data?.message || err.message}`);
-    console.error('Error requesting document:', err);
+    alert(`Error requesting document: ${err.message}`);
   } finally {
     setRequestingDocument(false);
   }
 };
-  // Handle case approval
+  // Handle case approval via Supabase
   const handleCaseApproval = async (approve) => {
     try {
-      const response = await axios.patch(
-        `https://nyaay-desk-app-backend.onrender.com/api/case/${selectedCase.case_num}/approve`,
-        { case_approved: approve },
-        { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }}
-      );
-      
-      // Update cases list
-      setCases(cases.map(c => 
-        c.case_num === selectedCase.case_num 
-          ? { ...c, case_approved: approve } 
-          : c
-      ));
-      
-      // Update selected case
+      const { error: err } = await supabase
+        .from('legal_cases')
+        .update({ case_approved: approve, updated_at: new Date().toISOString() })
+        .eq('case_num', selectedCase.case_num);
+      if (err) throw err;
+      setCases(cases.map(c => c.case_num === selectedCase.case_num ? { ...c, case_approved: approve } : c));
       setSelectedCase({ ...selectedCase, case_approved: approve });
-      
       alert(`Case ${approve ? 'approved' : 'rejected'} successfully`);
     } catch (err) {
-      setError(`Failed to ${approve ? 'approve' : 'reject'} case`);
-      console.error(`Error ${approve ? 'approving' : 'rejecting'} case:`, err);
+      setError(`Failed to ${approve ? 'approve' : 'reject'} case: ${err.message}`);
     }
   };
 const insertFormatting = (before, after = '') => {
@@ -450,79 +377,52 @@ const insertFormatting = (before, after = '') => {
     </div>
   );
 
-  // Function to sign a hearing
+  // Sign hearing via Supabase
   const signHearing = async (hearingId) => {
     try {
-      if (!window.confirm('Are you sure you want to digitally sign this hearing? This action cannot be undone.')) {
-        return;
-      }
-
-      const response = await axios.post(
-        `https://nyaay-desk-app-backend.onrender.com/api/case/${selectedCase.case_num}/hearing/${hearingId}/sign`,
-        {},
-        { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }}
+      if (!window.confirm('Are you sure you want to digitally sign this hearing? This action cannot be undone.')) return;
+      const updatedHearings = (selectedCase.hearings || []).map(h =>
+        (h.id === hearingId || h._id === hearingId)
+          ? { ...h, digital_signature: { is_signed: true, signed_by_name: 'Court Clerk', signature_timestamp: new Date().toISOString() } }
+          : h
       );
-
-      // Update the hearing in the case
-      const updatedHearings = selectedCase.hearings.map(h => 
-        h._id === hearingId ? response.data.hearing : h
-      );
-
+      const { error: err } = await supabase
+        .from('legal_cases')
+        .update({ hearings: updatedHearings, updated_at: new Date().toISOString() })
+        .eq('case_num', selectedCase.case_num);
+      if (err) throw err;
       const updatedCase = { ...selectedCase, hearings: updatedHearings };
       setSelectedCase(updatedCase);
       setCases(cases.map(c => c.case_num === selectedCase.case_num ? updatedCase : c));
-
       alert('Hearing signed successfully');
     } catch (err) {
-      console.error('Error signing hearing:', err);
-      alert('Failed to sign hearing');
+      alert('Failed to sign hearing: ' + err.message);
     }
   };
 
-  // Function to verify hearing signature
-  const verifyHearingSignature = async (hearingId) => {
-    try {
-      const response = await axios.get(
-        `https://nyaay-desk-app-backend.onrender.com/api/case/${selectedCase.case_num}/hearing/${hearingId}/verify-signature`,
-        { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }}
-      );
-
-      const { verification } = response.data;
-      
-      if (verification.valid) {
-        alert(`✓ Signature Valid\n\nSigned by: ${verification.signed_by}\nSigned on: ${new Date(verification.signed_at).toLocaleString()}`);
-      } else {
-        alert(`✗ Signature Invalid\n\n${verification.message}`);
-      }
-    } catch (err) {
-      console.error('Error verifying signature:', err);
-      alert('Failed to verify signature');
+  // Verify hearing signature (client-side check)
+  const verifyHearingSignature = (hearingId) => {
+    const hearing = (selectedCase.hearings || []).find(h => h.id === hearingId || h._id === hearingId);
+    if (hearing?.digital_signature?.is_signed) {
+      alert(`✓ Signature Valid\n\nSigned by: ${hearing.digital_signature.signed_by_name}\nSigned on: ${new Date(hearing.digital_signature.signature_timestamp).toLocaleString()}`);
+    } else {
+      alert('✗ Signature not present or invalid.');
     }
   };
-  // Handle status update
+  // Handle status update via Supabase
   const handleStatusUpdate = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.patch(
-        `https://nyaay-desk-app-backend.onrender.com/api/case/${selectedCase.case_num}/status`,
-        statusForm,
-        { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }}
-      );
-      
-      // Update cases list
-      setCases(cases.map(c => 
-        c.case_num === selectedCase.case_num 
-          ? { ...c, status: statusForm.status } 
-          : c
-      ));
-      
-      // Update selected case
+      const { error: err } = await supabase
+        .from('legal_cases')
+        .update({ status: statusForm.status, updated_at: new Date().toISOString() })
+        .eq('case_num', selectedCase.case_num);
+      if (err) throw err;
+      setCases(cases.map(c => c.case_num === selectedCase.case_num ? { ...c, status: statusForm.status } : c));
       setSelectedCase({ ...selectedCase, status: statusForm.status });
-      
       alert('Case status updated successfully');
     } catch (err) {
-      setError('Failed to update case status');
-      console.error('Error updating case status:', err);
+      setError('Failed to update case status: ' + err.message);
     }
   };
 

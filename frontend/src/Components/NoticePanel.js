@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { supabase } from '../services/supabaseClient';
 import { format } from 'date-fns';
 import NoticeForm from './NoticeForm';
 import NoticeList from './NoticeList';
@@ -11,98 +11,93 @@ const NoticePanel = () => {
   const [error, setError] = useState(null);
   const [showForm, setShowForm] = useState(false);
   const [selectedNotice, setSelectedNotice] = useState(null);
-  
+
   const fetchNotices = async () => {
     setIsLoading(true);
     try {
-      const token = localStorage.getItem('token');
-      const response = await axios.get('https://nyaay-desk-app-backend.onrender.com/api/admin/notices', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setNotices(response.data.notices);
+      const { data, error: err } = await supabase
+        .from('notices')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (err) throw err;
+      setNotices(data || []);
       setError(null);
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to fetch notices');
+      setError(err.message || 'Failed to fetch notices');
     } finally {
       setIsLoading(false);
     }
   };
-  
+
   useEffect(() => {
     fetchNotices();
   }, []);
-  
+
   const handleAddNew = () => {
     setSelectedNotice(null);
     setShowForm(true);
   };
-  
+
   const handleEdit = (notice) => {
     setSelectedNotice(notice);
     setShowForm(true);
   };
-  
+
   const handleDelete = async (noticeId) => {
     if (!window.confirm('Are you sure you want to delete this notice?')) return;
-    
     try {
-      const token = localStorage.getItem('token');
-      await axios.delete(`https://nyaay-desk-app-backend.onrender.com/api/notices/${noticeId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      const { error: err } = await supabase
+        .from('notices')
+        .delete()
+        .eq('notice_id', noticeId);
+      if (err) throw err;
       fetchNotices();
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to delete notice');
+      setError(err.message || 'Failed to delete notice');
     }
   };
-  
+
   const handleFormSubmit = async (formData) => {
     try {
-      const token = localStorage.getItem('token');
-      
+      // formData may contain File objects — store text fields only in DB
+      const payload = {
+        title: formData.get ? formData.get('title') : formData.title,
+        content: formData.get ? formData.get('content') : formData.content,
+        notice_type: formData.get ? formData.get('notice_type') : formData.notice_type,
+        updated_at: new Date().toISOString(),
+      };
+
       if (selectedNotice) {
-        // Update existing notice
-        await axios.put(`https://nyaay-desk-app-backend.onrender.com/api/notices/${selectedNotice.notice_id}`, formData, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data'
-          }
-        });
+        const { error: err } = await supabase
+          .from('notices')
+          .update(payload)
+          .eq('notice_id', selectedNotice.notice_id);
+        if (err) throw err;
       } else {
-        // Create new notice
-        await axios.post('https://nyaay-desk-app-backend.onrender.com/api/notices', formData, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data'
-          }
-        });
+        const { error: err } = await supabase
+          .from('notices')
+          .insert([{ ...payload, created_at: new Date().toISOString() }]);
+        if (err) throw err;
       }
-      
+
       setShowForm(false);
       fetchNotices();
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to save notice');
+      setError(err.message || 'Failed to save notice');
     }
   };
-  
+
   return (
     <div className="np-container">
       <div className="np-header">
         <h1 className="np-title">Notice Panel</h1>
-        <button
-          onClick={handleAddNew}
-          className="np-add-button"
-        >
+        <button onClick={handleAddNew} className="np-add-button">
           Add New Notice
         </button>
       </div>
-      
-      {error && (
-        <div className="np-error">
-          {error}
-        </div>
-      )}
-      
+
+      {error && <div className="np-error">{error}</div>}
+
       {showForm ? (
         <NoticeForm
           notice={selectedNotice}
