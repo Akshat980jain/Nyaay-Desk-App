@@ -166,16 +166,36 @@ const [popup, setPopup] = useState({ isOpen: false, message: '', type: 'success'
     }
   }, [navigate]);
 
-  // Fetch cases from Supabase
+  // Fetch cases from Supabase — match by party_id OR by plaintiff/respondent email
   const fetchCases = async () => {
     if (!profile) return;
     setCasesLoading(true);
     try {
+      const litigantId = profile?.litigant_id || profile?.party_id || '';
+      const litigantEmail = profile?.email || '';
+
+      // Build or-filter: match party_id OR email in plaintiff OR respondent
+      const orFilters = [];
+      if (litigantId) {
+        orFilters.push(`plaintiff_details->>party_id.eq.${litigantId}`);
+        orFilters.push(`respondent_details->>party_id.eq.${litigantId}`);
+      }
+      if (litigantEmail) {
+        orFilters.push(`plaintiff_details->>email.eq.${litigantEmail}`);
+        orFilters.push(`respondent_details->>email.eq.${litigantEmail}`);
+      }
+
+      if (orFilters.length === 0) {
+        setCases([]);
+        setCasesLoading(false);
+        return;
+      }
+
       const { data, error: casesError } = await supabase
-          .from('legal_cases')
-          .select('*')
-          .or(`plaintiff_details->>party_id.eq.${profile?.litigant_id || profile?.party_id},respondent_details->>party_id.eq.${profile?.litigant_id || profile?.party_id}`);
-      
+        .from('legal_cases')
+        .select('*')
+        .or(orFilters.join(','));
+
       if (casesError) throw casesError;
       setCases(data || []);
     } catch (error) {
@@ -193,6 +213,24 @@ const [popup, setPopup] = useState({ isOpen: false, message: '', type: 'success'
       fetchAdvocateChangeRequests();
     }
   }, [loading, profile]);
+
+  // Pre-fill plaintiff details with logged-in litigant's own info
+  // This ensures filed cases get the correct party_id so they appear on dashboard
+  useEffect(() => {
+    if (profile) {
+      const litigantId = profile?.litigant_id || profile?.party_id || '';
+      setFormData(prev => ({
+        ...prev,
+        plaintiff_details: {
+          ...prev.plaintiff_details,
+          party_id: litigantId,
+          name: prev.plaintiff_details.name || profile?.name || profile?.full_name || '',
+          email: prev.plaintiff_details.email || profile?.email || '',
+          mobile: prev.plaintiff_details.mobile || profile?.mobile || profile?.phone || '',
+        },
+      }));
+    }
+  }, [profile]);
 
   // Listen for global update events (e.g. from Video Pleading recorder)
   useEffect(() => {
