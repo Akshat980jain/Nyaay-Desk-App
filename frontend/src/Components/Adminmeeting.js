@@ -57,19 +57,25 @@ const AdminMeetingPanel = () => {
       const { data, error: err } = await supabase
         .from('video_meetings')
         .select('*')
-        .eq('case_num', caseNum)
+        .eq('case_number', caseNum)
         .maybeSingle();
       if (err) throw err;
 
-      if (data?.meeting_link) {
-        setExistingMeeting(data);
-        const fmt = (d) => new Date(d).toISOString().slice(0, 16);
-        setMeetingData({
-          meetingLink: data.meeting_link,
-          startDateTime: fmt(data.start_datetime),
-          endDateTime: fmt(data.end_datetime),
-          isActive: data.is_active,
-        });
+        if (data?.meeting_link) {
+          setExistingMeeting(data);
+          const fmt = (d) => {
+            try {
+              return d ? new Date(d).toISOString().slice(0, 16) : '';
+            } catch (e) {
+              return '';
+            }
+          };
+          setMeetingData({
+            meetingLink: data.meeting_link,
+            startDateTime: fmt(data.start_datetime),
+            endDateTime: fmt(data.end_datetime),
+            isActive: data.is_active,
+          });
         setMessage({ text: 'Existing meeting loaded.', type: 'info' });
       } else {
         setMessage({ text: 'No existing meeting found for this case.', type: 'info' });
@@ -98,7 +104,7 @@ const AdminMeetingPanel = () => {
       setMessage({ text: '', type: '' });
 
       const payload = {
-        case_num: selectedCase,
+        case_number: selectedCase,
         meeting_link: meetingData.meetingLink,
         start_datetime: meetingData.startDateTime,
         end_datetime: meetingData.endDateTime,
@@ -111,7 +117,7 @@ const AdminMeetingPanel = () => {
         ({ error: err } = await supabase
           .from('video_meetings')
           .update(payload)
-          .eq('case_num', selectedCase));
+          .eq('case_number', selectedCase));
       } else {
         ({ error: err } = await supabase
           .from('video_meetings')
@@ -135,7 +141,7 @@ const AdminMeetingPanel = () => {
       const { error: err } = await supabase
         .from('video_meetings')
         .update({ is_active: false, updated_at: new Date().toISOString() })
-        .eq('case_num', selectedCase);
+        .eq('case_number', selectedCase);
       if (err) throw err;
       setMessage({ text: 'Meeting deactivated successfully', type: 'success' });
       setMeetingData({ ...meetingData, isActive: false });

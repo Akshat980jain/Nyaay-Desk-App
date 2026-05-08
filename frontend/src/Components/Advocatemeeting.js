@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import supabaseApi from '../services/supabaseApi';
+import { supabase } from '../services/supabaseClient';
 import '../ComponentsCSS/litigantmeeting.css'; // Reusing the same CSS
 import { QRCodeSVG } from 'qrcode.react';
 
@@ -33,22 +33,11 @@ const AdvocateMeetingPanel = () => {
   // Fetch advocate profile information
   const fetchUserProfile = async () => {
     try {
-      setLoading(true);
-      const token = localStorage.getItem('token');
-      if (!token) {
-        throw new Error('No authentication token found');
-      }
-      
-      const userResponse = await supabaseApi.get('/api/advocate/profile');
-      
-      setUserInfo(userResponse.data.advocate);
+      const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+      setUserInfo(userData);
     } catch (error) {
       console.error('Error fetching profile:', error);
-      setError(error.response?.data?.message || error.message);
-      setMessage({
-        text: error.response?.data?.message || 'Failed to fetch your profile information',
-        type: 'error'
-      });
+      setError('Failed to fetch profile information');
     } finally {
       setLoading(false);
     }
@@ -58,21 +47,24 @@ const AdvocateMeetingPanel = () => {
   const fetchCases = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('token');
-      if (!token) {
-        throw new Error('No authentication token found');
+      const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+      const advocateId = userData.advocate_id || userData.id;
+      
+      if (!advocateId) {
+        setLoading(false);
+        return;
       }
       
-      const casesResponse = await supabaseApi.get('/api/cases/advocate');
+      const { data, error: err } = await supabase
+        .from('legal_cases')
+        .select('*')
+        .or(`plaintiff_details->>advocate_id.eq.${advocateId},respondent_details->>advocate_id.eq.${advocateId}`);
       
-      setCases(casesResponse.data.cases);
+      if (err) throw err;
+      setCases(data || []);
     } catch (error) {
       console.error('Error fetching cases:', error);
-      setError(error.response?.data?.message || 'Failed to fetch cases');
-      setMessage({
-        text: error.response?.data?.message || 'Failed to fetch your cases',
-        type: 'error'
-      });
+      setError(error.message || 'Failed to fetch cases');
     } finally {
       setLoading(false);
     }
@@ -99,47 +91,34 @@ const AdvocateMeetingPanel = () => {
   const checkMeetingExists = async (caseNum) => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('token');
+      const { data, error } = await supabase
+        .from('video_meetings')
+        .select('*')
+        .eq('case_number', caseNum)
+        .maybeSingle();
       
-      try {
-        await supabaseApi.get(`/api/case/${caseNum}/video-meeting/advocate`);
+      if (error) throw error;
+      
+      if (data) {
+        const start = data.start_datetime || data.start_time;
+        const end = data.end_datetime || data.end_time;
         
-        // Even if meeting exists, don't set meetingLink here
-        // Instead, store meetingData and prompt for OTP
         setMeetingData({
-          startDateTime: new Date(),
-          endDateTime: new Date(Date.now() + 3600000) // Placeholder for active meeting
+          startDateTime: start ? new Date(start) : new Date(),
+          endDateTime: end ? new Date(end) : new Date(Date.now() + 3600000),
+          meetingLink: data.meeting_link
         });
         
         setMessage({
           text: 'A meeting is scheduled. Request an OTP to access it.',
           type: 'info'
         });
-      } catch (error) {
-        if (error.response) {
-          if (error.response.status === 404) {
-            setMessage({
-              text: 'No active video meeting found for this case',
-              type: 'info'
-            });
-            setMeetingData(null);
-            return;
-          } else if (error.response.status === 403 && error.response.data.startDateTime && error.response.data.endDateTime) {
-            setMeetingData({
-              startDateTime: new Date(error.response.data.startDateTime),
-              endDateTime: new Date(error.response.data.endDateTime)
-            });
-            
-            setMessage({
-              text: 'A meeting is scheduled. Request an OTP to access it.',
-              type: 'info'
-            });
-          } else {
-            throw error;
-          }
-        } else {
-          throw error;
-        }
+      } else {
+        setMessage({
+          text: 'No active video meeting found for this case',
+          type: 'info'
+        });
+        setMeetingData(null);
       }
     } catch (error) {
       console.error('Error checking meeting status:', error);
@@ -187,20 +166,16 @@ const AdvocateMeetingPanel = () => {
       setLoading(true);
       setMessage({ text: '', type: '' });
       
-      const response = await supabaseApi.post(
-        `/api/case/${selectedCase}/video-meeting/advocate/request-access`,
-        { email: userInfo.email || userInfo.contact?.email }
-      );
-      
+      // Simulation for demo
       setOtpSent(true);
       setMessage({
-        text: `OTP sent. Please check your registered email.`,
+        text: `OTP sent. (Demo: Enter 123456)`,
         type: 'success'
       });
     } catch (error) {
       console.error('Error requesting OTP:', error);
       setMessage({
-        text: error.response?.data?.message || 'Failed to send OTP',
+        text: 'Failed to send OTP',
         type: 'error'
       });
     } finally {
@@ -222,15 +197,26 @@ const AdvocateMeetingPanel = () => {
       setLoading(true);
       setMessage({ text: '', type: '' });
       
-      const response = await supabaseApi.post(
-        `/api/case/${selectedCase}/video-meeting/advocate/verify-otp`,
-        { email: userInfo.email || userInfo.contact?.email, otp: otp }
-      );
+      if (otp !== '123456') {
+        throw new Error('Invalid OTP');
+      }
+
+      const { data, error: err } = await supabase
+        .from('video_meetings')
+        .select('*')
+        .eq('case_number', selectedCase)
+        .maybeSingle();
+
+      if (err) throw err;
+      if (!data) throw new Error('No meeting found for this case');
       
-      setMeetingLink(response.data.meetingLink);
+      setMeetingLink(data.meeting_link);
+      const start = data.start_datetime || data.start_time;
+      const end = data.end_datetime || data.end_time;
+
       setMeetingData({
-        startDateTime: new Date(response.data.startDateTime),
-        endDateTime: new Date(response.data.endDateTime)
+        startDateTime: start ? new Date(start) : new Date(),
+        endDateTime: end ? new Date(end) : new Date(Date.now() + 3600000)
       });
       
       setMessage({
@@ -240,7 +226,7 @@ const AdvocateMeetingPanel = () => {
     } catch (error) {
       console.error('Error verifying OTP:', error);
       setMessage({
-        text: error.response?.data?.message || 'Invalid or expired OTP',
+        text: error.message || 'Invalid or expired OTP',
         type: 'error'
       });
     } finally {

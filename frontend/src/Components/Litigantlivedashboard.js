@@ -76,7 +76,9 @@ const LitigantLiveDashboard = ({ litigantId }) => {
         if (!c.hearings || c.hearings.length === 0) return false;
         
         return c.hearings.some(h => {
+          if (!h.next_hearing_date) return false;
           const hearingDate = new Date(h.next_hearing_date);
+          if (isNaN(hearingDate.getTime())) return false;
           hearingDate.setHours(0, 0, 0, 0);
           const hearingDateStr = hearingDate.toISOString().split('T')[0];
           
@@ -216,11 +218,18 @@ const LitigantLiveDashboard = ({ litigantId }) => {
   };
 
   const formatTime = (date) => {
-    return new Date(date).toLocaleTimeString('en-US', {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: true
-    });
+    try {
+      if (!date) return '--:--';
+      const d = new Date(date);
+      if (isNaN(d.getTime())) return '--:--';
+      return d.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      });
+    } catch (e) {
+      return '--:--';
+    }
   };
 
   const getStatusInfo = (status) => {
@@ -276,9 +285,11 @@ const LitigantLiveDashboard = ({ litigantId }) => {
     });
 
     // Sort by listing_time_start chronologically
-    return allCases.sort((a, b) => 
-      new Date(a.listing_time_start) - new Date(b.listing_time_start)
-    );
+    return allCases.sort((a, b) => {
+      const dateA = a.listing_time_start ? new Date(a.listing_time_start) : new Date(0);
+      const dateB = b.listing_time_start ? new Date(b.listing_time_start) : new Date(0);
+      return dateA - dateB;
+    });
   };
 
   // NEW: Get current case across all courts

@@ -324,13 +324,9 @@ const [isHearingDetailsOpen, setIsHearingDetailsOpen] = useState(false);
         }
         const response = await supabaseApi.get('/api/advocate/profile');
         setProfile(response.data.advocate);
-          // Profile picture is now served from Supabase Storage (if set)
+          // Profile picture is now served from Supabase Storage
           if (response.data.advocate.profile_picture_url) {
             setProfilePicture(response.data.advocate.profile_picture_url);
-          } else if (response.data.advocate.profilePicture) {
-            setProfilePicture(
-              `https://nyaay-desk-app-backend.onrender.com/api/advocate/profile-picture/${response.data.advocate.profilePicture}`
-            );
           }
         setLoading(false);
       } catch (err) {
@@ -440,25 +436,34 @@ useEffect(() => {
     setUploadingPicture(true);
     setPictureError(null);
     try {
-      const token = localStorage.getItem('token');
-      const formData = new FormData();
-      formData.append('profilePicture', file);
-      const response = await api.post(
-        '/api/advocate/profile-picture',
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        }
-      );
-      setProfilePicture(
-        `https://nyaay-desk-app-backend.onrender.com/api/advocate/profile-picture/${
-          response.data.profilePicture.filename
-        }?${new Date().getTime()}`
-      );
+      const timestamp = Date.now();
+      const ext = file.name.split('.').pop();
+      const filePath = `profile_pics/${profile.advocate_id}_${timestamp}.${ext}`;
+
+      // 1. Upload to Supabase Storage
+      const { error: uploadError } = await supabase.storage
+        .from('case-documents') // Reusing existing bucket or use a specific one
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      // 2. Get Public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('case-documents')
+        .getPublicUrl(filePath);
+
+      // 3. Update profile in database
+      const { error: updateError } = await supabase
+        .from('advocates')
+        .update({ profile_picture_url: publicUrl })
+        .eq('advocate_id', profile.advocate_id);
+
+      if (updateError) throw updateError;
+
+      setProfilePicture(publicUrl);
     } catch (err) {
-      setPictureError(err.response?.data?.message || 'Error uploading profile picture');
+      console.error('Error uploading profile picture:', err);
+      setPictureError(err.message || 'Error uploading profile picture');
     } finally {
       setUploadingPicture(false);
     }
