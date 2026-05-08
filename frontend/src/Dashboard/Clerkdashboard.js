@@ -8,7 +8,7 @@ import '../ComponentsCSS/Clerkdashboard.css';
 import NoticePanel from '../Components/NoticePanel';
 import NoticeBoard from '../Components/NoticeBoard';
 import AdminCalendar from '../Components/AdminCalendar';
-import UserCalendar from'../Components/UserCalendar';
+import UserCalendar from '../Components/UserCalendar';
 import AdminMeeting from '../Components/Adminmeeting';
 import AdminCaseHandle from '../Components/Admincasehandle';
 import AdminAccountHandle from '../Components/Adminaccounthandle';
@@ -40,7 +40,7 @@ const ClerkDashboard = () => {
     const [signaturePin, setSignaturePin] = useState('');
     const [signatureStatus, setSignatureStatus] = useState(null);
     const [isGeneratingSignature, setIsGeneratingSignature] = useState(false);
-    
+
     // Dashboard Stats State
     const [dashboardStats, setDashboardStats] = useState({
         activeCases: 0,
@@ -336,13 +336,13 @@ const ClerkDashboard = () => {
             case 'adminmeeting':
                 return <AdminMeeting />;
             case 'usercalendar':
-                return <UserCalendar/>;
+                return <UserCalendar />;
             case 'usernoticeboard':
-                return <NoticeBoard/>;
+                return <NoticeBoard />;
             case 'adminaccounthandle':
-                return <AdminAccountHandle/>;
+                return <AdminAccountHandle />;
             case 'admincreation':
-                return <AdminCreation/>
+                return <AdminCreation />
             case 'advocate-change':
                 return <AdvocateChangeReview profile={profile} />;
             default:
@@ -367,10 +367,10 @@ const ClerkDashboard = () => {
                         ☰
                     </button>
                     <div className="emblem-logo">
-                                          <div className="emblem-image"><img src={emblem} alt="Aaditiya Tyagi" ></img></div>
-                                        </div>
-                                       
-                    <h1 className="court-clerk-title">Admin Panel</h1>
+                        <div className="emblem-image"><img src={emblem} alt="Aaditiya Tyagi" ></img></div>
+                    </div>
+
+                    <h1 className="court-clerk-title">Clerk Panel</h1>
                 </div>
                 <div className="court-clerk-header-right">
                     <div className="court-clerk-logout-buttons">
@@ -416,16 +416,16 @@ const ClerkDashboard = () => {
                             onClick={() => handleNavigation('casemanagement')}
                         >
                             <FileText className="court-clerk-nav-icon" />
-                            Case Management Panel 
+                            Case Management Panel
                         </button>
                         <button
                             className={`court-clerk-nav-btn ${activeComponent === 'calendar' ? 'active' : ''}`}
                             onClick={() => handleNavigation('calendar')}
                         >
                             <Calendar className="court-clerk-nav-icon" />
-                             Set Calendar 
+                            Set Calendar
                         </button>
-                       
+
                         <button
                             className={`court-clerk-nav-btn ${activeComponent === 'noticepanel' ? 'active' : ''}`}
                             onClick={() => handleNavigation('noticepanel')}
@@ -433,8 +433,8 @@ const ClerkDashboard = () => {
                             <PanelLeft className="court-clerk-nav-icon" />
                             Notice Panel
                         </button>
-     
-                   
+
+
                         <button
                             className={`court-clerk-nav-btn ${activeComponent === 'adminmeeting' ? 'active' : ''}`}
                             onClick={() => handleNavigation('adminmeeting')}
@@ -447,14 +447,14 @@ const ClerkDashboard = () => {
                             onClick={() => handleNavigation('verifications')}
                         >
                             <ShieldCheck className="court-clerk-nav-icon" />
-                             Advocate Verifications
+                            Advocate Verifications
                         </button>
                         <button
                             className={`court-clerk-nav-btn ${activeComponent === 'usercalendar' ? 'active' : ''}`}
                             onClick={() => handleNavigation('usercalendar')}
                         >
                             <Calendar className="court-clerk-nav-icon" />
-                             Calendar 
+                            Calendar
                         </button>
                         <button
                             className={`court-clerk-nav-btn ${activeComponent === 'usernoticeboard' ? 'active' : ''}`}
@@ -497,7 +497,7 @@ const ClerkDashboard = () => {
                 {/* Main Content Area */}
                 <main className="court-clerk-main">
                     {renderContent()}
-                  
+
                 </main>
             </div>
 

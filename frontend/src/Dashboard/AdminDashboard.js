@@ -409,7 +409,7 @@ const AdminDashboard = () => {
               <div className="crt_adm_logo_placeholder_text_5c78a2">Court Admin</div>
             </div>
           </div>
-          <h1 className="crt_adm_main_title_heading_3fa8c4">Clerk Panel</h1>
+          <h1 className="crt_adm_main_title_heading_3fa8c4">Admin Panel</h1>
         </div>
         <div className="crt_adm_header_right_section_24d6f7">
           <div className="crt_adm_logout_buttons_group_a97c36">
