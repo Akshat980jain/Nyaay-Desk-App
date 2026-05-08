@@ -8,7 +8,7 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
-// Generate a unique case number: e.g., CS2026AB123
+// Generate a unique case number, e.g. CIV2026-84731
 function generateCaseNumber(caseType: string): string {
   const prefix = (caseType || "CS")
     .replace(/[^A-Z]/gi, "")
@@ -36,13 +36,14 @@ serve(async (req) => {
       );
     }
 
+    // SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are injected automatically
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
-    // Use service-role client so we can bypass RLS for the insert
+    // Use service-role client so RLS doesn't block the insert
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Verify the caller's JWT to get their identity
+    // Verify caller JWT
     const token = authHeader.replace("Bearer ", "");
     const { data: { user }, error: authError } = await supabase.auth.getUser(token);
 
@@ -86,10 +87,17 @@ serve(async (req) => {
       );
     }
 
-    // ── Generate Case Number ─────────────────────────────────────────────
+    // ── Extract district (required NOT NULL column) ───────────────────────
+    // Try to get district from the plaintiff's address or pin, fallback to 'Unknown'
+    const district: string =
+      plaintiff_details?.district ||
+      plaintiff_details?.address?.district ||
+      "Unknown";
+
+    // ── Generate unique Case Number ───────────────────────────────────────
     let caseNum = generateCaseNumber(case_type);
 
-    // Ensure uniqueness (retry up to 5 times on collision)
+    // Collision-check, retry up to 5 times
     for (let i = 0; i < 5; i++) {
       const { data: existing } = await supabase
         .from("legal_cases")
@@ -101,24 +109,7 @@ serve(async (req) => {
       caseNum = generateCaseNumber(case_type);
     }
 
-    // ── Insert Case ──────────────────────────────────────────────────────
-    const caseRecord: Record<string, unknown> = {
-      case_num: caseNum,
-      court: court || "District & Sessions Court",
-      case_type,
-      plaintiff_details,
-      respondent_details,
-      lower_court_details: lower_court_details || {},
-      main_matter_details: main_matter_details || {},
-      hearings: [],
-      documents: [],
-      status: "Pending",
-      case_approved: false,
-      filed_by: user.id,
-      created_at: new Date().toISOString(),
-    };
-
-    // Only include police station details for criminal case types
+    // ── Build insert payload (only real columns) ──────────────────────────
     const criminalTypes = [
       "Criminal",
       "MAGISTRIAL CASES",
@@ -126,10 +117,29 @@ serve(async (req) => {
       "SESSIONS CASES",
       "CRIM APPEAL",
     ];
+
+    const caseRecord: Record<string, unknown> = {
+      case_num: caseNum,
+      court: court || "District & Sessions Court",
+      case_type,
+      district,
+      plaintiff_details: plaintiff_details ?? {},
+      respondent_details: respondent_details ?? {},
+      lower_court_details: lower_court_details ?? {},
+      main_matter_details: main_matter_details ?? {},
+      hearings: [],
+      documents: [],
+      status: "Filed",
+      case_approved: false,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
+
     if (criminalTypes.includes(case_type) && police_station_details) {
       caseRecord.police_station_details = police_station_details;
     }
 
+    // ── Insert ────────────────────────────────────────────────────────────
     const { data: insertedCase, error: insertError } = await supabase
       .from("legal_cases")
       .insert([caseRecord])
@@ -137,9 +147,12 @@ serve(async (req) => {
       .single();
 
     if (insertError) {
-      console.error("Insert error:", JSON.stringify(insertError));
+      console.error("DB insert error:", JSON.stringify(insertError));
       return new Response(
-        JSON.stringify({ error: insertError.message || "Failed to insert case" }),
+        JSON.stringify({
+          error: insertError.message || "Failed to insert case into database",
+          details: insertError,
+        }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
@@ -155,7 +168,7 @@ serve(async (req) => {
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error) {
-    console.error("Uncaught error:", error.message);
+    console.error("Uncaught error in file-case:", error.message);
     return new Response(
       JSON.stringify({ error: error.message || "Internal server error" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
