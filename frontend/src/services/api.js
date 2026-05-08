@@ -1,15 +1,13 @@
 /**
- * Centralized Axios instance for all API calls.
- * 
- * FIX #1 & #7: Eliminates hardcoded `http://localhost:5000` across every
- * component. Set REACT_APP_API_URL in your .env to point to the backend.
- * Falls back to localhost for local development.
+ * api.js — Legacy Axios instance (kept for compatibility).
+ * ✅ App fully migrated to Supabase — this instance now points to Supabase.
+ * New code should use supabaseClient directly instead.
  */
 import axios from 'axios';
 
 const BASE_URL =
-  process.env.REACT_APP_API_URL ||
-  'https://nyaay-desk-app-backend.onrender.com';
+  process.env.REACT_APP_SUPABASE_URL ||
+  'https://pnneversthhxilensrzq.supabase.co';
 
 const api = axios.create({
   baseURL: BASE_URL,

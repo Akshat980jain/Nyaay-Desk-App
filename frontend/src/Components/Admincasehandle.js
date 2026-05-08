@@ -477,344 +477,154 @@ const insertFormatting = (before, after = '') => {
       // Create FormData for file uploads
       const formData = new FormData();
       formData.append('hearing_date', hearingForm.hearing_date);
-      formData.append('hearing_type', hearingForm.hearing_type);
-      formData.append('remarks', hearingForm.remarks);
-      
-      if (hearingForm.next_hearing_date) {
-        formData.append('next_hearing_date', hearingForm.next_hearing_date);
-      }
-      
-      // Append each attachment
-      if (hearingForm.attachments && hearingForm.attachments.length > 0) {
-        for (let i = 0; i < hearingForm.attachments.length; i++) {
-          formData.append('attachments', hearingForm.attachments[i]);
-        }
-      }
-      
-      const response = await axios.post(
-        `https://nyaay-desk-app-backend.onrender.com/api/case/${selectedCase.case_num}/hearing`,
-        formData,
-        { 
-          headers: { 
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-            'Content-Type': 'multipart/form-data'
-          }
-        }
-      );
-      
-      // Update selected case with new hearing
-      const updatedCase = { 
-        ...selectedCase, 
-        hearings: [...(selectedCase.hearings || []), response.data.hearing] 
+      const newHearing = {
+        id: Date.now().toString(),
+        hearing_date: hearingForm.hearing_date,
+        hearing_type: hearingForm.hearing_type,
+        remarks: hearingForm.remarks,
+        next_hearing_date: hearingForm.next_hearing_date || null,
+        created_at: new Date().toISOString(),
       };
-      
-      // Update cases list
-      setCases(cases.map(c => 
-        c.case_num === selectedCase.case_num ? updatedCase : c
-      ));
-      
-      // Update selected case
+      const updatedHearings = [...(selectedCase.hearings || []), newHearing];
+      const { error: err } = await supabase
+        .from('legal_cases')
+        .update({ hearings: updatedHearings, updated_at: new Date().toISOString() })
+        .eq('case_num', selectedCase.case_num);
+      if (err) throw err;
+      const updatedCase = { ...selectedCase, hearings: updatedHearings };
+      setCases(cases.map(c => c.case_num === selectedCase.case_num ? updatedCase : c));
       setSelectedCase(updatedCase);
-      
-      // Reset form
-      setHearingForm({
-        hearing_date: '',
-        hearing_type: 'Initial',
-        remarks: '',
-        next_hearing_date: '',
-        attachments: []
-      });
-      
+      setHearingForm({ hearing_date: '', hearing_type: 'Initial', remarks: '', next_hearing_date: '', attachments: [] });
       alert('Hearing added successfully');
     } catch (err) {
-      setError('Failed to add hearing');
-      console.error('Error adding hearing:', err);
+      setError('Failed to add hearing: ' + err.message);
     }
   };
-  // Handle document submission
+  // Handle document upload via Supabase Storage
   const handleDocumentSubmit = async (e) => {
     e.preventDefault();
-    
+    if (!documentForm.file) { alert('Please select a file to upload'); return; }
+    if (!documentForm.document_type) { alert('Document type is required'); return; }
     try {
-      // Validations
-      if (!documentForm.file) {
-        alert('Please select a file to upload');
-        return;
-      }
-      
-      if (!documentForm.document_type) {
-        alert('Document type is required');
-        return;
-      }
-      
-      // Create FormData
-      const formData = new FormData();
-      formData.append('file', documentForm.file);
-      formData.append('document_type', documentForm.document_type);
-      formData.append('description', documentForm.description || '');
-      
-      // Get user information from wherever it's stored
-      const token = localStorage.getItem('token');
-      
-      // Try different ways to include the user ID - simplified to one approach
-      const userData = JSON.parse(localStorage.getItem('user') || '{}');
-      if (userData.id) {
-        formData.append('uploaded_by', userData.id);
-      }
-      
-      console.log('Form data being sent:');
-      for (let [key, value] of formData.entries()) {
-        console.log(key, ':', value instanceof File ? value.name : value);
-      }
-      
-      // Make the request
-      const response = await axios({
-        method: 'POST',
-       url: `https://nyaay-desk-app-backend.onrender.com/api/courtadmin/case/${selectedCase.case_num}/upload-document`,
-        data: formData,
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      
-      console.log('Upload successful:', response.data);
-      
-      // DEBUG: Log the document ID from the server response
-      console.log('Document ID from server response:', response.data.document.document_id);
-      console.log('Document _id from server response:', response.data.document._id);
-      
-      // Handle successful response
-      if (response.data && response.data.document) {
-        // Store the document with the exact id properties from the server
-        const newDocument = response.data.document;
-        
-        // Ensure the document has consistent ID property for download
-        // Use document_id as the primary ID field used for API calls
-        if (!newDocument.document_id && newDocument._id) {
-          newDocument.document_id = newDocument._id;
-        }
-        
-        // Create updated case with new document
-        const updatedCase = {
-          ...selectedCase,
-          documents: selectedCase.documents ?
-            [...selectedCase.documents, newDocument] :
-            [newDocument]
-        };
-        
-        // Update state
-        setSelectedCase(updatedCase);
-        setCases(prevCases =>
-          prevCases.map(c =>
-            c.case_num === selectedCase.case_num ? updatedCase : c
-          )
-        );
-        
-        // Reset form
-        setDocumentForm({
-          document_type: '',
-          description: '',
-          file: null
-        });
-        
-        // Reset file input
-        const fileInput = document.querySelector('input[type="file"]');
-        if (fileInput) fileInput.value = '';
-        
-        alert('Document uploaded successfully');
-      }
+      const file = documentForm.file;
+      const filePath = `case_documents/${selectedCase.case_num}/${Date.now()}_${file.name}`;
+      const { error: uploadErr } = await supabase.storage
+        .from('case-documents')
+        .upload(filePath, file);
+      if (uploadErr) throw uploadErr;
+
+      const { data: urlData } = supabase.storage.from('case-documents').getPublicUrl(filePath);
+      const newDocument = {
+        document_id: filePath,
+        document_type: documentForm.document_type,
+        description: documentForm.description || '',
+        file_name: file.name,
+        file_url: urlData.publicUrl,
+        uploaded_at: new Date().toISOString(),
+      };
+      const updatedDocs = [...(selectedCase.documents || []), newDocument];
+      const { error: updateErr } = await supabase
+        .from('legal_cases')
+        .update({ documents: updatedDocs, updated_at: new Date().toISOString() })
+        .eq('case_num', selectedCase.case_num);
+      if (updateErr) throw updateErr;
+
+      const updatedCase = { ...selectedCase, documents: updatedDocs };
+      setSelectedCase(updatedCase);
+      setCases(prevCases => prevCases.map(c => c.case_num === selectedCase.case_num ? updatedCase : c));
+      setDocumentForm({ document_type: '', description: '', file: null });
+      const fileInput = document.querySelector('input[type="file"]');
+      if (fileInput) fileInput.value = '';
+      alert('Document uploaded successfully');
     } catch (err) {
-      console.error('Upload error details:', err.response?.data || err.message);
-      
-      alert(`Error uploading document: ${err.response?.data?.message || err.response?.data?.error || err.message}`);
+      alert(`Error uploading document: ${err.message}`);
     }
   };
   
-  // Document download handler
- // Fixed document download handler to preserve original file format
+// Download via Supabase Storage signed URL
 const handleDocumentDownload = async (documentId) => {
   try {
-    // Log the document ID being used for download
-    console.log('Document ID being used for download:', documentId);
-    
-    const token = localStorage.getItem('token');
-    
-    // Download request with proper headers and response type
-    const response = await axios({
-      method: 'GET',
-      url: `https://nyaay-desk-app-backend.onrender.com/api/document/${documentId}/download`,
-      responseType: 'blob', // Critical for binary file handling
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    });
-    
-    // The key to preserving the file format is creating a blob with the proper type
-    // Extract the content type from the response
-    const contentType = response.headers['content-type'] || 'application/octet-stream';
-    
-    // Create a blob with the correct content type
-    const blob = new Blob([response.data], { type: contentType });
-    const url = window.URL.createObjectURL(blob);
-    
-    // Create and trigger download link
-    const link = document.createElement('a');
-    link.href = url;
-    
-    // Extract filename from content-disposition header
-    const contentDisposition = response.headers['content-disposition'];
-    let filename = 'document';
-    
-    if (contentDisposition) {
-      const filenameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
-      if (filenameMatch && filenameMatch[1]) {
-        filename = filenameMatch[1].replace(/['"]/g, '');
-        // Decode if the filename is URL encoded
-        filename = decodeURIComponent(filename);
-      }
-    }
-    
-    // Set download attribute and filename
-    link.setAttribute('download', filename);
-    document.body.appendChild(link);
-    link.click();
-    
-    // Clean up
-    window.URL.revokeObjectURL(url);
-    link.remove();
+    const { data, error: err } = await supabase.storage
+      .from('case-documents')
+      .createSignedUrl(documentId, 60);
+    if (err) throw err;
+    window.open(data.signedUrl, '_blank');
   } catch (err) {
-    console.error('Download error:', err);
-    
-    // Improved error message with details
-    const errorMessage = err.response?.data?.message || err.message;
-    alert(`Error downloading document: ${errorMessage}`);
+    alert(`Error downloading document: ${err.message}`);
   }
 };
   
-  // Handle office use details update
+  // Handle office use details update via Supabase
   const handleOfficeUseSubmit = async (e) => {
     e.preventDefault();
-    
     try {
-      const response = await axios.patch(
-        `https://nyaay-desk-app-backend.onrender.com/api/case/${selectedCase.case_num}/office-details`,
-        officeUseForm,
-        { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }}
-      );
-      
-      // Update cases list
-      const updatedCase = { 
-        ...selectedCase, 
-        for_office_use_only: response.data.for_office_use_only 
-      };
-      
-      setCases(cases.map(c => 
-        c.case_num === selectedCase.case_num ? updatedCase : c
-      ));
-      
-      // Update selected case
+      const { error: err } = await supabase
+        .from('legal_cases')
+        .update({ for_office_use_only: officeUseForm, updated_at: new Date().toISOString() })
+        .eq('case_num', selectedCase.case_num);
+      if (err) throw err;
+      const updatedCase = { ...selectedCase, for_office_use_only: officeUseForm };
+      setCases(cases.map(c => c.case_num === selectedCase.case_num ? updatedCase : c));
       setSelectedCase(updatedCase);
-      
       alert('Office details updated successfully');
     } catch (err) {
-      setError('Failed to update office details');
-      console.error('Error updating office details:', err);
+      setError('Failed to update office details: ' + err.message);
     }
   };
 
-  // Handle hearing update
+  // Handle hearing update via Supabase
   const handleHearingUpdate = async (hearingId, updatedData) => {
     try {
-      // Create FormData for file uploads
-      const formData = new FormData();
-      formData.append('hearing_date', updatedData.hearing_date);
-      formData.append('hearing_type', updatedData.hearing_type);
-      formData.append('remarks', updatedData.remarks || '');
-      
-      if (updatedData.next_hearing_date) {
-        formData.append('next_hearing_date', updatedData.next_hearing_date);
-      }
-      
-      // Append each attachment if any
-      if (updatedData.attachments && updatedData.attachments.length > 0) {
-        for (let i = 0; i < updatedData.attachments.length; i++) {
-          formData.append('attachments', updatedData.attachments[i]);
-        }
-      }
-      
-      const response = await axios.patch(
-        `https://nyaay-desk-app-backend.onrender.com/api/case/${selectedCase.case_num}/hearing/${hearingId}`,
-        formData,
-        { 
-          headers: { 
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-            'Content-Type': 'multipart/form-data'
-          }
-        }
+      const updatedHearings = (selectedCase.hearings || []).map(h =>
+        (h.id === hearingId || h._id === hearingId)
+          ? { ...h, ...updatedData, updated_at: new Date().toISOString() }
+          : h
       );
-      
-      // Find and update the specific hearing in the case
-      const updatedHearings = selectedCase.hearings.map(hearing => 
-        hearing._id === hearingId ? response.data.hearing : hearing
-      );
-      
-      // Update selected case with updated hearing
-      const updatedCase = { 
-        ...selectedCase, 
-        hearings: updatedHearings 
-      };
-      
-      // Update cases list
-      setCases(cases.map(c => 
-        c.case_num === selectedCase.case_num ? updatedCase : c
-      ));
-      
-      // Update selected case
+      const { error: err } = await supabase
+        .from('legal_cases')
+        .update({ hearings: updatedHearings, updated_at: new Date().toISOString() })
+        .eq('case_num', selectedCase.case_num);
+      if (err) throw err;
+      const updatedCase = { ...selectedCase, hearings: updatedHearings };
+      setCases(cases.map(c => c.case_num === selectedCase.case_num ? updatedCase : c));
       setSelectedCase(updatedCase);
-      
       alert('Hearing updated successfully');
     } catch (err) {
-      setError('Failed to update hearing');
-      console.error('Error updating hearing:', err);
+      setError('Failed to update hearing: ' + err.message);
     }
   };
   const handleAddAttachments = async (hearingId, files) => {
     try {
-      // Validate files
-      if (!files || files.length === 0) {
-        alert('Please select files to upload');
-        return;
-      }
-      
-      // Create FormData
-      const formData = new FormData();
-      
-      // Append each file
+      if (!files || files.length === 0) { alert('Please select files to upload'); return; }
+      // Upload each file to Supabase Storage and update the hearing's attachments
+      const uploadedAttachments = [];
       for (let i = 0; i < files.length; i++) {
-        formData.append('attachments', files[i]);
+        const file = files[i];
+        const filePath = `case_hearings/${selectedCase.case_num}/${hearingId}/${Date.now()}_${file.name}`;
+        const { error: uploadErr } = await supabase.storage.from('case-documents').upload(filePath, file);
+        if (uploadErr) throw uploadErr;
+        const { data: urlData } = supabase.storage.from('case-documents').getPublicUrl(filePath);
+        uploadedAttachments.push({ originalname: file.name, url: urlData.publicUrl, path: filePath });
       }
-      
-      const response = await axios.post(
-        `https://nyaay-desk-app-backend.onrender.com/api/case/${selectedCase.case_num}/hearing/${hearingId}/attachments`,
-        formData,
-        { 
-          headers: { 
-            Authorization: `Bearer ${localStorage.getItem('token')}`,
-            'Content-Type': 'multipart/form-data'
-          }
+      const updatedHearings = (selectedCase.hearings || []).map(h => {
+        if (h.id === hearingId || h._id === hearingId) {
+          return { ...h, attachments: [...(h.attachments || []), ...uploadedAttachments] };
         }
-      );
-      
-      // Find and update the specific hearing in the case
-      const updatedHearings = selectedCase.hearings.map(hearing => {
-        if (hearing._id === hearingId) {
-          return {
-            ...hearing,
-            attachments: response.data.attachments
-          };
-        }
-        return hearing;
+        return h;
       });
+      const { error: err } = await supabase
+        .from('legal_cases')
+        .update({ hearings: updatedHearings, updated_at: new Date().toISOString() })
+        .eq('case_num', selectedCase.case_num);
+      if (err) throw err;
+      const updatedCase = { ...selectedCase, hearings: updatedHearings };
+      setCases(cases.map(c => c.case_num === selectedCase.case_num ? updatedCase : c));
+      setSelectedCase(updatedCase);
+      alert('Attachments added successfully');
+    } catch (err) {
+      setError('Failed to add attachments: ' + err.message);
+    }
+  };
       
       // Update selected case with updated hearing
       const updatedCase = { 

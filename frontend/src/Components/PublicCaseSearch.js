@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { supabase } from '../services/supabaseClient';
 import '../ComponentsCSS/PublicCaseSearch.css';
 import CaseStatusTimeline from './CaseStatusTimeline';
 
@@ -32,12 +32,26 @@ const PublicCaseSearch = () => {
     setSearched(true);
 
     try {
-      const response = await axios.get('https://nyaay-desk-app-backend.onrender.com/api/public/case-search', {
-        params: { type: searchType, q: query.trim() }
-      });
-      setResults(response.data.cases || []);
+      let q = supabase.from('legal_cases').select('*').eq('case_approved', true);
+
+      if (searchType === 'case_no') {
+        q = q.ilike('case_num', `%${query.trim()}%`);
+      } else if (searchType === 'party_name') {
+        // Search in plaintiff and respondent JSONB name fields
+        q = q.or(
+          `plaintiff_details->>name.ilike.%${query.trim()}%,respondent_details->>name.ilike.%${query.trim()}%`
+        );
+      } else if (searchType === 'advocate_name') {
+        q = q.or(
+          `plaintiff_details->>advocate.ilike.%${query.trim()}%,respondent_details->>advocate.ilike.%${query.trim()}%`
+        );
+      }
+
+      const { data, error: err } = await q.limit(20);
+      if (err) throw err;
+      setResults(data || []);
     } catch (err) {
-      setError(err.response?.data?.message || 'Search failed. Please try again.');
+      setError(err.message || 'Search failed. Please try again.');
     } finally {
       setLoading(false);
     }
