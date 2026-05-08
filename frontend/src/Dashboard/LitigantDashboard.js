@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { supabase } from '../services/supabaseClient';
+import { supabase, callEdgeFunction } from '../services/supabaseClient';
 import { useNavigate } from 'react-router-dom';
 import { LogOut, FileText, Calendar, Database, Info, Book, Users, Video, X, Download, FileDown } from 'lucide-react';
 import '../ComponentsCSS/LitigantDashboardStyles.css';
