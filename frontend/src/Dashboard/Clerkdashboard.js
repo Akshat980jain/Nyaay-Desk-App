@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
-import { Check, X, LogOut, User, FileText, Calendar, Database, ShieldCheck, Info, Book, Users ,Settings,PanelLeft,Clipboard,UserPlus} from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Check, X, LogOut, FileText, Calendar, Database, ShieldCheck, Info, Users, Settings, PanelLeft, Clipboard, UserPlus } from 'lucide-react';
+import { supabase } from '../services/supabaseClient';
 import '../ComponentsCSS/Clerkdashboard.css';
 
 // Import components with the correct paths
@@ -56,71 +56,89 @@ const ClerkDashboard = () => {
         }
     }, [showVerificationSection]);
 
-    // Fetch Dashboard Stats
+    // Fetch Dashboard Stats directly from Supabase
     const fetchDashboardStats = async () => {
         try {
-            const token = localStorage.getItem('token');
-            if (token) {
-                const response = await axios.get('https://nyaay-desk-app-backend.onrender.com/api/clerk/dashboard/stats', {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-                setDashboardStats(response.data);
-            }
+            const today = new Date().toISOString();
+
+            const [{ count: activeCases }, { count: upcomingHearings }, { count: pendingDocuments }] = await Promise.all([
+                supabase.from('legal_cases').select('*', { count: 'exact', head: true }).eq('case_approved', true),
+                supabase.from('legal_cases').select('*', { count: 'exact', head: true }).gt('updated_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()),
+                supabase.from('legal_cases').select('*', { count: 'exact', head: true }).eq('case_approved', false),
+            ]);
+
+            setDashboardStats({
+                activeCases: activeCases || 0,
+                upcomingHearings: upcomingHearings || 0,
+                pendingDocuments: pendingDocuments || 0,
+            });
         } catch (err) {
             console.error('Failed to fetch dashboard stats', err);
         }
     };
 
-    // Profile Fetching
+    // Profile Fetching from localStorage (set during clerk login)
     const fetchProfile = async () => {
         try {
+            const userData = localStorage.getItem('userData');
             const token = localStorage.getItem('token');
             if (!token) {
                 navigate('/clerklogin');
-                throw new Error('No authentication token found');
+                return;
             }
-            const response = await axios.get('https://nyaay-desk-app-backend.onrender.com/api/clerk/profile', {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            setProfile(response.data.clerk);
-            setLoading(false);
-        } catch (err) {
-            setError(err.response?.data?.message || err.message);
-            setLoading(false);
-            if (err.response?.status === 401) {
+            if (userData) {
+                setProfile(JSON.parse(userData));
+                setLoading(false);
+                return;
+            }
+            // Fallback: fetch from clerks table using email from JWT
+            const { data: { user } } = await supabase.auth.getUser();
+            if (user?.email) {
+                const { data: clerk, error } = await supabase
+                    .from('clerks')
+                    .select('*')
+                    .eq('email', user.email)
+                    .single();
+                if (error || !clerk) throw new Error('Clerk not found');
+                setProfile(clerk);
+            } else {
                 navigate('/clerklogin');
             }
+        } catch (err) {
+            setError(err.message || 'Failed to load profile');
+            navigate('/clerklogin');
+        } finally {
+            setLoading(false);
         }
     };
 
-    // Advocates Fetching
+    // Advocates Fetching from Supabase
     const fetchAdvocates = async () => {
         try {
-            const token = localStorage.getItem('token');
-            const response = await axios.get('https://nyaay-desk-app-backend.onrender.com/api/clerk/dashboard/advocates', {
-                headers: { 'Authorization': `Bearer ${token}` }
+            const [{ data: verified }, { data: unverified }] = await Promise.all([
+                supabase.from('advocates').select('*').eq('is_verified', true).eq('status', 'active'),
+                supabase.from('advocates').select('*').eq('is_verified', false),
+            ]);
+            setAdvocates({
+                verifiedAdvocates: verified || [],
+                unverifiedAdvocates: unverified || [],
             });
-            setAdvocates(response.data);
         } catch (err) {
-            setError(err.response?.data?.message || 'Error fetching advocates');
+            setError('Error fetching advocates');
         }
     };
 
-    // Document Viewing
+    // Document Viewing via Supabase Storage
     const viewCOPDocument = async (advocateId) => {
         try {
-            const token = localStorage.getItem('token');
-            const response = await axios.get(
-                `https://nyaay-desk-app-backend.onrender.com/api/clerk/advocate/cop-document/${advocateId}`,
-                {
-                    headers: { 'Authorization': `Bearer ${token}` },
-                    responseType: 'blob'
-                }
-            );
-            const fileURL = window.URL.createObjectURL(new Blob([response.data]));
-            window.open(fileURL, '_blank');
+            // Try to get a signed URL from Supabase Storage
+            const { data, error } = await supabase.storage
+                .from('cop_documents')
+                .createSignedUrl(`${advocateId}/cop.pdf`, 60);
+            if (error || !data?.signedUrl) throw new Error('Document not found in storage');
+            window.open(data.signedUrl, '_blank');
         } catch (err) {
-            setError('Error viewing document');
+            setError('COP document not found. The advocate may not have uploaded it yet.');
         }
     };
 
@@ -171,7 +189,7 @@ const ClerkDashboard = () => {
         setIsGeneratingSignature(false);
     };
 
-    // Verification Handling
+    // Verification Handling via Supabase
     const handleVerification = async () => {
         if (!verificationData.digitalSignature) {
             setError('Digital signature is required for verification');
@@ -179,54 +197,37 @@ const ClerkDashboard = () => {
         }
 
         try {
-            const token = localStorage.getItem('token');
-            await axios.post(
-                `https://nyaay-desk-app-backend.onrender.com/api/clerk/verify-advocate/${selectedAdvocate.advocate_id}`,
-                {
-                    verificationDeclaration,
-                    notes: verificationNotes,
-                    digitalSignature: verificationData.digitalSignature,
-                    verificationTimestamp: new Date().toISOString()
-                },
-                {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                }
-            );
+            const { error } = await supabase
+                .from('advocates')
+                .update({
+                    is_verified: true,
+                    status: 'active',
+                    updated_at: new Date().toISOString(),
+                })
+                .eq('advocate_id', selectedAdvocate.advocate_id);
+
+            if (error) throw error;
+
             setShowVerificationModal(false);
             resetVerificationForm();
             fetchAdvocates();
         } catch (err) {
-            setError(err.response?.data?.message || 'Verification failed');
+            setError(err.message || 'Verification failed');
         }
     };
 
-    // Logout Handling
-    const handleLogout = async () => {
-        try {
-            const token = localStorage.getItem('token');
-            await axios.post('https://nyaay-desk-app-backend.onrender.com/api/clerk/logout', {}, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            localStorage.removeItem('token');
-            navigate('/clerklogin');
-        } catch (error) {
-            setError(error.response?.data?.message || 'Logout failed');
-        }
+    // Logout — just clear local storage (no backend needed)
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('userData');
+        navigate('/clerklogin');
     };
 
-    const handleLogoutAll = async () => {
-        try {
-            const token = localStorage.getItem('token');
-            await axios.post('https://nyaay-desk-app-backend.onrender.com/api/clerk/logout-all',
-                { password: logoutPassword },
-                { headers: { 'Authorization': `Bearer ${token}` } }
-            );
-            localStorage.removeItem('token');
-            setShowLogoutConfirm(false);
-            navigate('/clerklogin');
-        } catch (error) {
-            setError(error.response?.data?.message || 'Logout from all devices failed');
-        }
+    const handleLogoutAll = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('userData');
+        setShowLogoutConfirm(false);
+        navigate('/clerklogin');
     };
 
     // Utility Functions

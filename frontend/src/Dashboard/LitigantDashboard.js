@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { supabase, callEdgeFunction } from '../services/supabaseClient';
+import { supabase } from '../services/supabaseClient';
 import { useNavigate } from 'react-router-dom';
 import { LogOut, FileText, Calendar, Database, Info, Book, Users, Video, X, Download, FileDown } from 'lucide-react';
 import '../ComponentsCSS/LitigantDashboardStyles.css';
@@ -40,7 +40,7 @@ const LitigantDashboard = () => {
   const [selectedCase, setSelectedCase] = useState(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [viewMode, setViewMode] = useState('details');
-const [searchCaseNum, setSearchCaseNum] = useState('');
+  const [searchCaseNum, setSearchCaseNum] = useState('');
   const [searchedHearings, setSearchedHearings] = useState(null);
   const [hearingsLoading, setHearingsLoading] = useState(false);
   const [hearingsError, setHearingsError] = useState(null);
@@ -62,16 +62,16 @@ const [searchCaseNum, setSearchCaseNum] = useState('');
   // Form State
   const [formError, setFormError] = useState('');
   const [formSuccess, setFormSuccess] = useState('');
-// Add these to your existing state declarations (around line 50-70)
-const [documentRequests, setDocumentRequests] = useState([]);
-const [requestsLoading, setRequestsLoading] = useState(false);
-const [selectedDocumentRequest, setSelectedDocumentRequest] = useState(null);
-const [uploadingRequestedDoc, setUploadingRequestedDoc] = useState(false);
+  // Add these to your existing state declarations (around line 50-70)
+  const [documentRequests, setDocumentRequests] = useState([]);
+  const [requestsLoading, setRequestsLoading] = useState(false);
+  const [selectedDocumentRequest, setSelectedDocumentRequest] = useState(null);
+  const [uploadingRequestedDoc, setUploadingRequestedDoc] = useState(false);
 
-const [isChangeAdvocateOpen, setIsChangeAdvocateOpen] = useState(false);
-const [selectedCaseForAdvocateChange, setSelectedCaseForAdvocateChange] = useState(null);
-const [advocateChangeRequests, setAdvocateChangeRequests] = useState([]);
-const [popup, setPopup] = useState({ isOpen: false, message: '', type: 'success' });
+  const [isChangeAdvocateOpen, setIsChangeAdvocateOpen] = useState(false);
+  const [selectedCaseForAdvocateChange, setSelectedCaseForAdvocateChange] = useState(null);
+  const [advocateChangeRequests, setAdvocateChangeRequests] = useState([]);
+  const [popup, setPopup] = useState({ isOpen: false, message: '', type: 'success' });
 
   const navigate = useNavigate();
 
@@ -166,41 +166,18 @@ const [popup, setPopup] = useState({ isOpen: false, message: '', type: 'success'
     }
   }, [navigate]);
 
-  // Fetch cases from Supabase — robust client-side filter to handle all JSONB edge cases
+  // Fetch cases from Supabase
   const fetchCases = async () => {
     if (!profile) return;
     setCasesLoading(true);
     try {
-      const litigantId = (profile?.litigant_id || profile?.party_id || '').trim();
-      const litigantEmail = (profile?.email || '').toLowerCase().trim();
-
-      // Fetch all cases (limited to 500 most recent) then filter client-side.
-      // This avoids PostgREST JSONB ->> operator issues with nested equality.
       const { data, error: casesError } = await supabase
         .from('legal_cases')
         .select('*')
-        .order('created_at', { ascending: false })
-        .limit(500);
+        .or(`plaintiff_details->>party_id.eq.${profile?.litigant_id || profile?.party_id},respondent_details->>party_id.eq.${profile?.litigant_id || profile?.party_id}`);
 
       if (casesError) throw casesError;
-
-      // Client-side filter: case belongs to this litigant if their id OR email
-      // appears in either plaintiff_details or respondent_details
-      const myCases = (data || []).filter(c => {
-        const p = c.plaintiff_details || {};
-        const r = c.respondent_details || {};
-
-        const pId = (p.party_id || '').trim();
-        const rId = (r.party_id || '').trim();
-        const pEmail = (p.email || '').toLowerCase().trim();
-        const rEmail = (r.email || '').toLowerCase().trim();
-
-        if (litigantId && (pId === litigantId || rId === litigantId)) return true;
-        if (litigantEmail && (pEmail === litigantEmail || rEmail === litigantEmail)) return true;
-        return false;
-      });
-
-      setCases(myCases);
+      setCases(data || []);
     } catch (error) {
       console.error('Failed to fetch cases:', error);
       setError('Failed to fetch cases');
@@ -216,24 +193,6 @@ const [popup, setPopup] = useState({ isOpen: false, message: '', type: 'success'
       fetchAdvocateChangeRequests();
     }
   }, [loading, profile]);
-
-  // Pre-fill plaintiff details with logged-in litigant's own info
-  // This ensures filed cases get the correct party_id so they appear on dashboard
-  useEffect(() => {
-    if (profile) {
-      const litigantId = profile?.litigant_id || profile?.party_id || '';
-      setFormData(prev => ({
-        ...prev,
-        plaintiff_details: {
-          ...prev.plaintiff_details,
-          party_id: litigantId,
-          name: prev.plaintiff_details.name || profile?.name || profile?.full_name || '',
-          email: prev.plaintiff_details.email || profile?.email || '',
-          mobile: prev.plaintiff_details.mobile || profile?.mobile || profile?.phone || '',
-        },
-      }));
-    }
-  }, [profile]);
 
   // Listen for global update events (e.g. from Video Pleading recorder)
   useEffect(() => {
@@ -282,8 +241,8 @@ const [popup, setPopup] = useState({ isOpen: false, message: '', type: 'success'
   };
 
   // Fetch hearings
-  
-useEffect(() => {
+
+  useEffect(() => {
     const fetchAllHearings = async () => {
       setHearingsLoading(true);
       try {
@@ -310,98 +269,98 @@ useEffect(() => {
       fetchAllHearings();
     }
   }, [activeSection, cases]);
-// Add this useEffect after your existing useEffects (around line 180)
-useEffect(() => {
-  const fetchDocumentRequests = async () => {
-    setRequestsLoading(true);
+  // Add this useEffect after your existing useEffects (around line 180)
+  useEffect(() => {
+    const fetchDocumentRequests = async () => {
+      setRequestsLoading(true);
+      try {
+        const litigantId = profile?.litigant_id || profile?.party_id;
+        if (!litigantId) return;
+        const { data, error: err } = await supabase
+          .from('document_requests')
+          .select('*')
+          .eq('requested_from', litigantId)
+          .order('created_at', { ascending: false });
+        if (err) throw err;
+        setDocumentRequests(data || []);
+      } catch (error) {
+        console.error('Error fetching document requests:', error);
+      } finally {
+        setRequestsLoading(false);
+      }
+    };
+    if (activeSection === 'documents' && profile) {
+      fetchDocumentRequests();
+    }
+  }, [activeSection, profile]);
+  // Add this function after handleDocumentUpload (around line 340)
+  const handleRequestedDocumentUpload = async (e, documentId, caseNum) => {
+    e.preventDefault();
+    setUploadingRequestedDoc(true);
+    setDocumentError('');
+    setDocumentSuccess('');
+
+    if (!documentFile) {
+      setDocumentError('Please select a file to upload');
+      setUploadingRequestedDoc(false);
+      return;
+    }
+
     try {
-      const litigantId = profile?.litigant_id || profile?.party_id;
-      if (!litigantId) return;
-      const { data, error: err } = await supabase
+      const timestamp = Date.now();
+      const ext = documentFile.name.split('.').pop();
+      const filePath = `${caseNum}/requested/${documentId}-${timestamp}.${ext}`;
+
+      // 1. Upload to Supabase Storage
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('video-pleadings') // Reusing the same bucket for simplicity
+        .upload(filePath, documentFile);
+
+      if (uploadError) throw uploadError;
+
+      // 2. Get Public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('video-pleadings')
+        .getPublicUrl(filePath);
+
+      // 3. Update the document request in document_requests table
+      // Note: This assumes document_requests table exists and has a file_path and status field
+      const { error: updateError } = await supabase
+        .from('document_requests')
+        .update({
+          status: 'fulfilled',
+          file_path: publicUrl,
+          uploaded_at: new Date().toISOString()
+        })
+        .eq('document_id', documentId);
+
+      if (updateError) throw updateError;
+
+      setDocumentSuccess('Requested document uploaded successfully. Pending admin verification.');
+      setDocumentFile(null);
+      setSelectedDocumentRequest(null);
+      if (document.getElementById('requested-doc-file-input')) {
+        document.getElementById('requested-doc-file-input').value = '';
+      }
+
+      // Refresh document requests (we'll need to fetch them from Supabase)
+      const { data: requests, error: reqError } = await supabase
         .from('document_requests')
         .select('*')
-        .eq('requested_from', litigantId)
-        .order('created_at', { ascending: false });
-      if (err) throw err;
-      setDocumentRequests(data || []);
+        .eq('case_num', caseNum);
+
+      if (!reqError) {
+        setDocumentRequests(requests || []);
+      }
+
     } catch (error) {
-      console.error('Error fetching document requests:', error);
+      console.error('Error uploading requested document:', error);
+      setDocumentError(error.message || 'Failed to upload requested document');
     } finally {
-      setRequestsLoading(false);
+      setUploadingRequestedDoc(false);
     }
   };
-  if (activeSection === 'documents' && profile) {
-    fetchDocumentRequests();
-  }
-}, [activeSection, profile]);
-// Add this function after handleDocumentUpload (around line 340)
-const handleRequestedDocumentUpload = async (e, documentId, caseNum) => {
-  e.preventDefault();
-  setUploadingRequestedDoc(true);
-  setDocumentError('');
-  setDocumentSuccess('');
-
-  if (!documentFile) {
-    setDocumentError('Please select a file to upload');
-    setUploadingRequestedDoc(false);
-    return;
-  }
-
-  try {
-    const timestamp = Date.now();
-    const ext = documentFile.name.split('.').pop();
-    const filePath = `${caseNum}/requested/${documentId}-${timestamp}.${ext}`;
-
-    // 1. Upload to Supabase Storage
-    const { data: uploadData, error: uploadError } = await supabase.storage
-      .from('video-pleadings') // Reusing the same bucket for simplicity
-      .upload(filePath, documentFile);
-
-    if (uploadError) throw uploadError;
-
-    // 2. Get Public URL
-    const { data: { publicUrl } } = supabase.storage
-      .from('video-pleadings')
-      .getPublicUrl(filePath);
-
-    // 3. Update the document request in document_requests table
-    // Note: This assumes document_requests table exists and has a file_path and status field
-    const { error: updateError } = await supabase
-      .from('document_requests')
-      .update({
-        status: 'fulfilled',
-        file_path: publicUrl,
-        uploaded_at: new Date().toISOString()
-      })
-      .eq('document_id', documentId);
-
-    if (updateError) throw updateError;
-
-    setDocumentSuccess('Requested document uploaded successfully. Pending admin verification.');
-    setDocumentFile(null);
-    setSelectedDocumentRequest(null);
-    if (document.getElementById('requested-doc-file-input')) {
-      document.getElementById('requested-doc-file-input').value = '';
-    }
-    
-    // Refresh document requests (we'll need to fetch them from Supabase)
-    const { data: requests, error: reqError } = await supabase
-      .from('document_requests')
-      .select('*')
-      .eq('case_num', caseNum);
-    
-    if (!reqError) {
-      setDocumentRequests(requests || []);
-    }
-    
-  } catch (error) {
-    console.error('Error uploading requested document:', error);
-    setDocumentError(error.message || 'Failed to upload requested document');
-  } finally {
-    setUploadingRequestedDoc(false);
-  }
-};
-const handleHearingSearch = async (e) => {
+  const handleHearingSearch = async (e) => {
     e.preventDefault();
     setHearingsLoading(true);
     setHearingsError(null);
@@ -583,17 +542,17 @@ const handleHearingSearch = async (e) => {
     setIsSidebarOpen(false);
   };
 
-const handleTopLevelChange = (field, value) => {
-  setFormData((prev) => {
-    const newData = { ...prev, [field]: value };
-    // Only show police station details for Criminal and criminal-related cases
-    const criminalTypes = ['Criminal', 'MAGISTRIAL CASES', 'MISC. CRIM APLN', 'SESSIONS CASES', 'CRIM APPEAL'];
-    if (field === 'case_type' && !criminalTypes.includes(value)) {
-      delete newData.police_station_details;
-    }
-    return newData;
-  });
-};
+  const handleTopLevelChange = (field, value) => {
+    setFormData((prev) => {
+      const newData = { ...prev, [field]: value };
+      // Only show police station details for Criminal and criminal-related cases
+      const criminalTypes = ['Criminal', 'MAGISTRIAL CASES', 'MISC. CRIM APLN', 'SESSIONS CASES', 'CRIM APPEAL'];
+      if (field === 'case_type' && !criminalTypes.includes(value)) {
+        delete newData.police_station_details;
+      }
+      return newData;
+    });
+  };
   const handleNestedChange = (section, field, value) => {
     setFormData((prev) => ({
       ...prev,
@@ -604,66 +563,66 @@ const handleTopLevelChange = (field, value) => {
     }));
   };
 
- const handleFormSubmit = async (e) => {
-  e.preventDefault();
-  setFormError('');
-  setFormSuccess('');
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    setFormError('');
+    setFormSuccess('');
 
-  // Client-side validation
-  const pAge = parseInt(formData.plaintiff_details.age, 10);
-  const rAge = parseInt(formData.respondent_details.age, 10);
-  if (!pAge || pAge < 1 || pAge > 120) {
-    setFormError('Plaintiff age must be between 1 and 120');
-    return;
-  }
-  if (!rAge || rAge < 1 || rAge > 120) {
-    setFormError('Respondent age must be between 1 and 120');
-    return;
-  }
-  if (formData.plaintiff_details.pin && formData.plaintiff_details.pin.length !== 6) {
-    setFormError('Plaintiff PIN code must be exactly 6 digits');
-    return;
-  }
-  if (formData.respondent_details.pin && formData.respondent_details.pin.length !== 6) {
-    setFormError('Respondent PIN code must be exactly 6 digits');
-    return;
-  }
-  if (formData.plaintiff_details.mobile && formData.plaintiff_details.mobile.length !== 10) {
-    setFormError('Plaintiff mobile number must be exactly 10 digits');
-    return;
-  }
-  if (formData.respondent_details.mobile && formData.respondent_details.mobile.length !== 10) {
-    setFormError('Respondent mobile number must be exactly 10 digits');
-    return;
-  }
-  const currentYear = new Date().getFullYear();
-  const criminalTypesCheck = ['Criminal', 'MAGISTRIAL CASES', 'MISC. CRIM APLN', 'SESSIONS CASES', 'CRIM APPEAL'];
-  if (criminalTypesCheck.includes(formData.case_type) && formData.police_station_details) {
-    const firYear = parseInt(formData.police_station_details.fir_year, 10);
-    if (!firYear || firYear < 1900 || firYear > currentYear) {
-      setFormError(`FIR Year must be between 1900 and ${currentYear}`);
+    // Client-side validation
+    const pAge = parseInt(formData.plaintiff_details.age, 10);
+    const rAge = parseInt(formData.respondent_details.age, 10);
+    if (!pAge || pAge < 1 || pAge > 120) {
+      setFormError('Plaintiff age must be between 1 and 120');
       return;
     }
-  }
-  if (formData.main_matter_details.year) {
-    const mmYear = parseInt(formData.main_matter_details.year, 10);
-    if (!mmYear || mmYear < 1900 || mmYear > currentYear) {
-      setFormError(`Main Matter Year must be between 1900 and ${currentYear}`);
+    if (!rAge || rAge < 1 || rAge > 120) {
+      setFormError('Respondent age must be between 1 and 120');
       return;
     }
-  }
-
-  try {
-    const token = localStorage.getItem('token');
-    const dataToSubmit = { ...formData };
-    // Only include police station details for criminal-related cases
-    const criminalTypes = ['Criminal', 'MAGISTRIAL CASES', 'MISC. CRIM APLN', 'SESSIONS CASES', 'CRIM APPEAL'];
-    if (!criminalTypes.includes(formData.case_type)) {
-      delete dataToSubmit.police_station_details;
+    if (formData.plaintiff_details.pin && formData.plaintiff_details.pin.length !== 6) {
+      setFormError('Plaintiff PIN code must be exactly 6 digits');
+      return;
     }
+    if (formData.respondent_details.pin && formData.respondent_details.pin.length !== 6) {
+      setFormError('Respondent PIN code must be exactly 6 digits');
+      return;
+    }
+    if (formData.plaintiff_details.mobile && formData.plaintiff_details.mobile.length !== 10) {
+      setFormError('Plaintiff mobile number must be exactly 10 digits');
+      return;
+    }
+    if (formData.respondent_details.mobile && formData.respondent_details.mobile.length !== 10) {
+      setFormError('Respondent mobile number must be exactly 10 digits');
+      return;
+    }
+    const currentYear = new Date().getFullYear();
+    const criminalTypesCheck = ['Criminal', 'MAGISTRIAL CASES', 'MISC. CRIM APLN', 'SESSIONS CASES', 'CRIM APPEAL'];
+    if (criminalTypesCheck.includes(formData.case_type) && formData.police_station_details) {
+      const firYear = parseInt(formData.police_station_details.fir_year, 10);
+      if (!firYear || firYear < 1900 || firYear > currentYear) {
+        setFormError(`FIR Year must be between 1900 and ${currentYear}`);
+        return;
+      }
+    }
+    if (formData.main_matter_details.year) {
+      const mmYear = parseInt(formData.main_matter_details.year, 10);
+      if (!mmYear || mmYear < 1900 || mmYear > currentYear) {
+        setFormError(`Main Matter Year must be between 1900 and ${currentYear}`);
+        return;
+      }
+    }
+
+    try {
+      const token = localStorage.getItem('token');
+      const dataToSubmit = { ...formData };
+      // Only include police station details for criminal-related cases
+      const criminalTypes = ['Criminal', 'MAGISTRIAL CASES', 'MISC. CRIM APLN', 'SESSIONS CASES', 'CRIM APPEAL'];
+      if (!criminalTypes.includes(formData.case_type)) {
+        delete dataToSubmit.police_station_details;
+      }
       // Make API call to file the case using Supabase Edge Function
       const response = await callEdgeFunction('file-case', dataToSubmit, true);
-      
+
       setFormSuccess(`Case filed successfully! Case Number: ${response.case_num}`);
 
       setFormData(initialFormState);
@@ -684,7 +643,7 @@ const handleTopLevelChange = (field, value) => {
         .select('documents, case_num, case_type, status')
         .eq('case_num', caseNum)
         .single();
-      
+
       if (error) throw error;
 
       if (data) {
@@ -759,11 +718,11 @@ const handleTopLevelChange = (field, value) => {
       if (updateError) throw updateError;
 
       setDocumentSuccess('Document uploaded successfully');
-      
+
       // Update local state
       setDocuments(updatedDocs);
       setSelectedCaseForDocuments({ ...selectedCaseForDocuments, documents: updatedDocs });
-      
+
       setDocumentFile(null);
       setDocumentType('');
       setDocumentDescription('');
@@ -792,7 +751,7 @@ const handleTopLevelChange = (field, value) => {
       // Generate a signed URL for the document from Supabase Storage
       const bucketName = 'case-documents';
       const filePath = doc.file_path || `${documentId}`;
-      
+
       const { data, error } = await supabase.storage
         .from(bucketName)
         .createSignedUrl(filePath, 300); // 5 minute expiry
@@ -802,7 +761,7 @@ const handleTopLevelChange = (field, value) => {
         const { data: fallbackData, error: fallbackError } = await supabase.storage
           .from('documents')
           .createSignedUrl(filePath, 300);
-          
+
         if (fallbackError) throw fallbackError;
         window.open(fallbackData.signedUrl, '_blank');
       } else {
@@ -941,11 +900,11 @@ const handleTopLevelChange = (field, value) => {
   const renderDashboard = () => (
     <div className="litigantdash-dashboard-main-section">
       {advocateChangeRequests.length > 0 && (
-        <section className="litigantdash-cases-list-section" style={{marginBottom: '32px'}}>
+        <section className="litigantdash-cases-list-section" style={{ marginBottom: '32px' }}>
           <h2>Advocate Change Status</h2>
           <div className="litigantdash-cases-grid-container">
             {advocateChangeRequests.map((req) => (
-              <div key={req.request_id || req.case_id} className="litigantdash-case-card-box" style={{borderLeft: `4px solid ${req.status === 'Approved' ? '#22c55e' : req.status === 'Rejected' ? '#ef4444' : req.noc_request_status === 'Signed' ? '#22c55e' : req.noc_request_status === 'Declined' ? '#ef4444' : '#fbbf24'}`}}>
+              <div key={req.request_id || req.case_id} className="litigantdash-case-card-box" style={{ borderLeft: `4px solid ${req.status === 'Approved' ? '#22c55e' : req.status === 'Rejected' ? '#ef4444' : req.noc_request_status === 'Signed' ? '#22c55e' : req.noc_request_status === 'Declined' ? '#ef4444' : '#fbbf24'}` }}>
                 <div className="litigantdash-case-card-header">
                   <h3>Case: {req.case_id || 'Loading...'}</h3>
                   <span className={`litigantdash-status-badge ${(req.status || '').replace(/\s+/g, '-').toLowerCase()}`}>
@@ -956,11 +915,11 @@ const handleTopLevelChange = (field, value) => {
                   <p><strong>Current Lawyer:</strong> {req.existing_advocate_id}</p>
                   <p><strong>Request Date:</strong> {req.created_at ? new Date(req.created_at).toLocaleDateString() : 'N/A'}</p>
                   {req.noc_request_status === 'Signed' && (
-                    <div style={{marginTop: '12px', display: 'flex', gap: '8px'}}>
-                      <button 
+                    <div style={{ marginTop: '12px', display: 'flex', gap: '8px' }}>
+                      <button
                         className="litigantdash-view-details-button"
                         style={{
-                          background: (req.status === 'Under Court Review' || req.status === 'Approved' || req.status === 'Rejected') ? '#64748b' : '#0f172a', 
+                          background: (req.status === 'Under Court Review' || req.status === 'Approved' || req.status === 'Rejected') ? '#64748b' : '#0f172a',
                           color: 'white',
                           cursor: (req.status === 'Under Court Review' || req.status === 'Approved' || req.status === 'Rejected') ? 'not-allowed' : 'pointer'
                         }}
@@ -972,22 +931,22 @@ const handleTopLevelChange = (field, value) => {
                     </div>
                   )}
                   {req.status === 'Approved' && (
-                    <p style={{color: '#166534', fontSize: '12px', marginTop: '8px', background: '#dcfce7', padding: '8px', borderRadius: '4px'}}>
+                    <p style={{ color: '#166534', fontSize: '12px', marginTop: '8px', background: '#dcfce7', padding: '8px', borderRadius: '4px' }}>
                       🎉 Approved! Your previous advocate has been discharged. You can now attach a new advocate.
                     </p>
                   )}
                   {req.status === 'Rejected' && (
-                    <p style={{color: '#991b1b', fontSize: '12px', marginTop: '8px', background: '#fee2e2', padding: '8px', borderRadius: '4px'}}>
+                    <p style={{ color: '#991b1b', fontSize: '12px', marginTop: '8px', background: '#fee2e2', padding: '8px', borderRadius: '4px' }}>
                       ❌ Rejected by court. {req.review_remarks && `Remarks: ${req.review_remarks}`}
                     </p>
                   )}
                   {req.noc_request_status === 'Declined' && req.status !== 'Approved' && req.status !== 'Rejected' && (
-                    <p style={{color: '#991b1b', fontSize: '12px', marginTop: '8px'}}>
+                    <p style={{ color: '#991b1b', fontSize: '12px', marginTop: '8px' }}>
                       ⚠ Lawyer declined NOC. Reason: {req.noc_decline_reason}
                     </p>
                   )}
                   {req.noc_request_status === 'Requested' && req.status !== 'Approved' && req.status !== 'Rejected' && (
-                    <p style={{color: '#92400e', fontSize: '12px', marginTop: '8px'}}>
+                    <p style={{ color: '#92400e', fontSize: '12px', marginTop: '8px' }}>
                       ⏳ Request sent to lawyer. Waiting for digital signature.
                     </p>
                   )}
@@ -1272,44 +1231,44 @@ const handleTopLevelChange = (field, value) => {
                 <option value="Other">Other</option>
               </select>
             </div>
-           <div className="litigantdash-form-group-item">
-  <label>Case Type</label>
-  <select
-    value={formData.case_type}
-    onChange={(e) => handleTopLevelChange('case_type', e.target.value)}
-    required
-  >
-    <option value="Civil">Civil</option>
-    <option value="Criminal">Criminal</option>
-    <option value="CIV SUITS">CIV SUITS</option>
-    <option value="EXE PET">EXE PET</option>
-    <option value="MISC. CIV APPLN">MISC. CIV APPLN</option>
-    <option value="MRG PET">MRG PET</option>
-    <option value="MACP">MACP</option>
-    <option value="MISC CIV CASES">MISC CIV CASES</option>
-    <option value="CIVIL APPEAL">CIVIL APPEAL</option>
-    <option value="ARBITN">ARBITN</option>
-    <option value="MISC. CIV APPEAL">MISC. CIV APPEAL</option>
-    <option value="LAND REFRNC">LAND REFRNC</option>
-    <option value="MAGISTRIAL CASES">MAGISTRIAL CASES</option>
-    <option value="MISC. EXE.">MISC. EXE.</option>
-    <option value="LABUR MAIN">LABUR MAIN</option>
-    <option value="COMMERCIAL SUIT">COMMERCIAL SUIT</option>
-    <option value="MISC. CRIM APLN">MISC. CRIM APLN</option>
-    <option value="INDUS MAIN">INDUS MAIN</option>
-    <option value="CIVIL REV.">CIVIL REV.</option>
-    <option value="OTHER TRIBNL">OTHER TRIBNL</option>
-    <option value="INDUS MISC">INDUS MISC</option>
-    <option value="LABUR MISC">LABUR MISC</option>
-    <option value="ELCTN PET">ELCTN PET</option>
-    <option value="CO-OP MAIN">CO-OP MAIN</option>
-    <option value="COMMERCIAL APPEAL">COMMERCIAL APPEAL</option>
-    <option value="CO-OP APEAL MAIN">CO-OP APEAL MAIN</option>
-    <option value="CO-OP MISC.">CO-OP MISC.</option>
-    <option value="SESSIONS CASES">SESSIONS CASES</option>
-    <option value="CRIM APPEAL">CRIM APPEAL</option>
-  </select>
-</div>
+            <div className="litigantdash-form-group-item">
+              <label>Case Type</label>
+              <select
+                value={formData.case_type}
+                onChange={(e) => handleTopLevelChange('case_type', e.target.value)}
+                required
+              >
+                <option value="Civil">Civil</option>
+                <option value="Criminal">Criminal</option>
+                <option value="CIV SUITS">CIV SUITS</option>
+                <option value="EXE PET">EXE PET</option>
+                <option value="MISC. CIV APPLN">MISC. CIV APPLN</option>
+                <option value="MRG PET">MRG PET</option>
+                <option value="MACP">MACP</option>
+                <option value="MISC CIV CASES">MISC CIV CASES</option>
+                <option value="CIVIL APPEAL">CIVIL APPEAL</option>
+                <option value="ARBITN">ARBITN</option>
+                <option value="MISC. CIV APPEAL">MISC. CIV APPEAL</option>
+                <option value="LAND REFRNC">LAND REFRNC</option>
+                <option value="MAGISTRIAL CASES">MAGISTRIAL CASES</option>
+                <option value="MISC. EXE.">MISC. EXE.</option>
+                <option value="LABUR MAIN">LABUR MAIN</option>
+                <option value="COMMERCIAL SUIT">COMMERCIAL SUIT</option>
+                <option value="MISC. CRIM APLN">MISC. CRIM APLN</option>
+                <option value="INDUS MAIN">INDUS MAIN</option>
+                <option value="CIVIL REV.">CIVIL REV.</option>
+                <option value="OTHER TRIBNL">OTHER TRIBNL</option>
+                <option value="INDUS MISC">INDUS MISC</option>
+                <option value="LABUR MISC">LABUR MISC</option>
+                <option value="ELCTN PET">ELCTN PET</option>
+                <option value="CO-OP MAIN">CO-OP MAIN</option>
+                <option value="COMMERCIAL APPEAL">COMMERCIAL APPEAL</option>
+                <option value="CO-OP APEAL MAIN">CO-OP APEAL MAIN</option>
+                <option value="CO-OP MISC.">CO-OP MISC.</option>
+                <option value="SESSIONS CASES">SESSIONS CASES</option>
+                <option value="CRIM APPEAL">CRIM APPEAL</option>
+              </select>
+            </div>
           </div>
         </div>
         <div className="litigantdash-form-section-block">
@@ -1669,9 +1628,9 @@ const handleTopLevelChange = (field, value) => {
             </div>
           </div>
         </div>
-       {['Criminal', 'MAGISTRIAL CASES', 'MISC. CRIM APLN', 'SESSIONS CASES', 'CRIM APPEAL'].includes(formData.case_type) && (
-  <div className="litigantdash-form-section-block">
-    <h3>Police Station Details</h3>
+        {['Criminal', 'MAGISTRIAL CASES', 'MISC. CRIM APLN', 'SESSIONS CASES', 'CRIM APPEAL'].includes(formData.case_type) && (
+          <div className="litigantdash-form-section-block">
+            <h3>Police Station Details</h3>
             <div className="litigantdash-form-grid-layout">
               <div className="litigantdash-form-group-item">
                 <label>Police Station</label>
@@ -1801,7 +1760,7 @@ const handleTopLevelChange = (field, value) => {
       </form>
     </div>
   );
- const renderHearings = () => (
+  const renderHearings = () => (
     <div className="litigantdash-hearings-main-section">
       <h2>Search Case Hearings</h2>
       <form onSubmit={handleHearingSearch} className="litigantdash-hearing-search-form-container">
@@ -1844,10 +1803,10 @@ const handleTopLevelChange = (field, value) => {
                       <span className="litigantdash-detail-value-text">
                         {hearing.hearing_date
                           ? new Date(hearing.hearing_date).toLocaleDateString('en-GB', {
-                              day: '2-digit',
-                              month: '2-digit',
-                              year: 'numeric'
-                            })
+                            day: '2-digit',
+                            month: '2-digit',
+                            year: 'numeric'
+                          })
                           : 'Not specified'}
                       </span>
                     </div>
@@ -1872,7 +1831,7 @@ const handleTopLevelChange = (field, value) => {
                       </div>
                     )}
 
-                    <div className="litigantdash-case-card-actions" style={{marginTop: '16px'}}>
+                    <div className="litigantdash-case-card-actions" style={{ marginTop: '16px' }}>
                       <button
                         className="litigantdash-view-details-button"
                         onClick={() => {
@@ -1914,168 +1873,168 @@ const handleTopLevelChange = (field, value) => {
             </div>
             <div className="litigantdash-modal-content-scrollable-area">
               <div className="litigantdash-modal-content-panel">
-               <div className="hearing-order-sheet">
-  <div className="order-header">
-    <p style={{fontSize: '11px', marginBottom: '5px'}}>Schedule VII, Form No.127</p>
-    <p style={{fontSize: '11px', marginBottom: '15px'}}>High Court Criminal Form No (H) 106</p>
-    <h1>ORDER SHEET</h1>
-  </div>
-                {(() => {
-  // Fetch the actual case data for this case number
-  const currentCase = cases.find(c => c.case_num === searchCaseNum) || {};
-  const officeDetails = currentCase.for_office_use_only || {};
-  const plaintiffName = currentCase.plaintiff_details?.name || 'Petitioner';
-  const respondentName = currentCase.respondent_details?.name || 'Respondent';
-  const plaintiffAdvocate = currentCase.plaintiff_details?.advocate || '';
-  const respondentAdvocate = currentCase.respondent_details?.advocate || '';
-  const district = currentCase.district || '';
-  const court = currentCase.court || '';
-  
-  return (
-    <>
-      <div className="order-header">
-        <h2 style={{fontSize: '16px', fontWeight: 'bold', textAlign: 'center', marginBottom: '10px'}}>
-          OFFICE OF THE DISTRICT & SESSIONS JUDGE, {district.toUpperCase()}
-        </h2>
-        <p style={{fontSize: '14px', textAlign: 'right', marginBottom: '10px', fontWeight: 'bold'}}>
-          IN THE COURT OF: {officeDetails.court_allotted || court}
-        </p>
-        <h3 style={{fontSize: '14px', textAlign: 'center', marginBottom: '15px', fontWeight: 'bold'}}>
-          {plaintiffName} v. {respondentName}
-        </h3>
-        <p style={{fontSize: '13px', textAlign: 'left', marginBottom: '5px'}}>
-          <strong>Case No.:</strong> {searchCaseNum}
-        </p>
-        <p style={{fontSize: '13px', textAlign: 'left', marginBottom: '20px'}}>
-          <strong>Case Type:</strong> {currentCase.case_type || 'N/A'}
-        </p>
-        <h1 style={{fontSize: '18px', textAlign: 'center', fontWeight: 'bold', textDecoration: 'underline', marginBottom: '20px'}}>
-          ORDER SHEET / PROCEEDINGS
-        </h1>
-      </div>
+                <div className="hearing-order-sheet">
+                  <div className="order-header">
+                    <p style={{ fontSize: '11px', marginBottom: '5px' }}>Schedule VII, Form No.127</p>
+                    <p style={{ fontSize: '11px', marginBottom: '15px' }}>High Court Criminal Form No (H) 106</p>
+                    <h1>ORDER SHEET</h1>
+                  </div>
+                  {(() => {
+                    // Fetch the actual case data for this case number
+                    const currentCase = cases.find(c => c.case_num === searchCaseNum) || {};
+                    const officeDetails = currentCase.for_office_use_only || {};
+                    const plaintiffName = currentCase.plaintiff_details?.name || 'Petitioner';
+                    const respondentName = currentCase.respondent_details?.name || 'Respondent';
+                    const plaintiffAdvocate = currentCase.plaintiff_details?.advocate || '';
+                    const respondentAdvocate = currentCase.respondent_details?.advocate || '';
+                    const district = currentCase.district || '';
+                    const court = currentCase.court || '';
 
-      {(plaintiffAdvocate || respondentAdvocate) && (
-        <div style={{fontSize: '12px', marginBottom: '15px', padding: '10px', background: '#f5f5f5'}}>
-          {plaintiffAdvocate && <p><strong>Present for Petitioner:</strong> {plaintiffAdvocate}</p>}
-          {respondentAdvocate && <p><strong>Present for Respondent:</strong> {respondentAdvocate}</p>}
-        </div>
-      )}
-    </>
-  );
-})()}
-<table style={{width: '100%', borderCollapse: 'collapse', marginTop: '20px', border: '1px solid #000'}}>
-  <thead>
-    <tr>
-      <th style={{border: '1px solid #000', padding: '8px', textAlign: 'center', width: '50px', fontWeight: 'bold'}}>S. No.</th>
-      <th style={{border: '1px solid #000', padding: '8px', textAlign: 'center', width: '120px', fontWeight: 'bold'}}>Date of Order</th>
-      <th style={{border: '1px solid #000', padding: '8px', textAlign: 'center', fontWeight: 'bold'}}>ORDER / PROCEEDINGS</th>
-      <th style={{border: '1px solid #000', padding: '8px', textAlign: 'center', width: '150px', fontWeight: 'bold'}}>Signature of Court</th>
-      <th style={{border: '1px solid #000', padding: '8px', textAlign: 'center', width: '120px', fontWeight: 'bold'}}>Office Action</th>
-    </tr>
-  </thead>
-  <tbody>
-    {searchedHearings && searchedHearings.map((hearing, idx) => (
-      <tr key={idx}>
-        <td style={{border: '1px solid #000', padding: '8px', verticalAlign: 'top', textAlign: 'center'}}>
-          {idx + 1}
-        </td>
-        <td style={{border: '1px solid #000', padding: '8px', verticalAlign: 'top', textAlign: 'center'}}>
-          {hearing.hearing_date
-            ? new Date(hearing.hearing_date).toLocaleDateString('en-GB', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric'
-              })
-            : ''}
-        </td>
-        <td style={{border: '1px solid #000', padding: '12px', verticalAlign: 'top'}}>
-          <div 
-            className="order-content" 
-            dangerouslySetInnerHTML={{ __html: hearing.remarks || hearing.remarks_plain_text || 'No order recorded' }}
-          />
-          {hearing.next_hearing_date && (
-            <p style={{marginTop: '15px', fontWeight: 'bold'}}>
-              Next Hearing: {new Date(hearing.next_hearing_date).toLocaleDateString('en-GB', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric'
-              })}
-            </p>
-          )}
-        </td>
-        <td style={{border: '1px solid #000', padding: '8px', verticalAlign: 'top', textAlign: 'center'}}>
-          {hearing.digital_signature && hearing.digital_signature.is_signed ? (
-            <div style={{fontSize: '11px', textAlign: 'center'}}>
-              <div style={{fontWeight: 'bold', marginBottom: '5px'}}>
-                {hearing.digital_signature.signed_by_name}
-              </div>
-              <div style={{fontSize: '9px', fontStyle: 'italic'}}>
-                Digitally signed
-              </div>
-              <div style={{fontSize: '8px', marginTop: '3px'}}>
-                {hearing.digital_signature.signature_timestamp 
-                  ? new Date(hearing.digital_signature.signature_timestamp).toLocaleDateString('en-GB')
-                  : ''}
-              </div>
-            </div>
-          ) : (
-            <div style={{height: '60px'}}></div>
-          )}
-        </td>
-        <td style={{border: '1px solid #000', padding: '8px', verticalAlign: 'top', fontSize: '11px'}}>
-          {/* Office action space */}
-        </td>
-      </tr>
-    ))}
-  </tbody>
-</table>
+                    return (
+                      <>
+                        <div className="order-header">
+                          <h2 style={{ fontSize: '16px', fontWeight: 'bold', textAlign: 'center', marginBottom: '10px' }}>
+                            OFFICE OF THE DISTRICT & SESSIONS JUDGE, {district.toUpperCase()}
+                          </h2>
+                          <p style={{ fontSize: '14px', textAlign: 'right', marginBottom: '10px', fontWeight: 'bold' }}>
+                            IN THE COURT OF: {officeDetails.court_allotted || court}
+                          </p>
+                          <h3 style={{ fontSize: '14px', textAlign: 'center', marginBottom: '15px', fontWeight: 'bold' }}>
+                            {plaintiffName} v. {respondentName}
+                          </h3>
+                          <p style={{ fontSize: '13px', textAlign: 'left', marginBottom: '5px' }}>
+                            <strong>Case No.:</strong> {searchCaseNum}
+                          </p>
+                          <p style={{ fontSize: '13px', textAlign: 'left', marginBottom: '20px' }}>
+                            <strong>Case Type:</strong> {currentCase.case_type || 'N/A'}
+                          </p>
+                          <h1 style={{ fontSize: '18px', textAlign: 'center', fontWeight: 'bold', textDecoration: 'underline', marginBottom: '20px' }}>
+                            ORDER SHEET / PROCEEDINGS
+                          </h1>
+                        </div>
 
-<div style={{marginTop: '40px', textAlign: 'right', paddingRight: '50px'}}>
-  <p style={{fontSize: '13px', marginBottom: '60px'}}>
-    <strong>By Order of Court</strong>
-  </p>
-  <div style={{borderTop: '1px solid #000', width: '250px', marginLeft: 'auto', paddingTop: '5px'}}>
-    <p style={{fontSize: '12px', textAlign: 'center', fontWeight: 'bold'}}>
-      {selectedHearing?.digital_signature?.signed_by_name || 'Presiding Judge'}
-    </p>
-    <p style={{fontSize: '11px', textAlign: 'center'}}>
-      {(() => {
-        const currentCase = cases.find(c => c.case_num === searchCaseNum) || {};
-        return currentCase.for_office_use_only?.court_allotted || currentCase.court || '';
-      })()}
-    </p>
-  </div>
-</div>
-              {searchedHearings && searchedHearings.some(h => h.digital_signature?.is_signed) && (
-  <div className="digital-signature-box">
-    <h4>DIGITAL SIGNATURE VERIFICATION</h4>
-    {searchedHearings.filter(h => h.digital_signature?.is_signed).map((hearing, idx) => (
-      <div key={idx} style={{marginBottom: '10px', paddingBottom: '10px', borderBottom: '1px solid #ddd'}}>
-        <p><strong>Order #{idx + 1}:</strong></p>
-        <p><strong>Digitally signed by:</strong> {hearing.digital_signature.signed_by_name}</p>
-        <p><strong>DN:</strong> cn={hearing.digital_signature.signed_by_name}, o=JUDICIAL, ou={hearing.digital_signature.signed_by_role?.toUpperCase()}, c=IN</p>
-        <p><strong>Date:</strong> {hearing.digital_signature.signature_timestamp 
-          ? new Date(hearing.digital_signature.signature_timestamp).toLocaleString('en-GB', {
-              year: 'numeric',
-              month: '2-digit',
-              day: '2-digit',
-              hour: '2-digit',
-              minute: '2-digit',
-              second: '2-digit',
-              hour12: false
-            }).replace(',', ' at')
-          : 'N/A'}</p>
-      </div>
-    ))}
-  </div>
-)}
-              
+                        {(plaintiffAdvocate || respondentAdvocate) && (
+                          <div style={{ fontSize: '12px', marginBottom: '15px', padding: '10px', background: '#f5f5f5' }}>
+                            {plaintiffAdvocate && <p><strong>Present for Petitioner:</strong> {plaintiffAdvocate}</p>}
+                            {respondentAdvocate && <p><strong>Present for Respondent:</strong> {respondentAdvocate}</p>}
+                          </div>
+                        )}
+                      </>
+                    );
+                  })()}
+                  <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px', border: '1px solid #000' }}>
+                    <thead>
+                      <tr>
+                        <th style={{ border: '1px solid #000', padding: '8px', textAlign: 'center', width: '50px', fontWeight: 'bold' }}>S. No.</th>
+                        <th style={{ border: '1px solid #000', padding: '8px', textAlign: 'center', width: '120px', fontWeight: 'bold' }}>Date of Order</th>
+                        <th style={{ border: '1px solid #000', padding: '8px', textAlign: 'center', fontWeight: 'bold' }}>ORDER / PROCEEDINGS</th>
+                        <th style={{ border: '1px solid #000', padding: '8px', textAlign: 'center', width: '150px', fontWeight: 'bold' }}>Signature of Court</th>
+                        <th style={{ border: '1px solid #000', padding: '8px', textAlign: 'center', width: '120px', fontWeight: 'bold' }}>Office Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {searchedHearings && searchedHearings.map((hearing, idx) => (
+                        <tr key={idx}>
+                          <td style={{ border: '1px solid #000', padding: '8px', verticalAlign: 'top', textAlign: 'center' }}>
+                            {idx + 1}
+                          </td>
+                          <td style={{ border: '1px solid #000', padding: '8px', verticalAlign: 'top', textAlign: 'center' }}>
+                            {hearing.hearing_date
+                              ? new Date(hearing.hearing_date).toLocaleDateString('en-GB', {
+                                day: '2-digit',
+                                month: '2-digit',
+                                year: 'numeric'
+                              })
+                              : ''}
+                          </td>
+                          <td style={{ border: '1px solid #000', padding: '12px', verticalAlign: 'top' }}>
+                            <div
+                              className="order-content"
+                              dangerouslySetInnerHTML={{ __html: hearing.remarks || hearing.remarks_plain_text || 'No order recorded' }}
+                            />
+                            {hearing.next_hearing_date && (
+                              <p style={{ marginTop: '15px', fontWeight: 'bold' }}>
+                                Next Hearing: {new Date(hearing.next_hearing_date).toLocaleDateString('en-GB', {
+                                  day: '2-digit',
+                                  month: '2-digit',
+                                  year: 'numeric'
+                                })}
+                              </p>
+                            )}
+                          </td>
+                          <td style={{ border: '1px solid #000', padding: '8px', verticalAlign: 'top', textAlign: 'center' }}>
+                            {hearing.digital_signature && hearing.digital_signature.is_signed ? (
+                              <div style={{ fontSize: '11px', textAlign: 'center' }}>
+                                <div style={{ fontWeight: 'bold', marginBottom: '5px' }}>
+                                  {hearing.digital_signature.signed_by_name}
+                                </div>
+                                <div style={{ fontSize: '9px', fontStyle: 'italic' }}>
+                                  Digitally signed
+                                </div>
+                                <div style={{ fontSize: '8px', marginTop: '3px' }}>
+                                  {hearing.digital_signature.signature_timestamp
+                                    ? new Date(hearing.digital_signature.signature_timestamp).toLocaleDateString('en-GB')
+                                    : ''}
+                                </div>
+                              </div>
+                            ) : (
+                              <div style={{ height: '60px' }}></div>
+                            )}
+                          </td>
+                          <td style={{ border: '1px solid #000', padding: '8px', verticalAlign: 'top', fontSize: '11px' }}>
+                            {/* Office action space */}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+
+                  <div style={{ marginTop: '40px', textAlign: 'right', paddingRight: '50px' }}>
+                    <p style={{ fontSize: '13px', marginBottom: '60px' }}>
+                      <strong>By Order of Court</strong>
+                    </p>
+                    <div style={{ borderTop: '1px solid #000', width: '250px', marginLeft: 'auto', paddingTop: '5px' }}>
+                      <p style={{ fontSize: '12px', textAlign: 'center', fontWeight: 'bold' }}>
+                        {selectedHearing?.digital_signature?.signed_by_name || 'Presiding Judge'}
+                      </p>
+                      <p style={{ fontSize: '11px', textAlign: 'center' }}>
+                        {(() => {
+                          const currentCase = cases.find(c => c.case_num === searchCaseNum) || {};
+                          return currentCase.for_office_use_only?.court_allotted || currentCase.court || '';
+                        })()}
+                      </p>
+                    </div>
+                  </div>
+                  {searchedHearings && searchedHearings.some(h => h.digital_signature?.is_signed) && (
+                    <div className="digital-signature-box">
+                      <h4>DIGITAL SIGNATURE VERIFICATION</h4>
+                      {searchedHearings.filter(h => h.digital_signature?.is_signed).map((hearing, idx) => (
+                        <div key={idx} style={{ marginBottom: '10px', paddingBottom: '10px', borderBottom: '1px solid #ddd' }}>
+                          <p><strong>Order #{idx + 1}:</strong></p>
+                          <p><strong>Digitally signed by:</strong> {hearing.digital_signature.signed_by_name}</p>
+                          <p><strong>DN:</strong> cn={hearing.digital_signature.signed_by_name}, o=JUDICIAL, ou={hearing.digital_signature.signed_by_role?.toUpperCase()}, c=IN</p>
+                          <p><strong>Date:</strong> {hearing.digital_signature.signature_timestamp
+                            ? new Date(hearing.digital_signature.signature_timestamp).toLocaleString('en-GB', {
+                              year: 'numeric',
+                              month: '2-digit',
+                              day: '2-digit',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                              second: '2-digit',
+                              hour12: false
+                            }).replace(',', ' at')
+                            : 'N/A'}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
                   {selectedHearing.attachments && selectedHearing.attachments.length > 0 && (
-                    <div style={{marginTop: '30px', padding: '15px', border: '1px solid #ddd', background: '#f9f9f9'}}>
-                      <h4 style={{marginBottom: '10px', fontSize: '14px'}}>Attachments</h4>
-                      <ul style={{listStyle: 'none', padding: 0}}>
+                    <div style={{ marginTop: '30px', padding: '15px', border: '1px solid #ddd', background: '#f9f9f9' }}>
+                      <h4 style={{ marginBottom: '10px', fontSize: '14px' }}>Attachments</h4>
+                      <ul style={{ listStyle: 'none', padding: 0 }}>
                         {selectedHearing.attachments.map((attachment, i) => (
-                          <li key={i} style={{marginBottom: '8px', fontSize: '12px'}}>
+                          <li key={i} style={{ marginBottom: '8px', fontSize: '12px' }}>
                             <button
                               onClick={() => downloadAttachment(attachment.filename, attachment.originalname)}
                               style={{
@@ -2094,17 +2053,17 @@ const handleTopLevelChange = (field, value) => {
                       </ul>
                     </div>
                   )}
-                  <div style={{marginTop: '30px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end'}}>
-  <div style={{width: '200px', height: '100px', border: '1px dashed #999', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', color: '#999'}}>
-    Court Seal
-  </div>
-  <div style={{fontSize: '11px', textAlign: 'right'}}>
-    <p><strong>Office/Registry Note:</strong></p>
-    <p style={{marginTop: '5px'}}>Copy to Registry for filing</p>
-    <p style={{marginTop: '30px'}}>__________________</p>
-    <p>Office Stamp & Date</p>
-  </div>
-</div>
+                  <div style={{ marginTop: '30px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+                    <div style={{ width: '200px', height: '100px', border: '1px dashed #999', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', color: '#999' }}>
+                      Court Seal
+                    </div>
+                    <div style={{ fontSize: '11px', textAlign: 'right' }}>
+                      <p><strong>Office/Registry Note:</strong></p>
+                      <p style={{ marginTop: '5px' }}>Copy to Registry for filing</p>
+                      <p style={{ marginTop: '30px' }}>__________________</p>
+                      <p>Office Stamp & Date</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -2113,220 +2072,219 @@ const handleTopLevelChange = (field, value) => {
       )}
     </div>
   );
-  
-  
- // Replace your entire renderDocuments function with this updated version
-const renderDocuments = () => (
-  <div className="litigantdash-documents-main-section">
-    <h2>Case Documents</h2>
-    
-    {/* Document Requests Section */}
-    <div className="litigantdash-document-requests-section">
-      <h3>Pending Document Requests from Court</h3>
-      {requestsLoading ? (
-        <div className="litigantdash-loading-spinner">Loading requests...</div>
-      ) : documentRequests.length === 0 ? (
-        <div className="litigantdash-no-requests-message">
-          No pending document requests from the court.
-        </div>
-      ) : (
-        <div className="litigantdash-requests-grid">
-          {documentRequests.map((request) => (
-            <div 
-              key={request.document_id} 
-              className={`litigantdash-request-card ${
-                request.verification_status === 'rejected' ? 'rejected' : 
-                request.verification_status === 'verified' ? 'verified' :
-                request.verification_status === 'uploaded_pending_review' ? 'pending-review' :
-                'pending-upload'
-              }`}
-            >
-              <div className="litigantdash-request-card-header">
-                <h4>{request.document_type}</h4>
-                <span className={`litigantdash-request-status-badge ${request.verification_status}`}>
-                  {request.verification_status.replace('_', ' ').toUpperCase()}
-                </span>
-              </div>
-              
-              <div className="litigantdash-request-card-body">
-                <div className="litigantdash-request-detail-row">
-                  <span className="litigantdash-label">Case Number:</span>
-                  <span className="litigantdash-value">{request.case_num}</span>
-                </div>
-                <div className="litigantdash-request-detail-row">
-                  <span className="litigantdash-label">Case Type:</span>
-                  <span className="litigantdash-value">{request.case_type}</span>
-                </div>
-                {request.description && (
-                  <div className="litigantdash-request-detail-row">
-                    <span className="litigantdash-label">Description:</span>
-                    <span className="litigantdash-value">{request.description}</span>
-                  </div>
-                )}
-                <div className="litigantdash-request-detail-row">
-                  <span className="litigantdash-label">Requested On:</span>
-                  <span className="litigantdash-value">
-                    {new Date(request.request_date).toLocaleDateString()}
-                  </span>
-                </div>
-                <div className="litigantdash-request-detail-row">
-                  <span className="litigantdash-label">Deadline:</span>
-                  <span className="litigantdash-value litigantdash-deadline">
-                    {new Date(request.submission_deadline).toLocaleDateString()}
-                  </span>
-                </div>
-                
-                {request.verification_status === 'rejected' && request.rejection_reason && (
-                  <div className="litigantdash-rejection-notice">
-                    <strong>Rejection Reason:</strong> {request.rejection_reason}
-                  </div>
-                )}
-                
-                {request.verification_status === 'verified' && (
-                  <div className="litigantdash-verified-notice">
-                    ✓ Document verified and signed by court on{' '}
-                    {new Date(request.verification_date).toLocaleDateString()}
-                  </div>
-                )}
-                
-                {(request.verification_status === 'pending_upload' || 
-                  request.verification_status === 'rejected') && (
-                  <div className="litigantdash-upload-action-section">
-                    {selectedDocumentRequest?.document_id === request.document_id ? (
-                      <form 
-                        onSubmit={(e) => handleRequestedDocumentUpload(e, request.document_id, request.case_num)}
-                        className="litigantdash-inline-upload-form"
-                      >
-                        <input
-                          type="file"
-                          id="requested-doc-file-input"
-                          onChange={handleFileChange}
-                          required
-                          className="litigantdash-file-input-field"
-                        />
-                        <div className="litigantdash-upload-buttons-group">
-                          <button 
-                            type="submit" 
-                            className="litigantdash-upload-submit-button"
-                            disabled={uploadingRequestedDoc}
-                          >
-                            {uploadingRequestedDoc ? 'Uploading...' : 'Upload'}
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setSelectedDocumentRequest(null);
-                              setDocumentFile(null);
-                            }}
-                            className="litigantdash-upload-cancel-button"
-                          >
-                            Cancel
-                          </button>
-                        </div>
-                      </form>
-                    ) : (
-                      <button
-                        onClick={() => setSelectedDocumentRequest(request)}
-                        className="litigantdash-upload-trigger-button"
-                      >
-                        {request.verification_status === 'rejected' ? 'Re-upload Document' : 'Upload Document'}
-                      </button>
-                    )}
-                  </div>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-
-    {/* SEPARATOR */}
-    <hr style={{margin: '40px 0', border: 'none', borderTop: '2px solid #e5e7eb'}} />
-
-    {/* EXISTING DOCUMENTS SECTION - CASE SELECTOR */}
-    <h3 style={{marginBottom: '20px'}}>Upload & View Case Documents</h3>
-    <div className="litigantdash-case-selector-dropdown">
-      <label htmlFor="case-selector">Select Case:</label>
-      <select
-        id="case-selector"
-        onChange={(e) => {
-          const caseNum = e.target.value;
-          if (caseNum) {
-            fetchDocuments(caseNum);
-          } else {
-            setSelectedCaseForDocuments(null);
-            setDocuments([]);
-          }
-        }}
-        value={selectedCaseForDocuments?.case_num || ''}
-      >
-        <option value="">-- Select a Case --</option>
-        {cases.map((legalCase) => (
-          <option key={legalCase.case_num} value={legalCase.case_num}>
-            {legalCase.case_num} - {legalCase.case_type}
-          </option>
-        ))}
-      </select>
-    </div>
 
 
+  // Replace your entire renderDocuments function with this updated version
+  const renderDocuments = () => (
+    <div className="litigantdash-documents-main-section">
+      <h2>Case Documents</h2>
 
-    {/* DOCUMENTS LIST - Only shows when a case is selected */}
-    {selectedCaseForDocuments && (
-      <div className="litigantdash-documents-list-container">
-        <h4>Documents for Case: {selectedCaseForDocuments.case_num}</h4>
-        {documentsLoading ? (
-          <div className="litigantdash-loading-spinner">Loading documents...</div>
-        ) : documents.length === 0 ? (
-          <div className="litigantdash-no-documents-message">
-            No documents found for this case. Upload your first document above.
+      {/* Document Requests Section */}
+      <div className="litigantdash-document-requests-section">
+        <h3>Pending Document Requests from Court</h3>
+        {requestsLoading ? (
+          <div className="litigantdash-loading-spinner">Loading requests...</div>
+        ) : documentRequests.length === 0 ? (
+          <div className="litigantdash-no-requests-message">
+            No pending document requests from the court.
           </div>
         ) : (
-          <table className="litigantdash-documents-table">
-            <thead>
-              <tr>
-                <th>Document Type</th>
-                <th>File Name</th>
-                <th>Uploaded By</th>
-                <th>Upload Date</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {documents.map((doc) => (
-                <tr key={doc.document_id}>
-                  <td>{doc.document_type}</td>
-                  <td>{doc.file_name}</td>
-                  <td>{doc.uploaded_by_name || doc.uploaded_by || 'User'}</td>
-                  <td>{doc.upload_date || doc.uploaded_date ? new Date(doc.upload_date || doc.uploaded_date).toLocaleDateString() : 'N/A'}</td>
-                  <td>
-                    <span className={`litigantdash-doc-status-badge ${doc.verification_status || 'pending'}`}>
-                      {(doc.verification_status || 'Pending Review').replace(/_/g, ' ')}
+          <div className="litigantdash-requests-grid">
+            {documentRequests.map((request) => (
+              <div
+                key={request.document_id}
+                className={`litigantdash-request-card ${request.verification_status === 'rejected' ? 'rejected' :
+                    request.verification_status === 'verified' ? 'verified' :
+                      request.verification_status === 'uploaded_pending_review' ? 'pending-review' :
+                        'pending-upload'
+                  }`}
+              >
+                <div className="litigantdash-request-card-header">
+                  <h4>{request.document_type}</h4>
+                  <span className={`litigantdash-request-status-badge ${request.verification_status}`}>
+                    {request.verification_status.replace('_', ' ').toUpperCase()}
+                  </span>
+                </div>
+
+                <div className="litigantdash-request-card-body">
+                  <div className="litigantdash-request-detail-row">
+                    <span className="litigantdash-label">Case Number:</span>
+                    <span className="litigantdash-value">{request.case_num}</span>
+                  </div>
+                  <div className="litigantdash-request-detail-row">
+                    <span className="litigantdash-label">Case Type:</span>
+                    <span className="litigantdash-value">{request.case_type}</span>
+                  </div>
+                  {request.description && (
+                    <div className="litigantdash-request-detail-row">
+                      <span className="litigantdash-label">Description:</span>
+                      <span className="litigantdash-value">{request.description}</span>
+                    </div>
+                  )}
+                  <div className="litigantdash-request-detail-row">
+                    <span className="litigantdash-label">Requested On:</span>
+                    <span className="litigantdash-value">
+                      {new Date(request.request_date).toLocaleDateString()}
                     </span>
-                  </td>
-                  <td>
-                    <button
-                      onClick={() => downloadDocument(doc.document_id, doc.file_name)}
-                      className="litigantdash-download-doc-button"
-                    >
-                      <FileDown className="litigantdash-btn-icon" />
-                      Download
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                  </div>
+                  <div className="litigantdash-request-detail-row">
+                    <span className="litigantdash-label">Deadline:</span>
+                    <span className="litigantdash-value litigantdash-deadline">
+                      {new Date(request.submission_deadline).toLocaleDateString()}
+                    </span>
+                  </div>
+
+                  {request.verification_status === 'rejected' && request.rejection_reason && (
+                    <div className="litigantdash-rejection-notice">
+                      <strong>Rejection Reason:</strong> {request.rejection_reason}
+                    </div>
+                  )}
+
+                  {request.verification_status === 'verified' && (
+                    <div className="litigantdash-verified-notice">
+                      ✓ Document verified and signed by court on{' '}
+                      {new Date(request.verification_date).toLocaleDateString()}
+                    </div>
+                  )}
+
+                  {(request.verification_status === 'pending_upload' ||
+                    request.verification_status === 'rejected') && (
+                      <div className="litigantdash-upload-action-section">
+                        {selectedDocumentRequest?.document_id === request.document_id ? (
+                          <form
+                            onSubmit={(e) => handleRequestedDocumentUpload(e, request.document_id, request.case_num)}
+                            className="litigantdash-inline-upload-form"
+                          >
+                            <input
+                              type="file"
+                              id="requested-doc-file-input"
+                              onChange={handleFileChange}
+                              required
+                              className="litigantdash-file-input-field"
+                            />
+                            <div className="litigantdash-upload-buttons-group">
+                              <button
+                                type="submit"
+                                className="litigantdash-upload-submit-button"
+                                disabled={uploadingRequestedDoc}
+                              >
+                                {uploadingRequestedDoc ? 'Uploading...' : 'Upload'}
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setSelectedDocumentRequest(null);
+                                  setDocumentFile(null);
+                                }}
+                                className="litigantdash-upload-cancel-button"
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          </form>
+                        ) : (
+                          <button
+                            onClick={() => setSelectedDocumentRequest(request)}
+                            className="litigantdash-upload-trigger-button"
+                          >
+                            {request.verification_status === 'rejected' ? 'Re-upload Document' : 'Upload Document'}
+                          </button>
+                        )}
+                      </div>
+                    )}
+                </div>
+              </div>
+            ))}
+          </div>
         )}
       </div>
-    )}
-    
-    {documentError && <div className="litigantdash-error-alert-message">{documentError}</div>}
-    {documentSuccess && <div className="litigantdash-success-alert-message">{documentSuccess}</div>}
-  </div>
-);
+
+      {/* SEPARATOR */}
+      <hr style={{ margin: '40px 0', border: 'none', borderTop: '2px solid #e5e7eb' }} />
+
+      {/* EXISTING DOCUMENTS SECTION - CASE SELECTOR */}
+      <h3 style={{ marginBottom: '20px' }}>Upload & View Case Documents</h3>
+      <div className="litigantdash-case-selector-dropdown">
+        <label htmlFor="case-selector">Select Case:</label>
+        <select
+          id="case-selector"
+          onChange={(e) => {
+            const caseNum = e.target.value;
+            if (caseNum) {
+              fetchDocuments(caseNum);
+            } else {
+              setSelectedCaseForDocuments(null);
+              setDocuments([]);
+            }
+          }}
+          value={selectedCaseForDocuments?.case_num || ''}
+        >
+          <option value="">-- Select a Case --</option>
+          {cases.map((legalCase) => (
+            <option key={legalCase.case_num} value={legalCase.case_num}>
+              {legalCase.case_num} - {legalCase.case_type}
+            </option>
+          ))}
+        </select>
+      </div>
+
+
+
+      {/* DOCUMENTS LIST - Only shows when a case is selected */}
+      {selectedCaseForDocuments && (
+        <div className="litigantdash-documents-list-container">
+          <h4>Documents for Case: {selectedCaseForDocuments.case_num}</h4>
+          {documentsLoading ? (
+            <div className="litigantdash-loading-spinner">Loading documents...</div>
+          ) : documents.length === 0 ? (
+            <div className="litigantdash-no-documents-message">
+              No documents found for this case. Upload your first document above.
+            </div>
+          ) : (
+            <table className="litigantdash-documents-table">
+              <thead>
+                <tr>
+                  <th>Document Type</th>
+                  <th>File Name</th>
+                  <th>Uploaded By</th>
+                  <th>Upload Date</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {documents.map((doc) => (
+                  <tr key={doc.document_id}>
+                    <td>{doc.document_type}</td>
+                    <td>{doc.file_name}</td>
+                    <td>{doc.uploaded_by_name || doc.uploaded_by || 'User'}</td>
+                    <td>{doc.upload_date || doc.uploaded_date ? new Date(doc.upload_date || doc.uploaded_date).toLocaleDateString() : 'N/A'}</td>
+                    <td>
+                      <span className={`litigantdash-doc-status-badge ${doc.verification_status || 'pending'}`}>
+                        {(doc.verification_status || 'Pending Review').replace(/_/g, ' ')}
+                      </span>
+                    </td>
+                    <td>
+                      <button
+                        onClick={() => downloadDocument(doc.document_id, doc.file_name)}
+                        className="litigantdash-download-doc-button"
+                      >
+                        <FileDown className="litigantdash-btn-icon" />
+                        Download
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
+      )}
+
+      {documentError && <div className="litigantdash-error-alert-message">{documentError}</div>}
+      {documentSuccess && <div className="litigantdash-success-alert-message">{documentSuccess}</div>}
+    </div>
+  );
   const renderContent = () => {
     switch (activeSection) {
       case 'dashboard':
@@ -2538,7 +2496,7 @@ const renderDocuments = () => (
       )}
 
       {isChangeAdvocateOpen && selectedCaseForAdvocateChange && (
-        <ChangeAdvocateModal 
+        <ChangeAdvocateModal
           isOpen={isChangeAdvocateOpen}
           onClose={() => {
             setIsChangeAdvocateOpen(false);
@@ -2548,13 +2506,58 @@ const renderDocuments = () => (
           litigantProfile={profile}
         />
       )}
-      <Popup 
+      <Popup
         isOpen={popup.isOpen}
         message={popup.message}
         type={popup.type}
         onClose={() => setPopup({ ...popup, isOpen: false })}
       />
     </div>
+  );
+};
+export default LitigantDashboard;
+onClick = {() => {
+  setShowLogoutConfirm(false);
+  setLogoutPassword('');
+}}
+className = "litigantdash-cancel-logout-button"
+  >
+  Cancel
+              </button >
+            </div >
+          </div >
+        </div >
+      )}
+
+{
+  error && (
+    <div className="litigantdash-error-notification-banner">
+      <X className="litigantdash-error-icon-svg" />
+      {error}
+    </div>
+  )
+}
+
+{
+  isChangeAdvocateOpen && selectedCaseForAdvocateChange && (
+    <ChangeAdvocateModal
+      isOpen={isChangeAdvocateOpen}
+      onClose={() => {
+        setIsChangeAdvocateOpen(false);
+        setSelectedCaseForAdvocateChange(null);
+      }}
+      legalCase={selectedCaseForAdvocateChange}
+      litigantProfile={profile}
+    />
+  )
+}
+<Popup
+  isOpen={popup.isOpen}
+  message={popup.message}
+  type={popup.type}
+  onClose={() => setPopup({ ...popup, isOpen: false })}
+/>
+    </div >
   );
 };
 export default LitigantDashboard;
