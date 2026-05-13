@@ -6,6 +6,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -16,15 +17,13 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.nyaaydesk.app.presentation.theme.GoldAmber
-import com.nyaaydesk.app.presentation.theme.NavyBlue
-import com.nyaaydesk.app.presentation.theme.NavyBlueDark
-import com.nyaaydesk.app.presentation.theme.OffWhite
+import com.nyaaydesk.app.presentation.theme.BackgroundLight
+import com.nyaaydesk.app.presentation.theme.GovNavyBlue
+import com.nyaaydesk.app.presentation.theme.OnBackgroundLight
 
 /**
  * Shared scaffold for all 4 Login screens.
- * Provides the navy gradient header with title/subtitle,
- * and a white card body for the form fields.
+ * Provides the soft cream background and a focused card for the form.
  */
 @Composable
 fun NyaayAuthScaffold(
@@ -36,45 +35,55 @@ fun NyaayAuthScaffold(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Brush.verticalGradient(listOf(NavyBlueDark, NavyBlue)))
+            .background(BackgroundLight)
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
             // Header
-            Box(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
-                IconButton(onClick = onBack, modifier = Modifier.align(Alignment.CenterStart)) {
-                    Icon(Icons.Default.ArrowBack, contentDescription = "Back", tint = OffWhite)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                IconButton(onClick = onBack) {
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = GovNavyBlue)
                 }
-                Column(modifier = Modifier.align(Alignment.Center), horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("⚖️", fontSize = 36.sp)
-                    Text(text = title, style = MaterialTheme.typography.titleLarge, color = GoldAmber, fontWeight = FontWeight.Bold)
-                    Text(text = subtitle, style = MaterialTheme.typography.bodySmall, color = OffWhite.copy(alpha = 0.7f))
-                }
+                Spacer(modifier = Modifier.weight(1f))
+                Text("⚖️", fontSize = 28.sp)
+                Spacer(modifier = Modifier.weight(1f))
+                Spacer(modifier = Modifier.width(48.dp)) // Counterbalance back button
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = GovNavyBlue,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    text = subtitle,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = GovNavyBlue.copy(alpha = 0.6f)
+                )
+            }
 
-            // Form Card Container
-            Box(
+            Spacer(modifier = Modifier.height(32.dp))
+
+            // Form Content
+            Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 16.dp, vertical = 24.dp),
-                contentAlignment = Alignment.TopCenter
-            ) {
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(16.dp),
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 24.dp, vertical = 32.dp)
-                            .verticalScroll(rememberScrollState()),
-                        content = content
-                    )
-                }
-            }
+                    .padding(horizontal = 24.dp)
+                    .verticalScroll(rememberScrollState()),
+                content = content
+            )
         }
     }
 }
+

@@ -134,4 +134,10 @@ class AdvocateViewModel @Inject constructor(
 
     fun resetFilingState() = _uiState.update { it.copy(filingSuccess = false) }
     fun refresh() = loadDashboard()
+
+    fun signOut() {
+        viewModelScope.launch {
+            runCatching { supabase.auth.signOut() }
+        }
+    }
 }

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Court Calendar - Nyaay Desk</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-container": "#6b4500",
+                        "on-tertiary-fixed": "#101b30",
+                        "on-primary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-primary-container": "#778598",
+                        "tertiary": "#000000",
+                        "inverse-primary": "#bac8dc",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-low": "#f3f4f5",
+                        "surface-container-high": "#e7e8e9",
+                        "primary-container": "#0f1c2c",
+                        "on-error-container": "#93000a",
+                        "surface-container-highest": "#e1e3e4",
+                        "surface-tint": "#525f71",
+                        "on-surface": "#191c1d",
+                        "inverse-surface": "#2e3132",
+                        "tertiary-fixed-dim": "#bbc6e2",
+                        "secondary-fixed-dim": "#ffb955",
+                        "on-secondary-fixed": "#291800",
+                        "on-primary-fixed-variant": "#3a4859",
+                        "on-surface-variant": "#44474c",
+                        "on-background": "#191c1d",
+                        "tertiary-container": "#101b30",
+                        "on-primary-fixed": "#0f1c2c",
+                        "surface-variant": "#e1e3e4",
+                        "primary": "#000000",
+                        "secondary": "#835500",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-fixed-variant": "#633f00",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-container": "#79849d",
+                        "inverse-on-surface": "#f0f1f2",
+                        "secondary-fixed": "#ffddb4",
+                        "surface-dim": "#d9dadb",
+                        "outline-variant": "#c4c6cc",
+                        "on-tertiary-fixed-variant": "#3c475d",
+                        "primary-fixed-dim": "#bac8dc",
+                        "surface": "#f8f9fa",
+                        "tertiary-fixed": "#d7e2ff",
+                        "secondary-container": "#feae2c",
+                        "background": "#f8f9fa",
+                        "surface-bright": "#f8f9fa",
+                        "on-error": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-fixed": "#d6e4f9",
+                        "outline": "#74777d",
+                        "surface-container": "#edeeef"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "margin-mobile": "16px",
+                        "touch-target": "48px",
+                        "margin-desktop": "32px",
+                        "base": "8px"
+                    },
+                    "fontFamily": {
+                        "case-number": ["JetBrains Mono"],
+                        "headline-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "body-base": ["Inter"]
+                    },
+                    "fontSize": {
+                        "case-number": ["15px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "display-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "body-base": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-base pb-24 md:pb-0 md:flex md:h-screen overflow-x-hidden antialiased">
+<!-- TopAppBar -->
+<header class="bg-primary-container text-on-primary-container font-headline-md text-headline-md docked full-width top-0 border-b border-outline-variant flat no shadows flex justify-between items-center w-full px-margin-mobile h-touch-target md:fixed md:z-50 shrink-0">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-secondary-container">gavel</span>
+<h1 class="text-secondary-container font-headline-md font-bold text-headline-md truncate tracking-tight">Court Calendar</h1>
+</div>
+<button class="font-label-sm text-label-sm hover:bg-primary/10 transition-colors text-secondary-container font-bold px-3 py-2 rounded">
+            Logout
+        </button>
+</header>
+<!-- Sidebar (Desktop only) -->
+<aside class="hidden md:flex flex-col p-4 gap-2 bg-surface text-primary font-headline-md text-headline-md h-full w-80 rounded-r-xl border-r border-outline-variant shadow-md pt-20 flex-shrink-0">
+<div class="flex items-center gap-4 p-4 border-b border-outline-variant mb-4">
+<div class="w-12 h-12 rounded-full bg-primary-container flex items-center justify-center text-secondary-container font-bold">RS</div>
+<div>
+<div class="font-headline-md text-[18px] font-bold">Rahul Sharma</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant">Litigant ID: L-2024-089</div>
+<div class="font-label-sm text-label-sm text-surface-tint">Active Status</div>
+</div>
+</div>
+<nav class="flex flex-col gap-2 font-body-base text-body-base">
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg hover:bg-surface-container-highest transition-colors" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg hover:bg-surface-container-highest transition-colors" href="#">
+<span class="material-symbols-outlined">description</span>
+<span>My Documents</span>
+</a>
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg hover:bg-surface-container-highest transition-colors" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<span>Notice Board</span>
+</a>
+<a class="flex items-center gap-3 p-3 bg-secondary-container text-on-secondary-container font-semibold rounded-lg hover:bg-surface-container-highest transition-colors" href="#">
+<span class="material-symbols-outlined">calendar_month</span>
+<span>Court Calendar</span>
+</a>
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg hover:bg-surface-container-highest transition-colors" href="#">
+<span class="material-symbols-outlined">person_search</span>
+<span>Find Advocate</span>
+</a>
+<a class="flex items-center gap-3 p-3 text-on-surface-variant hover:bg-surface-container-high rounded-lg hover:bg-surface-container-highest transition-colors" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 overflow-y-auto w-full md:pt-20">
+<div class="max-w-3xl mx-auto p-margin-mobile md:p-margin-desktop flex flex-col gap-6">
+<!-- Calendar Section -->
+<section class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4">
+<div class="flex justify-between items-center mb-4">
+<button class="p-2 hover:bg-surface-container-low rounded-full transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface">chevron_left</span>
+</button>
+<h2 class="font-headline-md text-headline-md text-primary">May 2026</h2>
+<button class="p-2 hover:bg-surface-container-low rounded-full transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-on-surface">chevron_right</span>
+</button>
+</div>
+<!-- Days of week -->
+<div class="grid grid-cols-7 gap-1 text-center font-label-sm text-label-sm text-on-surface-variant mb-2">
+<div>S</div><div>M</div><div>T</div><div>W</div><div>T</div><div>F</div><div>S</div>
+</div>
+<!-- Calendar Grid (Simplified for UI representation) -->
+<div class="grid grid-cols-7 gap-1 text-center font-body-base text-body-base">
+<!-- Previous Month Empty Slots -->
+<div class="p-2 text-surface-tint opacity-50">26</div>
+<div class="p-2 text-surface-tint opacity-50">27</div>
+<div class="p-2 text-surface-tint opacity-50">28</div>
+<div class="p-2 text-surface-tint opacity-50">29</div>
+<div class="p-2 text-surface-tint opacity-50">30</div>
+<!-- Current Month -->
+<div class="p-2 rounded-lg hover:bg-surface-container-low cursor-pointer relative flex flex-col items-center">
+<span>1</span>
+</div>
+<div class="p-2 rounded-lg hover:bg-surface-container-low cursor-pointer relative flex flex-col items-center">
+<span>2</span>
+<div class="w-1.5 h-1.5 rounded-full bg-secondary-container mt-1 absolute bottom-1"></div>
+</div>
+<div class="p-2 rounded-lg hover:bg-surface-container-low cursor-pointer relative flex flex-col items-center">
+<span>3</span>
+</div>
+<div class="p-2 rounded-lg hover:bg-surface-container-low cursor-pointer relative flex flex-col items-center">
+<span>4</span>
+</div>
+<div class="p-2 rounded-lg hover:bg-surface-container-low cursor-pointer relative flex flex-col items-center">
+<span>5</span>
+<div class="w-1.5 h-1.5 rounded-full bg-primary-container mt-1 absolute bottom-1"></div>
+</div>
+<div class="p-2 rounded-lg hover:bg-surface-container-low cursor-pointer relative flex flex-col items-center">
+<span>6</span>
+</div>
+<div class="p-2 rounded-lg hover:bg-surface-container-low cursor-pointer relative flex flex-col items-center">
+<span>7</span>
+</div>
+<div class="p-2 rounded-lg hover:bg-surface-container-low cursor-pointer relative flex flex-col items-center">
+<span>8</span>
+</div>
+<div class="p-2 rounded-lg hover:bg-surface-container-low cursor-pointer relative flex flex-col items-center">
+<span>9</span>
+<div class="flex gap-0.5 mt-1 absolute bottom-1">
+<div class="w-1.5 h-1.5 rounded-full bg-secondary-container"></div>
+<div class="w-1.5 h-1.5 rounded-full bg-primary-container"></div>
+</div>
+</div>
+<div class="p-2 rounded-lg hover:bg-surface-container-low cursor-pointer relative flex flex-col items-center">
+<span>10</span>
+</div>
+<div class="p-2 rounded-lg hover:bg-surface-container-low cursor-pointer relative flex flex-col items-center">
+<span>11</span>
+</div>
+<div class="p-2 rounded-lg bg-primary-container text-on-primary-container cursor-pointer relative flex flex-col items-center">
+<span class="font-bold">12</span>
+<div class="w-1.5 h-1.5 rounded-full bg-secondary-container mt-1 absolute bottom-1"></div>
+</div>
+<div class="p-2 rounded-lg hover:bg-surface-container-low cursor-pointer relative flex flex-col items-center">
+<span>13</span>
+</div>
+<div class="p-2 rounded-lg hover:bg-surface-container-low cursor-pointer relative flex flex-col items-center">
+<span>14</span>
+</div>
+<div class="p-2 rounded-lg hover:bg-surface-container-low cursor-pointer relative flex flex-col items-center">
+<span>15</span>
+</div>
+<div class="p-2 rounded-lg hover:bg-surface-container-low cursor-pointer relative flex flex-col items-center">
+<span>16</span>
+</div>
+<!-- ... Remaining days ... -->
+<div class="p-2 rounded-lg hover:bg-surface-container-low cursor-pointer relative flex flex-col items-center"><span>17</span></div>
+<div class="p-2 rounded-lg hover:bg-surface-container-low cursor-pointer relative flex flex-col items-center"><span>18</span></div>
+<div class="p-2 rounded-lg hover:bg-surface-container-low cursor-pointer relative flex flex-col items-center">
+<span>19</span>
+<div class="w-1.5 h-1.5 rounded-full bg-primary-container mt-1 absolute bottom-1"></div>
+</div>
+<div class="p-2 rounded-lg hover:bg-surface-container-low cursor-pointer relative flex flex-col items-center"><span>20</span></div>
+<div class="p-2 rounded-lg hover:bg-surface-container-low cursor-pointer relative flex flex-col items-center"><span>21</span></div>
+<div class="p-2 rounded-lg hover:bg-surface-container-low cursor-pointer relative flex flex-col items-center"><span>22</span></div>
+<div class="p-2 rounded-lg hover:bg-surface-container-low cursor-pointer relative flex flex-col items-center"><span>23</span></div>
+<div class="p-2 rounded-lg hover:bg-surface-container-low cursor-pointer relative flex flex-col items-center"><span>24</span></div>
+<div class="p-2 rounded-lg hover:bg-surface-container-low cursor-pointer relative flex flex-col items-center"><span>25</span></div>
+<div class="p-2 rounded-lg hover:bg-surface-container-low cursor-pointer relative flex flex-col items-center"><span>26</span></div>
+<div class="p-2 rounded-lg hover:bg-surface-container-low cursor-pointer relative flex flex-col items-center"><span>27</span></div>
+<div class="p-2 rounded-lg hover:bg-surface-container-low cursor-pointer relative flex flex-col items-center"><span>28</span></div>
+<div class="p-2 rounded-lg hover:bg-surface-container-low cursor-pointer relative flex flex-col items-center"><span>29</span></div>
+<div class="p-2 rounded-lg hover:bg-surface-container-low cursor-pointer relative flex flex-col items-center"><span>30</span></div>
+<div class="p-2 rounded-lg hover:bg-surface-container-low cursor-pointer relative flex flex-col items-center"><span>31</span></div>
+</div>
+<div class="flex gap-4 mt-4 justify-center font-label-sm text-label-sm text-on-surface-variant border-t border-outline-variant pt-4">
+<div class="flex items-center gap-1"><div class="w-2 h-2 rounded-full bg-secondary-container"></div> Hearing</div>
+<div class="flex items-center gap-1"><div class="w-2 h-2 rounded-full bg-primary-container"></div> Deadline</div>
+</div>
+</section>
+<!-- Agenda Section -->
+<section class="flex flex-col gap-4">
+<div class="flex justify-between items-end border-b border-outline-variant pb-2">
+<h3 class="font-headline-md text-[20px] font-semibold text-primary">Daily Agenda</h3>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Tuesday, 12 May 2026</span>
+</div>
+<!-- Agenda Card 1 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 flex gap-4 items-start hover:shadow-sm transition-shadow relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-secondary-container"></div>
+<div class="flex flex-col items-center min-w-[80px] shrink-0 pt-1">
+<span class="font-headline-md text-[18px] font-bold text-primary">10:30</span>
+<span class="font-label-sm text-label-sm text-surface-tint uppercase">AM</span>
+</div>
+<div class="flex-1 flex flex-col gap-2 border-l border-outline-variant pl-4">
+<div class="flex justify-between items-start">
+<span class="font-case-number text-case-number text-primary">CL2026M874</span>
+<span class="bg-surface-container-highest text-on-surface px-2 py-0.5 rounded-full font-label-sm text-[10px] uppercase font-bold tracking-wider">Scheduled</span>
+</div>
+<div class="font-headline-md text-[16px] font-semibold text-primary-container">Final Argument</div>
+<div class="flex flex-col gap-1 mt-1 font-label-sm text-label-sm text-on-surface-variant">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+<span>Courtroom 4, District Court</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px]">person</span>
+<span>Hon. Judge R.K. Mehta</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Agenda Card 2 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-4 flex gap-4 items-start hover:shadow-sm transition-shadow relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary-container"></div>
+<div class="flex flex-col items-center min-w-[80px] shrink-0 pt-1">
+<span class="font-headline-md text-[18px] font-bold text-primary">02:15</span>
+<span class="font-label-sm text-label-sm text-surface-tint uppercase">PM</span>
+</div>
+<div class="flex-1 flex flex-col gap-2 border-l border-outline-variant pl-4">
+<div class="flex justify-between items-start">
+<span class="font-case-number text-case-number text-primary">CV2025D112</span>
+<span class="bg-surface-container-highest text-on-surface px-2 py-0.5 rounded-full font-label-sm text-[10px] uppercase font-bold tracking-wider">Deadline</span>
+</div>
+<div class="font-headline-md text-[16px] font-semibold text-primary-container">Submit Affidavit of Evidence</div>
+<div class="flex flex-col gap-1 mt-1 font-label-sm text-label-sm text-on-surface-variant">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px]">folder</span>
+<span>Sharma vs. Singh Property Dispute</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<button class="mt-4 bg-transparent border border-primary-container text-primary-container font-headline-md text-[16px] font-semibold py-3 px-4 rounded-lg flex items-center justify-center gap-2 hover:bg-surface-container-low transition-colors min-h-touch-target">
+<span class="material-symbols-outlined">sync</span>
+                Sync with Device Calendar
+            </button>
+</div>
+</main>
+<!-- FAB -->
+<button aria-label="Add Event" class="fixed bottom-24 right-4 md:bottom-8 md:right-8 w-14 h-14 bg-secondary-container text-on-secondary-container rounded-full shadow-lg flex items-center justify-center hover:scale-105 transition-transform z-40 md:hidden">
+<span class="material-symbols-outlined text-[28px]">add</span>
+</button>
+<!-- BottomNavBar (Mobile only) -->
+<nav class="bg-primary-container text-secondary-container font-label-sm text-label-sm fixed bottom-0 w-full z-50 shadow-lg flex justify-around items-center h-16 pb-safe px-2 md:hidden">
+<a class="flex flex-col items-center justify-center text-on-primary-container opacity-60 hover:text-secondary-fixed-dim Tap: scale-95 transition-transform duration-150 w-full h-full" href="#">
+<span class="material-symbols-outlined">home</span>
+<span>Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-primary-container opacity-60 hover:text-secondary-fixed-dim Tap: scale-95 transition-transform duration-150 w-full h-full" href="#">
+<span class="material-symbols-outlined">folder_open</span>
+<span>Cases</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary-container font-bold bg-tertiary-container/50 rounded-xl px-2 py-1 hover:text-secondary-fixed-dim Tap: scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">event_note</span>
+<span>Hearings</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-primary-container opacity-60 hover:text-secondary-fixed-dim Tap: scale-95 transition-transform duration-150 w-full h-full" href="#">
+<span class="material-symbols-outlined">notifications</span>
+<span>Notifications</span>
+</a>
+</nav>
+</body></html>

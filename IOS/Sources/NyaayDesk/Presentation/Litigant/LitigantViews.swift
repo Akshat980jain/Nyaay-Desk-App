@@ -1,7 +1,6 @@
 import SwiftUI
 
-// MARK: - Litigant Dashboard View
-
+// MARK: - Litigant Dashboard (Stitch Design)
 struct LitigantDashboardView: View {
     @Environment(AuthViewModel.self) private var auth
     @State private var vm = LitigantViewModel()
@@ -9,183 +8,400 @@ struct LitigantDashboardView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: 0) {
-                    // Header
-                    ZStack(alignment: .bottom) {
-                        LinearGradient(colors: [.nyaayNavyDark, .nyaayNavy], startPoint: .top, endPoint: .bottom)
-                            .frame(height: 220)
+            ZStack(alignment: .bottomTrailing) {
+                ScrollView {
+                    VStack(spacing: 0) {
+                        // ── TOP NAV BAR ──────────────────────────────────
+                        NyaayTopBarView()
+
+                        // ── WELCOME HEADER ───────────────────────────────
                         VStack(alignment: .leading, spacing: 4) {
-                            Text("Welcome back,").font(.subheadline).foregroundStyle(.white.opacity(0.7))
-                            Text(auth.currentUser?.fullName ?? "Litigant")
-                                .font(.title.bold()).foregroundStyle(.nyaayGold)
-                            Spacer(minLength: 12)
-                            HStack(spacing: 12) {
-                                StatPill(label: "Total", value: "\(vm.summary?.totalCases ?? 0)")
-                                StatPill(label: "Pending", value: "\(vm.summary?.pendingCases ?? 0)")
-                                StatPill(label: "Today", value: "\(vm.summary?.todayHearings ?? 0)")
-                            }
+                            Text("Welcome back, \(auth.currentUser?.fullName?.components(separatedBy: " ").first ?? "Rahul")")
+                                .font(.system(size: 26, weight: .bold))
+                                .foregroundStyle(Color.appNavy)
+                            Text(auth.currentUser?.userId ?? "L-2024-089")
+                                .font(.system(size: 13).monospaced())
+                                .foregroundStyle(Color.appNavy.opacity(0.5))
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(20)
-                    }
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 20)
 
-                    // Next Hearing Banner
-                    if let next = vm.nextHearingCase {
-                        HStack(spacing: 12) {
-                            Image(systemName: "bell.badge.fill").foregroundStyle(.orange)
-                            VStack(alignment: .leading) {
-                                Text("Next Hearing").font(.caption).foregroundStyle(.secondary)
-                                Text(next.caseTitle).font(.subheadline.bold())
-                                Text(next.nextHearingDate ?? "").font(.caption).foregroundStyle(.orange)
-                            }
+                        // ── ADVOCATE CHANGE STATUS ───────────────────────
+                        HStack(spacing: 8) {
+                            Image(systemName: "arrow.2.squarepath")
+                                .foregroundStyle(Color.appGold)
+                            Text("Advocate Change Status")
+                                .font(.system(size: 20, weight: .bold))
+                                .foregroundStyle(Color.appNavy)
                             Spacer()
                         }
-                        .padding()
-                        .background(.orange.opacity(0.08))
-                        .padding(.horizontal)
-                        .padding(.top, 12)
-                    }
+                        .padding(.horizontal, 16)
+                        .padding(.bottom, 8)
 
-                    // Cases List
-                    VStack(alignment: .leading, spacing: 8) {
-                        HStack {
-                            Text("My Cases (\(vm.cases.count))").font(.headline.bold())
-                            Spacer()
-                        }
-                        .padding(.horizontal)
-                        .padding(.top, 16)
+                        // NOC Signed Card
+                        NocStatusCard(
+                            caseNumber: "CL2026M874",
+                            lawyer: "ADV-GZB-001",
+                            date: "05/08/2026",
+                            isSigned: true
+                        )
 
-                        if vm.isLoading {
-                            ForEach(0..<3, id: \.self) { _ -> some View in
-                                RoundedRectangle(cornerRadius: 12)
-                                    .fill(Color.gray.opacity(0.1))
-                                    .frame(height: 90)
-                                    .padding(.horizontal)
-                            }
-                        } else {
-                            ForEach(vm.cases) { case_ in
-                                CaseRowCard(case_: case_)
-                                    .onTapGesture { selectedCase = case_ }
-                            }
-                        }
+                        // NOC Pending Card
+                        NocStatusCard(
+                            caseNumber: "CL2025K112",
+                            lawyer: "ADV-DEL-402",
+                            date: "12/08/2026",
+                            isSigned: false
+                        )
+
+                        // ── STAT CARDS ───────────────────────────────────
+                        LitigantStatRow(
+                            label: "Active Cases",
+                            value: "\(vm.summary?.totalCases ?? 3)",
+                            icon: "folder.fill"
+                        )
+                        LitigantStatRow(
+                            label: "Upcoming Hearings",
+                            value: "\(vm.summary?.todayHearings ?? 1)",
+                            icon: "calendar"
+                        )
+
+                        Spacer().frame(height: 80)
                     }
-                    .padding(.bottom, 20)
                 }
+                .background(Color.appBackground)
+
+                // ── GOLD FAB ─────────────────────────────────────────────
+                Button(action: {}) {
+                    Image(systemName: "person.fill.questionmark")
+                        .font(.system(size: 22))
+                        .foregroundStyle(Color.appGold)
+                        .frame(width: 56, height: 56)
+                        .background(Color.appNavy)
+                        .clipShape(Circle())
+                        .shadow(color: .black.opacity(0.15), radius: 8, y: 4)
+                }
+                .padding(.trailing, 16)
+                .padding(.bottom, 80)
             }
-            .refreshable { vm.loadData(userId: auth.currentUser?.id ?? "") }
-            .navigationTitle("Dashboard")
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationDestination(item: $selectedCase) { case_ in
-                CaseDetailView(case_: case_)
-            }
+            .navigationBarHidden(true)
+            .navigationDestination(item: $selectedCase) { CaseDetailView(case_: $0) }
             .onAppear { vm.loadData(userId: auth.currentUser?.id ?? "") }
         }
     }
 }
 
-// MARK: - Case Row Card
+// MARK: - NOC Status Card
+private struct NocStatusCard: View {
+    let caseNumber: String
+    let lawyer: String
+    let date: String
+    let isSigned: Bool
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
+                Text(caseNumber)
+                    .font(.system(size: 14, weight: .bold).monospaced())
+                    .foregroundStyle(Color.appNavy)
+                Spacer()
+                if isSigned {
+                    HStack(spacing: 4) {
+                        Image(systemName: "checkmark.circle.fill")
+                        Text("NOC SIGNED")
+                    }
+                    .font(.system(size: 11, weight: .bold))
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 10).padding(.vertical, 5)
+                    .background(Color.appNavy)
+                    .clipShape(Capsule())
+                } else {
+                    HStack(spacing: 4) {
+                        Image(systemName: "clock")
+                        Text("PENDING NOC")
+                    }
+                    .font(.system(size: 11, weight: .bold))
+                    .foregroundStyle(Color(hex: "74777D"))
+                    .padding(.horizontal, 10).padding(.vertical, 5)
+                    .overlay(Capsule().stroke(Color(hex: "74777D").opacity(0.4), lineWidth: 1))
+                }
+            }
+
+            HStack(spacing: 32) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Current Lawyer").font(.system(size: 11)).foregroundStyle(Color.appNavy.opacity(0.5))
+                    Text(lawyer).font(.system(size: 14, weight: .semibold)).foregroundStyle(Color.appNavy)
+                }
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Request Date").font(.system(size: 11)).foregroundStyle(Color.appNavy.opacity(0.5))
+                    Text(date).font(.system(size: 14, weight: .semibold)).foregroundStyle(Color.appNavy)
+                }
+            }
+
+            Divider()
+
+            if isSigned {
+                Button(action: {}) {
+                    HStack {
+                        Text("Submit to Court")
+                            .font(.system(size: 15, weight: .bold))
+                            .foregroundStyle(Color.appNavy)
+                        Image(systemName: "arrow.right")
+                            .foregroundStyle(Color.appNavy)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 48)
+                    .background(Color.appGold)
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                }
+            } else {
+                Button(action: {}) {
+                    Text("Remind")
+                        .font(.system(size: 15, weight: .medium))
+                        .foregroundStyle(Color.appNavy)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 48)
+                        .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.appNavy.opacity(0.3), lineWidth: 1))
+                }
+            }
+        }
+        .padding(16)
+        .background(Color.white)
+        .overlay(
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(isSigned ? Color.appGold.opacity(0.5) : Color(hex: "DEE2E6"), lineWidth: 1)
+        )
+        .clipShape(RoundedRectangle(cornerRadius: 8))
+        .padding(.horizontal, 16)
+        .padding(.vertical, 6)
+    }
+}
+
+// MARK: - Litigant Stat Row
+private struct LitigantStatRow: View {
+    let label: String
+    let value: String
+    let icon: String
+
+    var body: some View {
+        HStack(spacing: 16) {
+            Circle()
+                .fill(Color.appNavy)
+                .frame(width: 44, height: 44)
+                .overlay(Image(systemName: icon).foregroundStyle(Color.appGold))
+            VStack(alignment: .leading, spacing: 2) {
+                Text(label).font(.system(size: 15, weight: .semibold)).foregroundStyle(Color.appNavy)
+                Text(value).font(.system(size: 24, weight: .bold)).foregroundStyle(Color.appNavy)
+            }
+            Spacer()
+        }
+        .padding(16)
+        .background(Color.white)
+        .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color(hex: "DEE2E6"), lineWidth: 1))
+        .clipShape(RoundedRectangle(cornerRadius: 8))
+        .padding(.horizontal, 16)
+        .padding(.vertical, 6)
+    }
+}
+
+// MARK: - Stitch Top Bar
+struct NyaayTopBarView: View {
+    var onLogout: (() -> Void)? = nil
+
+    var body: some View {
+        HStack {
+            HStack(spacing: 8) {
+                Image(systemName: "scalemass.fill")
+                    .foregroundStyle(Color.appGold)
+                    .font(.system(size: 18))
+                Text("Nyaay Desk")
+                    .font(.system(size: 20, weight: .bold))
+                    .foregroundStyle(Color.appGold)
+            }
+            Spacer()
+            Button(action: { onLogout?() }) {
+                Text("Logout")
+                    .font(.system(size: 14))
+                    .foregroundStyle(.white.opacity(0.85))
+            }
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
+        .background(Color.appNavy)
+    }
+}
+
+// MARK: - Case Row Card (Stitch-style)
 struct CaseRowCard: View {
     let case_: NyaayCase
 
     var body: some View {
-        HStack(spacing: 12) {
-            RoundedRectangle(cornerRadius: 10)
-                .fill(Color.nyaayNavy.opacity(0.1))
-                .frame(width: 44, height: 44)
-                .overlay(Image(systemName: "gavel").foregroundStyle(.nyaayNavy))
-
-            VStack(alignment: .leading, spacing: 4) {
-                Text(case_.caseTitle).font(.subheadline.bold()).lineLimit(1)
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
                 Text(case_.cnrNumber ?? case_.caseNumber)
-                    .font(.caption).foregroundStyle(.secondary)
-                HStack(spacing: 8) {
-                    CaseStatusBadge(status: case_.status)
-                    if let date = case_.nextHearingDate {
-                        Label(date, systemImage: "calendar")
-                            .font(.caption2).foregroundStyle(.secondary)
-                    }
+                    .font(.system(size: 14, weight: .bold).monospaced())
+                    .foregroundStyle(Color.appNavy)
+                Spacer()
+                CaseStatusBadge(status: case_.status)
+            }
+
+            HStack(spacing: 16) {
+                HStack(spacing: 4) {
+                    Image(systemName: "person.fill").font(.system(size: 12)).foregroundStyle(Color.appNavy.opacity(0.5))
+                    Text("Type: \(case_.caseType ?? "Civil")").font(.system(size: 13)).foregroundStyle(Color.appNavy.opacity(0.7))
+                }
+                HStack(spacing: 4) {
+                    Image(systemName: "building.columns.fill").font(.system(size: 12)).foregroundStyle(Color.appNavy.opacity(0.5))
+                    Text("Court: \(case_.courtName ?? "District")").font(.system(size: 13)).foregroundStyle(Color.appNavy.opacity(0.7))
                 }
             }
-            Spacer()
-            Image(systemName: "chevron.right").foregroundStyle(.tertiary)
+
+            if case_.status.lowercased() != "disposed" {
+                Divider()
+                HStack(spacing: 8) {
+                    Button(action: {}) {
+                        HStack(spacing: 4) {
+                            Image(systemName: "calendar").font(.system(size: 12))
+                            Text("View Hearings").font(.system(size: 12, weight: .medium))
+                        }
+                        .foregroundStyle(Color.appNavy)
+                        .frame(maxWidth: .infinity).frame(height: 34)
+                        .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.appNavy.opacity(0.3), lineWidth: 1))
+                    }
+                    Button(action: {}) {
+                        HStack(spacing: 4) {
+                            Image(systemName: "folder").font(.system(size: 12))
+                            Text("Manage Documents").font(.system(size: 12, weight: .medium))
+                        }
+                        .foregroundStyle(Color.appNavy)
+                        .frame(maxWidth: .infinity).frame(height: 34)
+                        .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.appNavy.opacity(0.3), lineWidth: 1))
+                    }
+                }
+            } else {
+                Divider()
+                Button(action: {}) {
+                    HStack(spacing: 4) {
+                        Image(systemName: "eye").font(.system(size: 12))
+                        Text("View Archive").font(.system(size: 13))
+                    }
+                    .foregroundStyle(Color.appNavy.opacity(0.5))
+                }
+            }
         }
-        .padding()
-        .background(Color(.systemBackground))
-        .clipShape(RoundedRectangle(cornerRadius: 16))
-        .shadow(color: .black.opacity(0.04), radius: 4, y: 2)
-        .padding(.horizontal)
+        .padding(16)
+        .background(Color.white)
+        .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color(hex: "DEE2E6"), lineWidth: 1))
+        .clipShape(RoundedRectangle(cornerRadius: 8))
+        .padding(.horizontal, 16)
+        .padding(.vertical, 6)
     }
 }
 
-// MARK: - Case Detail View
+// MARK: - Case Detail View (Stitch-style)
 struct CaseDetailView: View {
     let case_: NyaayCase
+    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 16) {
-                // Header
-                ZStack {
-                    RoundedRectangle(cornerRadius: 20)
-                        .fill(LinearGradient(colors: [.nyaayNavyDark, .nyaayNavy], startPoint: .topLeading, endPoint: .bottomTrailing))
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text(case_.caseTitle).font(.title2.bold()).foregroundStyle(.nyaayGold)
-                        HStack {
-                            CaseStatusBadge(status: case_.status)
-                            if let type_ = case_.caseType {
-                                Text(type_).font(.caption).foregroundStyle(.white.opacity(0.7))
-                                    .padding(.horizontal, 8).padding(.vertical, 3)
-                                    .background(.white.opacity(0.15)).clipShape(Capsule())
-                            }
+            VStack(spacing: 0) {
+                NyaayTopBarView(onLogout: { dismiss() })
+
+                // ── CASE HEADER ──────────────────────────────────────────
+                VStack(alignment: .leading, spacing: 12) {
+                    HStack {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(case_.cnrNumber ?? case_.caseNumber)
+                                .font(.system(size: 13, weight: .semibold).monospaced())
+                                .foregroundStyle(Color.appNavy.opacity(0.6))
+                            Text("Civil Suit").font(.system(size: 12)).foregroundStyle(Color.appNavy.opacity(0.5))
+                                .padding(.horizontal, 8).padding(.vertical, 2)
+                                .background(Color.appNavy.opacity(0.07))
+                                .clipShape(Capsule())
                         }
-                        Divider().background(.white.opacity(0.2))
-                        InfoRow(label: "CNR", value: case_.cnrNumber ?? "N/A")
-                        InfoRow(label: "Case No.", value: case_.caseNumber)
-                        InfoRow(label: "Judge", value: case_.judgeName ?? "Not assigned")
-                        InfoRow(label: "Next Hearing", value: case_.nextHearingDate ?? "TBD", valueColor: .nyaayGold)
+                        Spacer()
+                        Text("HEARING SCHEDULED")
+                            .font(.system(size: 11, weight: .bold))
+                            .foregroundStyle(Color.appNavy)
+                            .padding(.horizontal, 10).padding(.vertical, 5)
+                            .background(Color.appGold)
+                            .clipShape(Capsule())
                     }
-                    .padding(20)
+                    Text(case_.caseTitle)
+                        .font(.system(size: 22, weight: .bold))
+                        .foregroundStyle(Color.appNavy)
+                    Text(case_.description ?? "Property dispute regarding the commercial development project...")
+                        .font(.system(size: 14))
+                        .foregroundStyle(Color.appNavy.opacity(0.6))
+                        .lineLimit(2)
                 }
-                .padding(.horizontal)
+                .padding(16)
+                .background(Color.white)
+                .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color(hex: "DEE2E6"), lineWidth: 1))
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+                .padding(16)
 
-                // Description
-                if let desc = case_.description {
-                    GroupBox("Description") {
-                        Text(desc).font(.body).foregroundStyle(.secondary)
-                            .frame(maxWidth: .infinity, alignment: .leading)
+                // ── NEXT HEARING (DARK NAVY CARD) ────────────────────────
+                VStack(alignment: .leading, spacing: 16) {
+                    HStack(spacing: 8) {
+                        Image(systemName: "calendar.badge.clock").foregroundStyle(Color.appGold)
+                        Text("Next Hearing").font(.system(size: 16, weight: .bold)).foregroundStyle(Color.appGold)
                     }
-                    .padding(.horizontal)
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Date & Time").font(.system(size: 11)).foregroundStyle(.white.opacity(0.5))
+                        Text(case_.nextHearingDate ?? "25 Aug 2026, 10:30 AM")
+                            .font(.system(size: 18, weight: .bold)).foregroundStyle(.white)
+                    }
+                    HStack(spacing: 32) {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Court Room").font(.system(size: 11)).foregroundStyle(.white.opacity(0.5))
+                            Text("Court No. 4").font(.system(size: 15, weight: .semibold)).foregroundStyle(.white)
+                        }
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Presiding Officer").font(.system(size: 11)).foregroundStyle(.white.opacity(0.5))
+                            Text(case_.judgeName ?? "Hon. Justice A. Kumar")
+                                .font(.system(size: 15, weight: .semibold)).foregroundStyle(.white)
+                        }
+                    }
+                    Button(action: {}) {
+                        HStack {
+                            Image(systemName: "bell.badge").foregroundStyle(Color.appNavy)
+                            Text("Set Reminder").font(.system(size: 15, weight: .bold)).foregroundStyle(Color.appNavy)
+                        }
+                        .frame(maxWidth: .infinity).frame(height: 48)
+                        .background(Color.appGold).clipShape(RoundedRectangle(cornerRadius: 8))
+                    }
                 }
+                .padding(16)
+                .background(Color.appNavy)
+                .clipShape(RoundedRectangle(cornerRadius: 8))
+                .padding(.horizontal, 16).padding(.bottom, 16)
+
+                // ── QUICK ACTIONS ────────────────────────────────────────
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("Quick Actions").font(.system(size: 18, weight: .bold)).foregroundStyle(Color.appNavy)
+                    VStack(spacing: 8) {
+                        ForEach(["View Documents", "Contact Advocate", "Fee Receipts"], id: \.self) { action in
+                            HStack {
+                                Text(action).font(.system(size: 15)).foregroundStyle(Color.appNavy)
+                                Spacer()
+                                Image(systemName: "chevron.right").foregroundStyle(Color.appNavy.opacity(0.3))
+                            }
+                            .padding(16)
+                            .background(Color.white)
+                            .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color(hex: "DEE2E6"), lineWidth: 1))
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                        }
+                    }
+                }
+                .padding(16)
+
+                Spacer().frame(height: 32)
             }
-            .padding(.vertical)
         }
-        .navigationTitle("Case Details")
-        .navigationBarTitleDisplayMode(.inline)
-    }
-}
-
-private struct InfoRow: View {
-    let label: String
-    let value: String
-    var valueColor: Color = .white
-
-    var body: some View {
-        HStack {
-            Text("\(label): ").font(.caption).foregroundStyle(.white.opacity(0.6))
-            Text(value).font(.caption.bold()).foregroundStyle(valueColor)
-        }
-    }
-}
-
-private struct StatPill: View {
-    let label: String; let value: String
-    var body: some View {
-        VStack(spacing: 2) {
-            Text(value).font(.headline.bold()).foregroundStyle(.white)
-            Text(label).font(.caption2).foregroundStyle(.white.opacity(0.7))
-        }
-        .padding(.horizontal, 14).padding(.vertical, 8)
-        .background(.white.opacity(0.15)).clipShape(RoundedRectangle(cornerRadius: 10))
+        .background(Color.appBackground)
+        .navigationBarHidden(true)
     }
 }

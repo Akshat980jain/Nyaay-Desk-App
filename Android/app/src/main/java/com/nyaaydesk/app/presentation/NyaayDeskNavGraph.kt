@@ -26,6 +26,7 @@ sealed class Screen(val route: String) {
     object AdvocateMain    : Screen("advocate_main")
     object ClerkMain       : Screen("clerk_main")
     object AdminMain       : Screen("admin_main")
+    object Registration    : Screen("registration")
 }
 
 /**
@@ -44,10 +45,27 @@ fun NyaayDeskNavGraph(
         // ── AUTH FLOW ────────────────────────────────────────────────────
         composable(Screen.RoleSelect.route) {
             LoginRoleSelectScreen(
-                onLitigantSelected  = { navController.navigate(Screen.LitigantLogin.route) },
-                onAdvocateSelected  = { navController.navigate(Screen.AdvocateLogin.route) },
-                onClerkSelected     = { navController.navigate(Screen.ClerkLogin.route) },
-                onAdminSelected     = { navController.navigate(Screen.AdminLogin.route) }
+                onLoginSuccess = { role ->
+                    when (role) {
+                        "Litigant" -> navController.navigate(Screen.LitigantMain.route) { popUpTo(Screen.RoleSelect.route) { inclusive = true } }
+                        "Advocate" -> navController.navigate(Screen.AdvocateMain.route) { popUpTo(Screen.RoleSelect.route) { inclusive = true } }
+                        "Clerk"    -> navController.navigate(Screen.ClerkMain.route) { popUpTo(Screen.RoleSelect.route) { inclusive = true } }
+                        "Admin"    -> navController.navigate(Screen.AdminMain.route) { popUpTo(Screen.RoleSelect.route) { inclusive = true } }
+                    }
+                },
+                onNavigateToRegistration = {
+                    navController.navigate(Screen.Registration.route)
+                }
+            )
+        }
+
+        composable(Screen.Registration.route) {
+            RegistrationScreen(
+                onBack = { navController.popBackStack() },
+                onRegistrationComplete = {
+                    // Navigate back to role select or directly to login
+                    navController.popBackStack()
+                }
             )
         }
 

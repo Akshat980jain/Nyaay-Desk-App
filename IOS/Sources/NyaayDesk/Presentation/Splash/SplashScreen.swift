@@ -17,30 +17,40 @@ struct SplashScreen: View {
             EmptyView().onAppear { onFinished() }
         } else {
             ZStack {
-                LinearGradient(colors: [.nyaayNavyDark, .nyaayNavy], startPoint: .top, endPoint: .bottom)
+                Color.appBackground
                     .ignoresSafeArea()
                 
-                VStack {
-                    VStack {
+                VStack(spacing: 20) {
+                    VStack(spacing: 12) {
                         Text("⚖️")
-                            .font(.system(size: 100))
+                            .font(.system(size: 110))
+                        
                         Text("NyaayDesk")
-                            .font(.system(size: 40, weight: .bold, design: .serif))
-                            .foregroundColor(.nyaayGold)
-                        Text("न्याय your way")
-                            .font(.headline)
-                            .foregroundColor(.white.opacity(0.7))
+                            .font(.system(size: 44, weight: .black, design: .rounded))
+                            .foregroundColor(.appNavy)
+                        
+                        Text("Digital Justice Platform")
+                            .font(.system(size: 18, weight: .medium))
+                            .foregroundColor(.appNavy.opacity(0.8))
                     }
                     .scaleEffect(size)
                     .opacity(opacity)
                     .onAppear {
-                        withAnimation(.easeIn(duration: 1.2)) {
+                        withAnimation(.spring(response: 1.0, dampingFraction: 0.7, blendDuration: 0)) {
                             self.size = 1.0
                             self.opacity = 1.0
                         }
                     }
+                    
+                    Text("न्याय your way")
+                        .font(.system(size: 14, weight: .regular))
+                        .foregroundColor(.appNavy.opacity(0.4))
+                        .tracking(2)
+                        .padding(.top, 40)
+                        .opacity(opacity)
                 }
             }
+
             .onAppear {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
                     withAnimation {

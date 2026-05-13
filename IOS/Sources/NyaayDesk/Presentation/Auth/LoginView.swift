@@ -40,44 +40,49 @@ struct LoginView: View {
 
     var body: some View {
         ZStack {
-            LinearGradient(colors: [.nyaayNavyDark, .nyaayNavy], startPoint: .top, endPoint: .bottom)
+            Color.appBackground
                 .ignoresSafeArea()
 
             VStack(spacing: 0) {
                 // Header
-                VStack(spacing: 6) {
+                VStack(spacing: 8) {
                     Text("⚖️").font(.system(size: 44))
-                    Text(title).font(.title2.bold()).foregroundStyle(.nyaayGold)
-                    Text(subtitle).font(.subheadline).foregroundStyle(.white.opacity(0.7))
+                    Text(title)
+                        .font(.system(size: 28, weight: .bold))
+                        .foregroundStyle(Color.appNavy)
+                    Text(subtitle)
+                        .font(.system(size: 15))
+                        .foregroundStyle(Color.appNavy.opacity(0.6))
                 }
-                .padding(.vertical, 24)
+                .padding(.vertical, 32)
 
-                // Form Card
+                // Form Content
                 ScrollView {
-                    VStack(spacing: 16) {
+                    VStack(spacing: 20) {
                         // Admin Warning Banner
                         if expectedRole == "admin" {
-                            HStack(spacing: 8) {
+                            HStack(spacing: 12) {
                                 Image(systemName: "shield.fill").foregroundStyle(.red)
                                 Text("Restricted Access: Unauthorized attempts are logged.")
                                     .font(.caption).foregroundStyle(.red)
                             }
-                            .padding(12)
-                            .background(.red.opacity(0.1))
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                            .padding(14)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(Color.red.opacity(0.05))
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
                         }
 
                         // Error Banner
                         if let error = auth.errorMessage {
-                            HStack(spacing: 8) {
+                            HStack(spacing: 12) {
                                 Image(systemName: "exclamationmark.circle")
-                                Text(error).font(.subheadline)
+                                Text(error).font(.system(size: 14, weight: .medium))
                             }
                             .foregroundStyle(.red)
-                            .padding(12)
+                            .padding(14)
                             .frame(maxWidth: .infinity, alignment: .leading)
-                            .background(.red.opacity(0.08))
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
+                            .background(Color.red.opacity(0.08))
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
                         }
 
                         // Email
@@ -93,27 +98,29 @@ struct LoginView: View {
                         HStack {
                             Spacer()
                             Button("Forgot Password?") { showForgotPassword = true }
-                                .font(.subheadline).foregroundStyle(.nyaayNavy)
+                                .font(.system(size: 14, weight: .medium))
+                                .foregroundStyle(Color.appNavy)
                         }
 
+                        Spacer(modifier: Modifier.height(8))
+
                         // Login Button
-                        NyaayButton(title: "Login", isLoading: auth.isLoading) {
+                        NyaayButton(title: "Login to my Account", isLoading: auth.isLoading) {
                             auth.login(email: email, password: password, expectedRole: expectedRole)
                         }
 
                         // Clerk session note
                         if expectedRole == "clerk" {
                             Label("Sessions expire after 15 minutes of inactivity.", systemImage: "clock")
-                                .font(.caption)
+                                .font(.system(size: 12))
                                 .foregroundStyle(.secondary)
                         }
                     }
                     .padding(24)
                 }
-                .background(Color(.systemBackground))
-                .clipShape(RoundedCornerShape(radius: 28, corners: [.topLeft, .topRight]))
             }
         }
+
         .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden(false)
         .sheet(isPresented: $showForgotPassword) {

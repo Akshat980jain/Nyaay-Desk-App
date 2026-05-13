@@ -1,3 +1,21 @@
 {
-    "workbench.editorLargeFileConfirmation": 80000
+  "deno.enable": true,
+  "deno.enablePaths": [
+    "supabase/functions"
+  ],
+  "deno.lint": true,
+  "deno.unstable": [],
+  "deno.suggest.imports.hosts": {
+    "https://deno.land": true,
+    "https://esm.sh": true
+  },
+  "java.jdt.ls.java.home": "C:\\Program Files\\Java\\jdk-24",
+  "java.configuration.runtimes": [
+    {
+      "name": "JavaSE-21",
+      "path": "C:\\Program Files\\Java\\jdk-24",
+      "default": true
+    }
+  ],
+  "java.import.gradle.java.home": "C:\\Program Files\\Java\\jdk-24"
 }

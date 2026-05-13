@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Case Documents - Nyaay Desk</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+                "tertiary-container": "#101b30",
+                "inverse-on-surface": "#f0f1f2",
+                "on-tertiary-fixed": "#101b30",
+                "on-error-container": "#93000a",
+                "on-secondary-fixed": "#291800",
+                "inverse-primary": "#bac8dc",
+                "on-primary-fixed": "#0f1c2c",
+                "on-primary": "#ffffff",
+                "background": "#f8f9fa",
+                "surface-container": "#edeeef",
+                "on-tertiary": "#ffffff",
+                "tertiary-fixed-dim": "#bbc6e2",
+                "primary": "#000000",
+                "primary-fixed-dim": "#bac8dc",
+                "on-background": "#191c1d",
+                "surface-dim": "#d9dadb",
+                "surface-bright": "#f8f9fa",
+                "outline": "#74777d",
+                "secondary": "#835500",
+                "surface-container-lowest": "#ffffff",
+                "outline-variant": "#c4c6cc",
+                "secondary-fixed": "#ffddb4",
+                "secondary-container": "#feae2c",
+                "error": "#ba1a1a",
+                "secondary-fixed-dim": "#ffb955",
+                "tertiary": "#000000",
+                "surface-tint": "#525f71",
+                "on-secondary-container": "#6b4500",
+                "surface-container-highest": "#e1e3e4",
+                "on-primary-fixed-variant": "#3a4859",
+                "on-tertiary-fixed-variant": "#3c475d",
+                "on-secondary": "#ffffff",
+                "primary-fixed": "#d6e4f9",
+                "on-error": "#ffffff",
+                "on-secondary-fixed-variant": "#633f00",
+                "error-container": "#ffdad6",
+                "surface": "#f8f9fa",
+                "on-primary-container": "#778598",
+                "tertiary-fixed": "#d7e2ff",
+                "primary-container": "#0f1c2c",
+                "surface-variant": "#e1e3e4",
+                "on-tertiary-container": "#79849d",
+                "on-surface-variant": "#44474c",
+                "inverse-surface": "#2e3132",
+                "surface-container-low": "#f3f4f5",
+                "surface-container-high": "#e7e8e9",
+                "on-surface": "#191c1d"
+        },
+        "borderRadius": {
+                "DEFAULT": "0.25rem",
+                "lg": "0.5rem",
+                "xl": "0.75rem",
+                "full": "9999px"
+        },
+        "spacing": {
+                "margin-mobile": "16px",
+                "base": "8px",
+                "touch-target": "48px",
+                "margin-desktop": "32px",
+                "gutter": "16px"
+        },
+        "fontFamily": {
+                "label-sm": [
+                        "Inter"
+                ],
+                "case-number": [
+                        "JetBrains Mono"
+                ],
+                "body-base": [
+                        "Inter"
+                ],
+                "display-lg": [
+                        "Inter"
+                ],
+                "headline-md": [
+                        "Inter"
+                ]
+        },
+        "fontSize": {
+                "label-sm": [
+                        "12px",
+                        {
+                                "lineHeight": "16px",
+                                "fontWeight": "500"
+                        }
+                ],
+                "case-number": [
+                        "15px",
+                        {
+                                "lineHeight": "20px",
+                                "letterSpacing": "0.05em",
+                                "fontWeight": "700"
+                        }
+                ],
+                "body-base": [
+                        "16px",
+                        {
+                                "lineHeight": "24px",
+                                "fontWeight": "400"
+                        }
+                ],
+                "display-lg": [
+                        "32px",
+                        {
+                                "lineHeight": "40px",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "700"
+                        }
+                ],
+                "headline-md": [
+                        "24px",
+                        {
+                                "lineHeight": "32px",
+                                "fontWeight": "600"
+                        }
+                ]
+        }
+},
+    },
+  }
+</script>
+<style>
+  body {
+    background-color: theme('colors.background');
+    color: theme('colors.on-background');
+    font-family: 'Inter', sans-serif;
+  }
+</style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background flex flex-col min-h-screen">
+<!-- TopAppBar -->
+<header class="bg-primary-container dark:bg-primary-container text-on-primary-container dark:text-on-primary-container border-b border-outline-variant flex justify-between items-center w-full px-margin-mobile h-touch-target docked full-width top-0 sticky z-40">
+<div class="flex items-center gap-4">
+<button class="hover:bg-primary/10 transition-colors rounded-full p-2 flex items-center justify-center opacity-70 hover:opacity-100 transition-opacity">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">gavel</span>
+</button>
+<span class="text-secondary-container font-bold font-headline-md text-headline-md text-secondary-container font-bold">Nyaay Desk</span>
+</div>
+<button class="font-label-sm text-label-sm hover:bg-primary/10 transition-colors px-4 py-2 rounded-lg opacity-70 hover:opacity-100 transition-opacity text-on-primary-container opacity-80">
+        Logout
+    </button>
+</header>
+<div class="flex flex-1 w-full max-w-7xl mx-auto md:px-margin-desktop md:gap-gutter">
+<!-- Desktop Navigation Drawer (hidden on mobile) -->
+<nav class="hidden md:flex flex-col p-4 gap-2 bg-surface dark:bg-surface-dim text-primary dark:text-primary-fixed h-[calc(100vh-48px)] w-80 rounded-r-xl border-r border-outline-variant shadow-md sticky top-touch-target">
+<div class="mb-6 flex flex-col gap-1 left_align">
+<h2 class="text-primary font-bold font-headline-md text-headline-md">Rahul Sharma</h2>
+<p class="font-body-base text-body-base text-on-surface-variant">Litigant ID: L-2024-089</p>
+<span class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container-high w-fit px-2 py-1 rounded">Active Status</span>
+</div>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:bg-surface-container-highest transition-colors font-body-base text-body-base" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+            Dashboard
+        </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg bg-secondary-container text-on-secondary-container font-semibold rounded-lg font-body-base text-body-base hover:bg-surface-container-highest transition-colors" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">description</span>
+            My Documents
+        </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:bg-surface-container-highest transition-colors font-body-base text-body-base" href="#">
+<span class="material-symbols-outlined">assignment</span>
+            Notice Board
+        </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:bg-surface-container-highest transition-colors font-body-base text-body-base" href="#">
+<span class="material-symbols-outlined">calendar_month</span>
+            Court Calendar
+        </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:bg-surface-container-highest transition-colors font-body-base text-body-base" href="#">
+<span class="material-symbols-outlined">person_search</span>
+            Find Advocate
+        </a>
+<div class="flex-grow"></div>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:bg-surface-container-highest transition-colors font-body-base text-body-base mt-auto" href="#">
+<span class="material-symbols-outlined">settings</span>
+            Settings
+        </a>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-1 w-full p-margin-mobile md:py-margin-desktop md:px-0 pb-[80px] md:pb-margin-desktop flex flex-col gap-8">
+<!-- Header & Search -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<h1 class="font-display-lg text-display-lg text-primary">Case Documents</h1>
+<p class="font-body-base text-body-base text-on-surface-variant mt-2">Manage and review case files.</p>
+</div>
+<div class="relative w-full md:w-96">
+<span class="material-symbols-outlined absolute left-3 top-1/2 transform -translate-y-1/2 text-outline">search</span>
+<input class="w-full h-touch-target pl-10 pr-4 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-base text-body-base focus:ring-2 focus:ring-secondary-container focus:border-secondary-container focus:outline-none transition-shadow text-on-surface placeholder:text-outline" placeholder="Search documents by name or type..." type="text"/>
+</div>
+</div>
+<!-- Recent Uploads Section -->
+<section class="flex flex-col gap-4">
+<h2 class="font-headline-md text-headline-md text-primary">Recent Uploads</h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<!-- Recent Doc Card 1 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-4 flex flex-col gap-3 hover:shadow-md transition-shadow cursor-pointer">
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-3">
+<div class="bg-error-container text-on-error-container p-2 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">picture_as_pdf</span>
+</div>
+<div>
+<h3 class="font-body-base text-body-base font-semibold text-primary truncate max-w-[150px]" title="Vakalatnama.pdf">Vakalatnama.pdf</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant">1.2 MB • 24/10/2023</p>
+</div>
+</div>
+<button class="text-outline hover:text-primary transition-colors p-1">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<div class="flex justify-between items-center mt-2">
+<span class="bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm px-2 py-1 rounded-full border border-outline-variant">Pending</span>
+<div class="flex gap-2">
+<button class="text-secondary-container hover:text-secondary font-label-sm text-label-sm font-semibold transition-colors">View</button>
+</div>
+</div>
+</div>
+<!-- Recent Doc Card 2 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-4 flex flex-col gap-3 hover:shadow-md transition-shadow cursor-pointer">
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-3">
+<div class="bg-primary-fixed text-on-primary-fixed p-2 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">image</span>
+</div>
+<div>
+<h3 class="font-body-base text-body-base font-semibold text-primary truncate max-w-[150px]" title="Evidence_Photos.zip">Evidence_Photos.zip</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant">45.0 MB • 22/10/2023</p>
+</div>
+</div>
+<button class="text-outline hover:text-primary transition-colors p-1">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<div class="flex justify-between items-center mt-2">
+<span class="bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm px-2 py-1 rounded-full border border-outline-variant">Verified</span>
+<div class="flex gap-2">
+<button class="text-secondary-container hover:text-secondary font-label-sm text-label-sm font-semibold transition-colors">Download</button>
+</div>
+</div>
+</div>
+<!-- Recent Doc Card 3 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-4 flex flex-col gap-3 hover:shadow-md transition-shadow cursor-pointer">
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-3">
+<div class="bg-error-container text-on-error-container p-2 rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">picture_as_pdf</span>
+</div>
+<div>
+<h3 class="font-body-base text-body-base font-semibold text-primary truncate max-w-[150px]" title="Interim_Order_Oct_23.pdf">Interim_Order_Oct_23.pdf</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant">3.4 MB • 15/10/2023</p>
+</div>
+</div>
+<button class="text-outline hover:text-primary transition-colors p-1">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</div>
+<div class="flex justify-between items-center mt-2">
+<span class="bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm px-2 py-1 rounded-full border border-outline-variant">E-Signed</span>
+<div class="flex gap-2">
+<button class="text-secondary-container hover:text-secondary font-label-sm text-label-sm font-semibold transition-colors">View</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Case Folders Section -->
+<section class="flex flex-col gap-4 flex-1">
+<h2 class="font-headline-md text-headline-md text-primary">Case Directories</h2>
+<div class="flex flex-col gap-4">
+<!-- Folder 1 -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-0 hover:shadow-md transition-shadow overflow-hidden group">
+<div class="p-4 bg-surface-container-low flex justify-between items-center cursor-pointer border-b border-outline-variant group-hover:bg-surface-container transition-colors">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-secondary-container text-3xl" style="font-variation-settings: 'FILL' 1;">folder</span>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-case-number text-case-number text-primary">CL2026M874</span>
+<span class="font-body-base text-body-base font-medium text-primary hidden md:inline">- Akash Sharma vs. State</span>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-1">12 Documents • Last updated Oct 24, 2023</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline">expand_more</span>
+</div>
+</div>
+<!-- Folder 2 (Expanded State Example) -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-0 shadow-sm overflow-hidden">
+<div class="p-4 bg-surface-container-low flex justify-between items-center cursor-pointer border-b border-outline-variant">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-secondary-container text-3xl" style="font-variation-settings: 'FILL' 1;">folder_open</span>
+<div>
+<div class="flex items-center gap-2">
+<span class="font-case-number text-case-number text-primary">CR2025D412</span>
+<span class="font-body-base text-body-base font-medium text-primary hidden md:inline">- Meera Devi Property Dispute</span>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-1">4 Documents • Last updated Sep 10, 2023</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline">expand_less</span>
+</div>
+<!-- Document List Table (Desktop) / Stack (Mobile) -->
+<div class="flex flex-col">
+<!-- Mobile View List Items -->
+<div class="md:hidden flex flex-col border-b border-outline-variant p-4 gap-3 last:border-b-0">
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-error" style="font-variation-settings: 'FILL' 1;">description</span>
+<div>
+<h3 class="font-body-base text-body-base font-semibold text-primary">Property_Deed_Copy.pdf</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant">5.2 MB • 10/09/2023</p>
+</div>
+</div>
+</div>
+<div class="flex justify-between items-center w-full">
+<span class="bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm px-2 py-1 rounded-full border border-outline-variant">Verified</span>
+<div class="flex gap-4">
+<button class="text-secondary-container font-label-sm text-label-sm font-semibold">View</button>
+<button class="text-outline"><span class="material-symbols-outlined text-sm">more_horiz</span></button>
+</div>
+</div>
+</div>
+<div class="md:hidden flex flex-col border-b border-outline-variant p-4 gap-3 last:border-b-0 bg-surface-container-lowest">
+<div class="flex justify-between items-start">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-fixed" style="font-variation-settings: 'FILL' 1;">image</span>
+<div>
+<h3 class="font-body-base text-body-base font-semibold text-primary">Site_Inspection_1.jpg</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant">2.1 MB • 05/09/2023</p>
+</div>
+</div>
+</div>
+<div class="flex justify-between items-center w-full">
+<span class="bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm px-2 py-1 rounded-full border border-outline-variant">Pending</span>
+<div class="flex gap-4">
+<button class="text-secondary-container font-label-sm text-label-sm font-semibold">View</button>
+<button class="text-outline"><span class="material-symbols-outlined text-sm">more_horiz</span></button>
+</div>
+</div>
+</div>
+<!-- Desktop View Table -->
+<table class="hidden md:table w-full text-left">
+<thead class="bg-surface-container-lowest border-b border-outline-variant">
+<tr>
+<th class="p-4 font-label-sm text-label-sm font-semibold text-on-surface-variant">Document Name</th>
+<th class="p-4 font-label-sm text-label-sm font-semibold text-on-surface-variant">Date Added</th>
+<th class="p-4 font-label-sm text-label-sm font-semibold text-on-surface-variant">Size</th>
+<th class="p-4 font-label-sm text-label-sm font-semibold text-on-surface-variant">Status</th>
+<th class="p-4 font-label-sm text-label-sm font-semibold text-on-surface-variant text-right">Actions</th>
+</tr>
+</thead>
+<tbody>
+<tr class="border-b border-outline-variant last:border-b-0 hover:bg-surface-container-lowest transition-colors group">
+<td class="p-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-error" style="font-variation-settings: 'FILL' 1;">description</span>
+<span class="font-body-base text-body-base font-medium text-primary">Property_Deed_Copy.pdf</span>
+</div>
+</td>
+<td class="p-4 font-body-base text-body-base text-on-surface-variant">10/09/2023</td>
+<td class="p-4 font-body-base text-body-base text-on-surface-variant">5.2 MB</td>
+<td class="p-4">
+<span class="bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm px-2 py-1 rounded-full border border-outline-variant">Verified</span>
+</td>
+<td class="p-4 text-right">
+<div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="px-3 py-1 bg-surface-container-lowest border border-outline-variant rounded text-secondary-container font-label-sm text-label-sm font-semibold hover:bg-surface-container-low transition-colors">View</button>
+<button class="px-3 py-1 bg-surface-container-lowest border border-outline-variant rounded text-secondary-container font-label-sm text-label-sm font-semibold hover:bg-surface-container-low transition-colors">Download</button>
+<button class="px-2 py-1 bg-surface-container-lowest border border-outline-variant rounded text-outline hover:text-primary hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-sm">more_horiz</span>
+</button>
+</div>
+</td>
+</tr>
+<tr class="border-b border-outline-variant last:border-b-0 hover:bg-surface-container-lowest transition-colors group">
+<td class="p-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary-fixed" style="font-variation-settings: 'FILL' 1;">image</span>
+<span class="font-body-base text-body-base font-medium text-primary">Site_Inspection_1.jpg</span>
+</div>
+</td>
+<td class="p-4 font-body-base text-body-base text-on-surface-variant">05/09/2023</td>
+<td class="p-4 font-body-base text-body-base text-on-surface-variant">2.1 MB</td>
+<td class="p-4">
+<span class="bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm px-2 py-1 rounded-full border border-outline-variant">Pending</span>
+</td>
+<td class="p-4 text-right">
+<div class="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="px-3 py-1 bg-surface-container-lowest border border-outline-variant rounded text-secondary-container font-label-sm text-label-sm font-semibold hover:bg-surface-container-low transition-colors">View</button>
+<button class="px-3 py-1 bg-surface-container-lowest border border-outline-variant rounded text-secondary-container font-label-sm text-label-sm font-semibold hover:bg-surface-container-low transition-colors">Download</button>
+<button class="px-2 py-1 bg-surface-container-lowest border border-outline-variant rounded text-outline hover:text-primary hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-sm">more_horiz</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+</main>
+</div>
+<!-- Floating Action Button (Mobile & Desktop) -->
+<button class="fixed bottom-[80px] md:bottom-margin-desktop right-margin-mobile md:right-margin-desktop bg-secondary-container hover:bg-secondary-fixed-dim text-on-secondary-container h-14 px-6 rounded-full shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-2 z-40 transform hover:scale-105">
+<span class="material-symbols-outlined">upload</span>
+<span class="font-body-base text-body-base font-semibold">Upload Document</span>
+</button>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="bg-primary-container dark:bg-primary-container text-secondary-container dark:text-secondary-container fixed bottom-0 w-full z-50 border-t border-outline-variant shadow-lg flex justify-around items-center h-16 pb-safe px-2 md:hidden">
+<a class="flex flex-col items-center justify-center text-on-primary-container opacity-60 hover:text-secondary-fixed-dim Tap: scale-95 transition-transform duration-150 font-label-sm text-label-sm" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary-container font-bold bg-tertiary-container/50 rounded-xl px-2 py-1 hover:text-secondary-fixed-dim Tap: scale-95 transition-transform duration-150 font-label-sm text-label-sm" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">folder_open</span>
+<span class="mt-1">Cases</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-primary-container opacity-60 hover:text-secondary-fixed-dim Tap: scale-95 transition-transform duration-150 font-label-sm text-label-sm" href="#">
+<span class="material-symbols-outlined">event_note</span>
+<span class="mt-1">Hearings</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-primary-container opacity-60 hover:text-secondary-fixed-dim Tap: scale-95 transition-transform duration-150 font-label-sm text-label-sm" href="#">
+<span class="material-symbols-outlined">notifications</span>
+<span class="mt-1">Notifications</span>
+</a>
+</nav>
+</body></html>

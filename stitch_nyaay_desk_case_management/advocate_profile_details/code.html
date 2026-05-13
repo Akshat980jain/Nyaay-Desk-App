@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Advocate Profile - Nyaay Desk</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-fixed-variant": "#3a4859",
+                        "outline-variant": "#c4c6cc",
+                        "surface-variant": "#e1e3e4",
+                        "surface-container-high": "#e7e8e9",
+                        "error": "#ba1a1a",
+                        "surface-container-low": "#f3f4f5",
+                        "tertiary-fixed-dim": "#bbc6e2",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-tint": "#525f71",
+                        "on-background": "#191c1d",
+                        "error-container": "#ffdad6",
+                        "surface": "#f8f9fa",
+                        "on-secondary-fixed-variant": "#633f00",
+                        "secondary-container": "#feae2c",
+                        "on-error": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "background": "#f8f9fa",
+                        "on-tertiary-fixed-variant": "#3c475d",
+                        "tertiary": "#000000",
+                        "on-primary": "#ffffff",
+                        "tertiary-container": "#101b30",
+                        "inverse-surface": "#2e3132",
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-surface-variant": "#44474c",
+                        "on-tertiary-fixed": "#101b30",
+                        "surface-container-highest": "#e1e3e4",
+                        "secondary-fixed-dim": "#ffb955",
+                        "tertiary-fixed": "#d7e2ff",
+                        "surface-dim": "#d9dadb",
+                        "inverse-primary": "#bac8dc",
+                        "on-tertiary-container": "#79849d",
+                        "on-secondary": "#ffffff",
+                        "outline": "#74777d",
+                        "on-primary-fixed": "#0f1c2c",
+                        "on-surface": "#191c1d",
+                        "on-primary-container": "#778598",
+                        "surface-container": "#edeeef",
+                        "surface-bright": "#f8f9fa",
+                        "secondary": "#835500",
+                        "secondary-fixed": "#ffddb4",
+                        "primary": "#000000",
+                        "primary-container": "#0f1c2c",
+                        "primary-fixed-dim": "#bac8dc",
+                        "on-error-container": "#93000a",
+                        "on-secondary-fixed": "#291800",
+                        "on-secondary-container": "#6b4500",
+                        "primary-fixed": "#d6e4f9"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "touch-target": "48px",
+                        "margin-desktop": "32px",
+                        "margin-mobile": "16px",
+                        "gutter": "16px",
+                        "base": "8px"
+                    },
+                    "fontFamily": {
+                        "case-number": [
+                            "JetBrains Mono"
+                        ],
+                        "display-lg": [
+                            "Inter"
+                        ],
+                        "label-sm": [
+                            "Inter"
+                        ],
+                        "headline-md": [
+                            "Inter"
+                        ],
+                        "body-base": [
+                            "Inter"
+                        ]
+                    },
+                    "fontSize": {
+                        "case-number": [
+                            "15px",
+                            {
+                                "lineHeight": "20px",
+                                "letterSpacing": "0.05em",
+                                "fontWeight": "700"
+                            }
+                        ],
+                        "display-lg": [
+                            "32px",
+                            {
+                                "lineHeight": "40px",
+                                "letterSpacing": "-0.02em",
+                                "fontWeight": "700"
+                            }
+                        ],
+                        "label-sm": [
+                            "12px",
+                            {
+                                "lineHeight": "16px",
+                                "fontWeight": "500"
+                            }
+                        ],
+                        "headline-md": [
+                            "24px",
+                            {
+                                "lineHeight": "32px",
+                                "fontWeight": "600"
+                            }
+                        ],
+                        "body-base": [
+                            "16px",
+                            {
+                                "lineHeight": "24px",
+                                "fontWeight": "400"
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-base min-h-screen flex flex-col antialiased">
+<!-- TopAppBar -->
+<header class="bg-primary-container text-on-primary-container font-headline-md text-headline-md docked full-width top-0 border-b border-outline-variant flat no shadows flex justify-between items-center w-full px-margin-mobile h-touch-target sticky z-50">
+<button class="text-on-primary-container hover:bg-primary/10 transition-colors rounded-full p-2 flex items-center justify-center">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="text-secondary-container font-bold flex-1 text-center truncate px-4 text-headline-md font-headline-md">Advocate Profile</h1>
+<button class="text-on-primary-container hover:bg-primary/10 transition-colors rounded-full p-2 flex items-center justify-center">
+<span class="material-symbols-outlined">share</span>
+</button>
+</header>
+<main class="flex-1 overflow-y-auto pb-24 md:pb-8 pt-4 px-margin-mobile max-w-4xl mx-auto w-full">
+<!-- Profile Section (Bento Style) -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter mb-8">
+<!-- Main Identity Card -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-6 flex flex-col items-center text-center md:col-span-1 shadow-sm relative overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-24 bg-primary-container z-0"></div>
+<img alt="Adv. Vikram Singh" class="w-32 h-32 rounded-full border-4 border-surface-container-lowest z-10 mb-4 object-cover" data-alt="A professional portrait of an Indian male advocate in his late 40s. He is wearing a formal black lawyer's robe with a white collar band over a crisp white shirt. He has a serious, trustworthy expression. The lighting is studio-quality, softly illuminating his features against a plain, professional grey backdrop. The image conveys authority, reliability, and corporate modernism." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAa1du2Kkwavib0RmsEpJNTlYVEktwKdz3T8IyndG0ZnXNDqb64HJJqR9LPZaq8GdXeG9mUcBOHwfGTJ_2g8QT2tPS8v8jJkAY1FqLip-QDWALdPe8O1OTRCVeEDF-vzDausnsnki6YM9iqewNCaxt7DBPWrEawyaPZ9PqmE2LJjUkwS0PeATpdpSFLhtkZmMrXAAcAdvc5_AVbDfr5iKpxYAdzd98QW1U0aJXBg5HAG2KqZVnl3nl76sE0eeNUXfxrD9399XH-siS9"/>
+<h2 class="font-headline-md text-headline-md text-primary font-bold z-10 mb-1">Adv. Vikram Singh</h2>
+<p class="font-case-number text-case-number text-on-surface-variant z-10 mb-3 bg-surface-container py-1 px-3 rounded-full border border-surface-variant">D/1234/2005</p>
+<div class="flex items-center gap-1 mt-2 z-10 bg-secondary-container/10 px-4 py-2 rounded-lg border border-secondary-container/30">
+<span class="material-symbols-outlined text-secondary-container" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-body-base text-body-base font-bold text-primary">4.8/5</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant ml-1">(124 reviews)</span>
+</div>
+</div>
+<!-- Stats & Quick Info Grid -->
+<div class="grid grid-cols-2 md:grid-cols-2 gap-4 md:col-span-2">
+<!-- Stat Cards -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-4 flex flex-col justify-center items-center text-center shadow-sm">
+<span class="material-symbols-outlined text-secondary-container text-4xl mb-2">work_history</span>
+<span class="font-headline-md text-headline-md text-primary font-bold">18 Yrs</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mt-1">Experience</span>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-4 flex flex-col justify-center items-center text-center shadow-sm">
+<span class="material-symbols-outlined text-secondary-container text-4xl mb-2">gavel</span>
+<span class="font-headline-md text-headline-md text-primary font-bold">500+</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mt-1">Cases Won</span>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-4 flex flex-col justify-center items-center text-center shadow-sm col-span-2 md:col-span-1">
+<span class="material-symbols-outlined text-secondary-container text-4xl mb-2">trending_up</span>
+<span class="font-headline-md text-headline-md text-primary font-bold">98%</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider mt-1">Success Rate</span>
+</div>
+<!-- Achievements Highlight -->
+<div class="bg-primary-container text-on-primary-container rounded-lg p-4 flex flex-col justify-center shadow-sm col-span-2 md:col-span-1 border border-primary-container">
+<h3 class="font-label-sm text-label-sm uppercase tracking-wider mb-2 text-secondary-container opacity-90">Top Achievement</h3>
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary-container mt-1" style="font-variation-settings: 'FILL' 1;">military_tech</span>
+<div>
+<p class="font-body-base text-body-base font-semibold text-surface-container-lowest leading-tight">Best Advocate 2022</p>
+<p class="font-label-sm text-label-sm mt-1 opacity-80">Bar Council Excellence</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Two Column Layout for Details -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<!-- Left Column: About & Specialties -->
+<div class="md:col-span-2 flex flex-col gap-gutter">
+<!-- About Section -->
+<section class="bg-surface-container-lowest border border-outline-variant rounded-lg p-6 shadow-sm">
+<h3 class="font-headline-md text-headline-md text-primary mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant">person_book</span>
+                        About
+                    </h3>
+<p class="font-body-base text-body-base text-on-surface-variant leading-relaxed">
+                        With nearly two decades of dedicated practice, I specialize in complex Criminal Law and high-stakes Civil Litigation. My extensive experience at the High Court level has equipped me with a deep understanding of procedural nuances and strategic advocacy. I am committed to delivering justice with unwavering integrity and ensuring that every client receives rigorous representation.
+                    </p>
+</section>
+<!-- Specialties -->
+<section class="bg-surface-container-lowest border border-outline-variant rounded-lg p-6 shadow-sm">
+<h3 class="font-headline-md text-headline-md text-primary mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant">category</span>
+                        Specialties
+                    </h3>
+<div class="flex flex-wrap gap-2">
+<span class="bg-surface-container px-4 py-2 rounded-full font-label-sm text-label-sm text-primary border border-outline-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">gavel</span> Criminal Law
+                        </span>
+<span class="bg-surface-container px-4 py-2 rounded-full font-label-sm text-label-sm text-primary border border-outline-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">balance</span> Civil Litigation
+                        </span>
+<span class="bg-surface-container px-4 py-2 rounded-full font-label-sm text-label-sm text-primary border border-outline-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">business_center</span> Corporate Law
+                        </span>
+</div>
+</section>
+</div>
+<!-- Right Column: Reviews & Extra Info -->
+<div class="md:col-span-1 flex flex-col gap-gutter">
+<!-- Top Review -->
+<section class="bg-surface-container-lowest border border-outline-variant rounded-lg p-6 shadow-sm flex flex-col h-full">
+<div class="flex justify-between items-center mb-4">
+<h3 class="font-headline-md text-headline-md text-primary flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary-container" style="font-variation-settings: 'FILL' 1;">format_quote</span>
+                            Top Review
+                        </h3>
+</div>
+<div class="flex-1 flex flex-col">
+<p class="font-body-base text-body-base text-on-surface-variant italic mb-4 flex-1">
+                            "Advocate Singh handled my property dispute with exceptional professionalism. His deep understanding of civil law and strategic approach in the High Court secured a favorable outcome much faster than anticipated. Highly recommended for complex litigation."
+                        </p>
+<div class="flex items-center gap-3 pt-4 border-t border-surface-variant">
+<div class="w-8 h-8 rounded-full bg-primary-container text-secondary-container flex items-center justify-center font-bold text-sm">
+                                R
+                            </div>
+<div>
+<p class="font-label-sm text-label-sm text-primary font-bold">Rajesh Kumar</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Litigant</p>
+</div>
+</div>
+</div>
+<button class="mt-4 w-full py-2 border border-primary-container text-primary-container font-label-sm text-label-sm rounded-lg hover:bg-primary-container hover:text-surface-container-lowest transition-colors flex items-center justify-center gap-2">
+                        View All Reviews <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</section>
+</div>
+</div>
+</main>
+<!-- Bottom Action Bar (Mobile & Desktop sticky) -->
+<div class="fixed bottom-0 w-full bg-surface-container-lowest border-t border-outline-variant shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.1)] z-50 p-4">
+<div class="max-w-4xl mx-auto flex gap-4">
+<button class="flex-1 bg-surface-container-lowest border border-primary-container text-primary-container font-headline-md text-body-base font-bold h-touch-target rounded-lg hover:bg-surface-variant transition-colors flex items-center justify-center gap-2 shadow-sm">
+<span class="material-symbols-outlined">attach_file</span>
+                Request Attachment
+            </button>
+<button class="flex-1 bg-secondary-container text-primary-container font-headline-md text-body-base font-bold h-touch-target rounded-lg hover:bg-secondary-fixed-dim transition-colors flex items-center justify-center gap-2 shadow-sm">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">chat</span>
+                Message Advocate
+            </button>
+</div>
+</div>
+</body></html>

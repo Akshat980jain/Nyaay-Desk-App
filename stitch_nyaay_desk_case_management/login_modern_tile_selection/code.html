@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nyaay Desk - Login</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "outline": "#74777d",
+                      "on-secondary-fixed-variant": "#633f00",
+                      "tertiary-container": "#101b30",
+                      "primary-container": "#0f1c2c",
+                      "on-surface": "#191c1d",
+                      "on-error-container": "#93000a",
+                      "surface-tint": "#525f71",
+                      "inverse-on-surface": "#f0f1f2",
+                      "secondary-container": "#feae2c",
+                      "on-surface-variant": "#44474c",
+                      "inverse-surface": "#2e3132",
+                      "on-secondary-fixed": "#291800",
+                      "surface-container": "#edeeef",
+                      "surface-container-high": "#e7e8e9",
+                      "on-primary-fixed-variant": "#3a4859",
+                      "on-primary-fixed": "#0f1c2c",
+                      "on-tertiary": "#ffffff",
+                      "surface-bright": "#f8f9fa",
+                      "surface-container-lowest": "#ffffff",
+                      "surface": "#f8f9fa",
+                      "outline-variant": "#c4c6cc",
+                      "surface-container-low": "#f3f4f5",
+                      "background": "#f8f9fa",
+                      "on-primary": "#ffffff",
+                      "on-background": "#191c1d",
+                      "on-primary-container": "#778598",
+                      "surface-variant": "#e1e3e4",
+                      "primary-fixed": "#d6e4f9",
+                      "tertiary-fixed-dim": "#bbc6e2",
+                      "surface-container-highest": "#e1e3e4",
+                      "primary-fixed-dim": "#bac8dc",
+                      "on-tertiary-container": "#79849d",
+                      "tertiary": "#000000",
+                      "on-tertiary-fixed-variant": "#3c475d",
+                      "secondary-fixed": "#ffddb4",
+                      "error": "#ba1a1a",
+                      "on-secondary": "#ffffff",
+                      "secondary-fixed-dim": "#ffb955",
+                      "on-secondary-container": "#6b4500",
+                      "on-error": "#ffffff",
+                      "tertiary-fixed": "#d7e2ff",
+                      "error-container": "#ffdad6",
+                      "primary": "#000000",
+                      "on-tertiary-fixed": "#101b30",
+                      "inverse-primary": "#bac8dc",
+                      "secondary": "#835500",
+                      "surface-dim": "#d9dadb"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "touch-target": "48px",
+                      "gutter": "16px",
+                      "margin-mobile": "16px",
+                      "margin-desktop": "32px",
+                      "base": "8px"
+              },
+              "fontFamily": {
+                      "headline-md": [
+                              "Inter"
+                      ],
+                      "body-base": [
+                              "Inter"
+                      ],
+                      "case-number": [
+                              "JetBrains Mono"
+                      ],
+                      "display-lg": [
+                              "Inter"
+                      ],
+                      "label-sm": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-base": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "case-number": [
+                              "15px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "display-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "500"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-base min-h-screen flex flex-col items-center justify-center relative overflow-hidden">
+<!-- Decorative Background Split -->
+<div class="absolute inset-0 z-0 flex flex-col pointer-events-none">
+<div class="h-1/3 w-full bg-primary-container"></div>
+<div class="h-2/3 w-full bg-background"></div>
+</div>
+<!-- Login Container -->
+<main class="relative z-10 w-full max-w-md px-margin-mobile flex flex-col items-center">
+<!-- Header Section -->
+<header class="w-full text-center mb-8">
+<h1 class="font-display-lg text-display-lg text-on-primary">Nyaay Desk</h1>
+<p class="font-body-base text-body-base text-on-primary-container mt-2">Secure Judicial Access Portal</p>
+</header>
+<!-- Main Card -->
+<div class="w-full bg-surface-container-lowest rounded-xl border border-outline-variant shadow-[0_4px_24px_-4px_rgba(0,0,0,0.05)] overflow-hidden">
+<div class="p-6">
+<!-- Role Selection -->
+<div class="mb-8">
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-4 uppercase tracking-wider text-center">Select Role to Continue</p>
+<div class="grid grid-cols-4 gap-2">
+<!-- Role: Advocate -->
+<button class="flex flex-col items-center justify-center p-3 rounded-lg border-2 border-secondary-container bg-surface-bright transition-colors">
+<span class="material-symbols-outlined text-secondary-container mb-1" style="font-variation-settings: 'FILL' 1;">gavel</span>
+<span class="font-label-sm text-label-sm text-on-surface text-center">Advocate</span>
+</button>
+<!-- Role: Litigant -->
+<button class="flex flex-col items-center justify-center p-3 rounded-lg border border-outline-variant bg-surface hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-outline mb-1">person</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant text-center">Litigant</span>
+</button>
+<!-- Role: Clerk -->
+<button class="flex flex-col items-center justify-center p-3 rounded-lg border border-outline-variant bg-surface hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-outline mb-1">folder_shared</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant text-center">Clerk</span>
+</button>
+<!-- Role: Admin -->
+<button class="flex flex-col items-center justify-center p-3 rounded-lg border border-outline-variant bg-surface hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined text-outline mb-1">admin_panel_settings</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant text-center">Admin</span>
+</button>
+</div>
+</div>
+<!-- Login Form -->
+<form class="flex flex-col gap-4">
+<!-- Identifier Input -->
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-on-surface" for="identifier">Registration Number / ID</label>
+<input class="h-touch-target px-4 rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface focus:outline-none focus:border-secondary-container focus:ring-1 focus:ring-secondary-container transition-all font-body-base text-body-base placeholder:text-outline/60" id="identifier" placeholder="e.g. ADV-2023-458" type="text"/>
+</div>
+<!-- Password Input -->
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-on-surface" for="password">Password</label>
+<div class="relative">
+<input class="w-full h-touch-target pl-4 pr-12 rounded-lg border border-outline-variant bg-surface-container-lowest text-on-surface focus:outline-none focus:border-secondary-container focus:ring-1 focus:ring-secondary-container transition-all font-body-base text-body-base placeholder:text-outline/60" id="password" placeholder="Enter your password" type="password"/>
+<button class="absolute right-0 top-0 h-full px-3 text-outline hover:text-on-surface flex items-center justify-center" type="button">
+<span class="material-symbols-outlined">visibility_off</span>
+</button>
+</div>
+</div>
+<!-- Options -->
+<div class="flex justify-between items-center mt-2">
+<label class="flex items-center gap-2 cursor-pointer">
+<input class="rounded border-outline-variant text-secondary-container focus:ring-secondary-container w-4 h-4" type="checkbox"/>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Remember me</span>
+</label>
+<a class="font-label-sm text-label-sm text-primary hover:underline" href="#">Forgot Password?</a>
+</div>
+<!-- Submit Button -->
+<button class="mt-4 h-touch-target w-full bg-secondary-container text-on-secondary-container font-headline-md text-headline-md rounded-lg shadow-[0_4px_8px_-2px_rgba(254,174,44,0.2)] hover:bg-secondary-fixed-dim transition-colors flex items-center justify-center gap-2" type="submit">
+<span>Secure Login</span>
+<span class="material-symbols-outlined text-lg">arrow_forward</span>
+</button>
+</form>
+</div>
+<!-- Footer Actions -->
+<div class="bg-surface-container-low p-4 border-t border-outline-variant flex justify-center gap-6">
+<a class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[16px]">help</span>
+                    Support
+                </a>
+<a class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[16px]">menu_book</span>
+                    User Guide
+                </a>
+</div>
+</div>
+<!-- Security Badge -->
+<div class="mt-8 flex items-center justify-center gap-2 text-outline">
+<span class="material-symbols-outlined text-[18px]">lock</span>
+<span class="font-label-sm text-label-sm">End-to-End Encrypted Connection</span>
+</div>
+</main>
+</body></html>

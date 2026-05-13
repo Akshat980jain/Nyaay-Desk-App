@@ -1,21 +1,21 @@
 /* AdvocateDashboard.css - Professional Minimalist Advocate Dashboard */
 
 :root {
-  --color-accent: #06b6d4;
-  --color-black: #0f172a;
-  --color-white: #f5f3f0;
-  --color-gray-50: #f5f3f0;
-  --color-gray-100: #ede8e3;
-  --color-gray-200: #e2d9d0;
-  --color-gray-300: #d4c7b8;
-  --color-gray-400: #b8a894;
-  --color-gray-500: #9c8a70;
-  --color-gray-600: #7d6b53;
-  --color-gray-700: #5e4d3a;
-  --color-gray-800: #453629;
-  --color-gray-900: #2d201a;
-  --color-gold: #fbbf24;
-  --color-gold-dark: #f59e0b;
+  --color-accent: #1E293B;
+  --color-black: #0F172A;
+  --color-white: #FFFFFF;
+  --color-gray-50: #F5F4F0;
+  --color-gray-100: #FAF9F6;
+  --color-gray-200: #E2E8F0;
+  --color-gray-300: #CBD5E1;
+  --color-gray-400: #94A3B8;
+  --color-gray-500: #64748B;
+  --color-gray-600: #475569;
+  --color-gray-700: #334155;
+  --color-gray-800: #1E293B;
+  --color-gray-900: #0F172A;
+  --color-gold: #D4AF37;
+  --color-gold-dark: #C5A059;
 }
 
 * {
@@ -1214,6 +1214,7 @@
 
 /* Print Styles */
 @media print {
+
   .advocat-header-container,
   .advocat-sidebar-container,
   .advocat-logout-buttons-group,

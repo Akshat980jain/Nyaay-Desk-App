@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nyaay Desk</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "primary-container": "#0f1c2c",
+                      "secondary-container": "#feae2c",
+                      "on-tertiary-fixed": "#101b30",
+                      "surface-bright": "#f8f9fa",
+                      "primary-fixed-dim": "#bac8dc",
+                      "on-primary-fixed": "#0f1c2c",
+                      "secondary": "#835500",
+                      "surface-container": "#edeeef",
+                      "on-tertiary": "#ffffff",
+                      "secondary-fixed": "#ffddb4",
+                      "tertiary-fixed": "#d7e2ff",
+                      "surface-variant": "#e1e3e4",
+                      "on-error-container": "#93000a",
+                      "surface-container-lowest": "#ffffff",
+                      "on-primary-container": "#778598",
+                      "secondary-fixed-dim": "#ffb955",
+                      "surface-dim": "#d9dadb",
+                      "on-tertiary-fixed-variant": "#3c475d",
+                      "tertiary": "#000000",
+                      "on-surface": "#191c1d",
+                      "on-secondary-fixed": "#291800",
+                      "tertiary-container": "#101b30",
+                      "surface-container-high": "#e7e8e9",
+                      "error-container": "#ffdad6",
+                      "tertiary-fixed-dim": "#bbc6e2",
+                      "on-primary-fixed-variant": "#3a4859",
+                      "outline-variant": "#c4c6cc",
+                      "inverse-primary": "#bac8dc",
+                      "surface-container-highest": "#e1e3e4",
+                      "on-tertiary-container": "#79849d",
+                      "primary-fixed": "#d6e4f9",
+                      "surface": "#f8f9fa",
+                      "on-surface-variant": "#44474c",
+                      "on-error": "#ffffff",
+                      "on-background": "#191c1d",
+                      "on-secondary": "#ffffff",
+                      "on-primary": "#ffffff",
+                      "surface-tint": "#525f71",
+                      "surface-container-low": "#f3f4f5",
+                      "error": "#ba1a1a",
+                      "on-secondary-container": "#6b4500",
+                      "on-secondary-fixed-variant": "#633f00",
+                      "primary": "#000000",
+                      "outline": "#74777d",
+                      "inverse-surface": "#2e3132",
+                      "inverse-on-surface": "#f0f1f2",
+                      "background": "#f8f9fa"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-desktop": "32px",
+                      "margin-mobile": "16px",
+                      "base": "8px",
+                      "gutter": "16px",
+                      "touch-target": "48px"
+              },
+              "fontFamily": {
+                      "display-lg": [
+                              "Inter"
+                      ],
+                      "body-base": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Inter"
+                      ],
+                      "label-sm": [
+                              "Inter"
+                      ],
+                      "case-number": [
+                              "JetBrains Mono"
+                      ]
+              },
+              "fontSize": {
+                      "display-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-base": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "case-number": [
+                              "15px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "700"
+                              }
+                      ]
+              }
+            },
+          }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .icon-fill {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen flex flex-col pb-24 md:pb-0 md:flex-row antialiased">
+<!-- TopAppBar -->
+<header class="bg-primary-container dark:bg-primary-container text-on-primary-container dark:text-on-primary-container font-headline-md text-headline-md docked full-width top-0 border-b border-outline-variant flat no shadows flex justify-between items-center w-full px-margin-mobile h-touch-target md:hidden z-40 sticky">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary-container" data-icon="gavel">gavel</span>
+<span class="text-headline-md font-headline-md font-bold text-secondary-container">Nyaay Desk</span>
+</div>
+<button class="font-label-sm text-label-sm text-on-primary-container opacity-80 hover:bg-primary/10 transition-colors px-3 py-1 rounded">Logout</button>
+</header>
+<!-- NavigationDrawer (Desktop) -->
+<aside class="hidden md:flex flex-col p-4 gap-2 bg-surface dark:bg-surface-dim text-primary dark:text-primary-fixed h-full w-80 rounded-r-xl border-r border-outline-variant shadow-md fixed left-0 top-0 z-50">
+<div class="flex items-center gap-4 mb-6 mt-2">
+<div class="w-12 h-12 rounded-full bg-primary-container flex items-center justify-center overflow-hidden shrink-0">
+<img alt="User Profile Avatar" class="w-full h-full object-cover" data-alt="A professional headshot of a young Indian man in formal corporate attire against a neutral light gray background. He has a warm, confident expression. The lighting is soft and even, highlighting a polished, authoritative mood suitable for a corporate or legal application profile." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDV_rSeOSQY3fJNlKFf6ynjkyeEjKY49Dr9CDyS-BZ__7qkX8W_StkHh8oY1N2jVvXBe3iShCmqcxbaEvK_dhKAEPC-36aaxWadn-1tIg68fLijWVitfkb2qJ9JpiEsK4ag9vt8E7ECmxbNELg7SjDgscrZcjucJqxXK27-TMPsaJBlJPKh-y4grs1PN9sCUK7vnuDZRsPFE2r3_IZAfgv4FUc9--11I3Xyq4r-KEKFiRid8rgTCmTTIUABjwI0UN-htdtHtb_6ieh9"/>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md font-bold text-primary">Rahul Sharma</h2>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Litigant ID: L-2024-089</p>
+<span class="inline-block mt-1 px-2 py-0.5 bg-tertiary-fixed text-on-tertiary-fixed font-label-sm text-[10px] rounded-full">Active Status</span>
+</div>
+</div>
+<nav class="flex flex-col gap-1 flex-1">
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg font-body-base text-body-base bg-secondary-container text-on-secondary-container font-semibold transition-colors" href="#">
+<span class="material-symbols-outlined icon-fill" data-icon="dashboard">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg font-body-base text-body-base text-on-surface-variant hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+                My Documents
+            </a>
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg font-body-base text-body-base text-on-surface-variant hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="assignment">assignment</span>
+                Notice Board
+            </a>
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg font-body-base text-body-base text-on-surface-variant hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_month">calendar_month</span>
+                Court Calendar
+            </a>
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg font-body-base text-body-base text-on-surface-variant hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="person_search">person_search</span>
+                Find Advocate
+            </a>
+<a class="flex items-center gap-3 px-3 py-3 rounded-lg font-body-base text-body-base text-on-surface-variant hover:bg-surface-container-high transition-colors mt-auto" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+                Settings
+            </a>
+</nav>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 md:ml-80 flex flex-col w-full max-w-5xl mx-auto px-margin-mobile md:px-margin-desktop py-6 gap-8">
+<!-- Hero Section -->
+<section class="flex flex-col items-center text-center pt-8 pb-4">
+<div class="w-20 h-20 bg-primary-container rounded-full flex items-center justify-center mb-4 shadow-sm border border-outline-variant">
+<span class="material-symbols-outlined text-4xl text-secondary-container icon-fill" data-icon="account_balance">account_balance</span>
+</div>
+<h1 class="font-display-lg text-display-lg text-primary mb-2">Nyaay Desk</h1>
+<p class="font-body-base text-body-base text-on-surface-variant max-w-md mx-auto">Simplifying Justice Delivery with Technology</p>
+</section>
+<!-- Quick Case Search -->
+<section class="bg-surface-container-lowest rounded-xl p-4 md:p-6 border border-outline-variant shadow-sm relative z-10 mx-auto w-full max-w-2xl">
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-2">Search Case Status</label>
+<div class="flex flex-col sm:flex-row gap-3">
+<div class="relative flex-1">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline" data-icon="search">search</span>
+<input class="w-full h-touch-target pl-10 pr-4 bg-surface rounded-lg border border-outline-variant focus:border-secondary-container focus:ring-1 focus:ring-secondary-container font-body-base text-body-base placeholder:text-outline outline-none transition-all" placeholder="Enter CNR Number or Case ID" type="text"/>
+</div>
+<button class="h-touch-target px-6 bg-secondary-container text-on-secondary-fixed rounded-lg font-body-base text-body-base font-semibold hover:bg-secondary-fixed-dim transition-colors whitespace-nowrap flex items-center justify-center gap-2">
+                    Search Now
+                    <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<div class="mt-3 flex gap-4 text-xs font-label-sm text-primary">
+<a class="hover:underline flex items-center gap-1" href="#"><span class="material-symbols-outlined text-[14px]" data-icon="help">help</span> How to find CNR?</a>
+<a class="hover:underline flex items-center gap-1" href="#"><span class="material-symbols-outlined text-[14px]" data-icon="qr_code_scanner">qr_code_scanner</span> Scan QR Code</a>
+</div>
+</section>
+<!-- Portals Grid -->
+<section>
+<h2 class="font-headline-md text-headline-md text-primary mb-4 px-2">Access Portals</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Advocate -->
+<div class="group bg-surface-container-lowest border border-outline-variant rounded-xl p-5 hover:border-secondary-container transition-all cursor-pointer relative overflow-hidden flex items-start gap-4 shadow-sm hover:shadow-md">
+<div class="w-12 h-12 rounded-lg bg-primary-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-secondary-container" data-icon="gavel">gavel</span>
+</div>
+<div>
+<h3 class="font-body-base text-body-base font-semibold text-primary mb-1 group-hover:text-secondary">Advocate Portal</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant leading-relaxed">Manage daily causelists, e-file documents, and track hearing schedules for all clients.</p>
+</div>
+<div class="absolute right-4 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity translate-x-2 group-hover:translate-x-0">
+<span class="material-symbols-outlined text-secondary-container" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+<!-- Litigant -->
+<div class="group bg-surface-container-lowest border border-secondary-container border-2 rounded-xl p-5 relative overflow-hidden flex items-start gap-4 shadow-sm">
+<div class="absolute top-0 right-0 bg-secondary-container text-on-secondary-fixed font-label-sm text-[10px] px-2 py-1 rounded-bl-lg font-bold">ACTIVE</div>
+<div class="w-12 h-12 rounded-lg bg-secondary-container/20 flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-secondary" data-icon="person">person</span>
+</div>
+<div>
+<h3 class="font-body-base text-body-base font-semibold text-primary mb-1">Litigant Portal</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant leading-relaxed">View case updates, pay court fees online, and access final judgments securely.</p>
+</div>
+<div class="absolute right-4 top-1/2 -translate-y-1/2">
+<span class="material-symbols-outlined text-secondary-container" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+<!-- Court Clerk -->
+<div class="group bg-surface-container-lowest border border-outline-variant rounded-xl p-5 hover:border-secondary-container transition-all cursor-pointer relative overflow-hidden flex items-start gap-4 shadow-sm hover:shadow-md">
+<div class="w-12 h-12 rounded-lg bg-surface-container-high flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="edit_document">edit_document</span>
+</div>
+<div>
+<h3 class="font-body-base text-body-base font-semibold text-primary mb-1 group-hover:text-secondary">Court-Room Clerk</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant leading-relaxed">Update case proceedings in real-time, generate automated notices, and manage digital records.</p>
+</div>
+<div class="absolute right-4 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity translate-x-2 group-hover:translate-x-0">
+<span class="material-symbols-outlined text-secondary-container" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+<!-- Admin -->
+<div class="group bg-surface-container-lowest border border-outline-variant rounded-xl p-5 hover:border-secondary-container transition-all cursor-pointer relative overflow-hidden flex items-start gap-4 shadow-sm hover:shadow-md">
+<div class="w-12 h-12 rounded-lg bg-surface-container-high flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="admin_panel_settings">admin_panel_settings</span>
+</div>
+<div>
+<h3 class="font-body-base text-body-base font-semibold text-primary mb-1 group-hover:text-secondary">System Admin</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant leading-relaxed">Manage user roles, monitor system health, and configure court jurisdictions.</p>
+</div>
+<div class="absolute right-4 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity translate-x-2 group-hover:translate-x-0">
+<span class="material-symbols-outlined text-secondary-container" data-icon="chevron_right">chevron_right</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Judicial Resources -->
+<section class="mb-8">
+<div class="flex justify-between items-end mb-4 px-2">
+<h2 class="font-headline-md text-headline-md text-primary">Judicial Resources</h2>
+<a class="font-label-sm text-label-sm text-secondary font-bold hover:underline" href="#">View All</a>
+</div>
+<div class="flex flex-col sm:flex-row gap-4 overflow-x-auto pb-4 snap-x">
+<div class="min-w-[240px] flex-1 bg-primary-container text-on-primary rounded-xl p-5 relative overflow-hidden snap-start">
+<div class="absolute -right-4 -bottom-4 opacity-10">
+<span class="material-symbols-outlined text-[100px]" data-icon="bar_chart">bar_chart</span>
+</div>
+<div class="relative z-10">
+<div class="w-8 h-8 rounded bg-white/10 flex items-center justify-center mb-3">
+<span class="material-symbols-outlined text-secondary-container text-sm" data-icon="analytics">analytics</span>
+</div>
+<h3 class="font-body-base text-body-base font-semibold mb-1">Court Statistics</h3>
+<p class="font-label-sm text-label-sm text-on-primary/70 mb-4">View real-time pendency and disposal rates across districts.</p>
+<button class="text-secondary-container font-label-sm text-label-sm font-bold flex items-center gap-1 hover:text-secondary-fixed transition-colors">Explore Stats <span class="material-symbols-outlined text-[14px]" data-icon="arrow_outward">arrow_outward</span></button>
+</div>
+</div>
+<div class="min-w-[240px] flex-1 bg-surface-container-lowest border border-outline-variant rounded-xl p-5 snap-start shadow-sm">
+<div class="w-8 h-8 rounded bg-surface-container-high flex items-center justify-center mb-3">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="policy">policy</span>
+</div>
+<h3 class="font-body-base text-body-base font-semibold text-primary mb-1">Daily Orders</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-4">Search and download certified copies of daily court orders.</p>
+<button class="text-primary font-label-sm text-label-sm font-bold flex items-center gap-1 hover:text-secondary transition-colors">Browse Orders <span class="material-symbols-outlined text-[14px]" data-icon="arrow_forward">arrow_forward</span></button>
+</div>
+<div class="min-w-[240px] flex-1 bg-surface-container-lowest border border-outline-variant rounded-xl p-5 snap-start shadow-sm">
+<div class="w-8 h-8 rounded bg-surface-container-high flex items-center justify-center mb-3">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="menu_book">menu_book</span>
+</div>
+<h3 class="font-body-base text-body-base font-semibold text-primary mb-1">E-Filing Manual</h3>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-4">Step-by-step guide for digital submission of legal documents.</p>
+<button class="text-primary font-label-sm text-label-sm font-bold flex items-center gap-1 hover:text-secondary transition-colors">Read Guide <span class="material-symbols-outlined text-[14px]" data-icon="arrow_forward">arrow_forward</span></button>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar (Mobile) -->
+<nav class="md:hidden bg-primary-container dark:bg-primary-container text-secondary-container dark:text-secondary-container font-label-sm text-label-sm fixed bottom-0 w-full z-50 border-t border-outline-variant shadow-lg flex justify-around items-center h-16 pb-safe px-2">
+<a class="flex flex-col items-center justify-center text-secondary-container font-bold bg-tertiary-container/50 rounded-xl px-2 py-1 scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined icon-fill" data-icon="home">home</span>
+<span class="mt-1 text-[10px]">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-primary-container opacity-60 hover:text-secondary-fixed-dim scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="folder_open">folder_open</span>
+<span class="mt-1 text-[10px]">Cases</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-primary-container opacity-60 hover:text-secondary-fixed-dim scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="event_note">event_note</span>
+<span class="mt-1 text-[10px]">Hearings</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-primary-container opacity-60 hover:text-secondary-fixed-dim scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="mt-1 text-[10px]">Notifications</span>
+</a>
+</nav>
+</body></html>

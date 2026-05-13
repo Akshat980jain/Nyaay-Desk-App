@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-variant": "#e1e3e4",
+                    "surface-container-high": "#e7e8e9",
+                    "surface-container": "#edeeef",
+                    "on-tertiary": "#ffffff",
+                    "tertiary-fixed": "#d7e2ff",
+                    "on-secondary-container": "#6b4500",
+                    "error-container": "#ffdad6",
+                    "tertiary-container": "#101b30",
+                    "secondary-fixed-dim": "#ffb955",
+                    "on-surface": "#191c1d",
+                    "tertiary": "#000000",
+                    "primary": "#000000",
+                    "inverse-primary": "#bac8dc",
+                    "on-primary": "#ffffff",
+                    "primary-fixed-dim": "#bac8dc",
+                    "surface-container-lowest": "#ffffff",
+                    "surface": "#f8f9fa",
+                    "on-tertiary-container": "#79849d",
+                    "primary-container": "#0f1c2c",
+                    "on-primary-container": "#778598",
+                    "surface-tint": "#525f71",
+                    "primary-fixed": "#d6e4f9",
+                    "on-secondary-fixed-variant": "#633f00",
+                    "secondary-fixed": "#ffddb4",
+                    "on-surface-variant": "#44474c",
+                    "tertiary-fixed-dim": "#bbc6e2",
+                    "surface-container-highest": "#e1e3e4",
+                    "on-background": "#191c1d",
+                    "surface-bright": "#f8f9fa",
+                    "secondary": "#835500",
+                    "on-secondary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "on-secondary-fixed": "#291800",
+                    "inverse-on-surface": "#f0f1f2",
+                    "inverse-surface": "#2e3132",
+                    "on-primary-fixed-variant": "#3a4859",
+                    "error": "#ba1a1a",
+                    "on-primary-fixed": "#0f1c2c",
+                    "outline-variant": "#c4c6cc",
+                    "outline": "#74777d",
+                    "on-error": "#ffffff",
+                    "background": "#f8f9fa",
+                    "surface-container-low": "#f3f4f5",
+                    "on-tertiary-fixed-variant": "#3c475d",
+                    "on-tertiary-fixed": "#101b30",
+                    "surface-dim": "#d9dadb",
+                    "secondary-container": "#feae2c"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "16px",
+                    "base": "8px",
+                    "margin-mobile": "16px",
+                    "margin-desktop": "32px",
+                    "touch-target": "48px"
+            },
+            "fontFamily": {
+                    "headline-md": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "case-number": ["JetBrains Mono"],
+                    "body-base": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "display-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                    "case-number": ["15px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                    "body-base": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            -webkit-tap-highlight-color: transparent;
+        }
+        /* Custom scrollbar for better appearance */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #0f1c2c;
+            border-radius: 10px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body-base">
+<!-- TopAppBar -->
+<header class="bg-primary-container text-on-primary-container docked full-width top-0 z-50 flex justify-between items-center w-full px-margin-mobile h-touch-target border-b border-outline-variant">
+<div class="flex items-center gap-4">
+<button class="p-2 hover:bg-primary/10 transition-colors rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary-container" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="text-headline-md font-headline-md font-bold text-on-primary">File New Case</h1>
+</div>
+<button class="font-label-sm text-label-sm text-on-primary-container opacity-80 hover:bg-primary/10 transition-colors px-2 py-1 rounded">
+            Logout
+        </button>
+</header>
+<main class="pb-24 pt-4 px-margin-mobile max-w-md mx-auto">
+<!-- Progress Indicator -->
+<section class="mb-8 mt-2">
+<div class="flex items-center justify-between mb-4">
+<span class="font-label-sm text-label-sm text-secondary-container font-bold px-3 py-1 bg-secondary-container/10 rounded-full">Step 1: Case Details</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Step 1 of 4</span>
+</div>
+<div class="flex gap-2 w-full">
+<div class="h-1.5 flex-1 bg-secondary-container rounded-full"></div>
+<div class="h-1.5 flex-1 bg-outline-variant rounded-full"></div>
+<div class="h-1.5 flex-1 bg-outline-variant rounded-full"></div>
+<div class="h-1.5 flex-1 bg-outline-variant rounded-full"></div>
+</div>
+</section>
+<!-- Section 1: Case Information -->
+<div class="mb-6">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-primary" data-icon="balance">balance</span>
+<h2 class="font-headline-md text-body-base font-bold text-on-surface">Section 1: Case Information</h2>
+</div>
+<div class="space-y-4 bg-surface-container-lowest p-4 rounded-xl border border-outline-variant shadow-sm">
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-1 ml-1">Case Type</label>
+<div class="relative">
+<select class="w-full h-touch-target bg-surface border border-outline-variant rounded-lg px-4 text-body-base appearance-none focus:border-secondary-container focus:ring-1 focus:ring-secondary-container outline-none transition-all">
+<option value="">Select Case Type</option>
+<option value="civil">Civil</option>
+<option value="criminal">Criminal</option>
+<option value="family">Family</option>
+<option value="commercial">Commercial</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-1 ml-1">Court</label>
+<div class="relative">
+<select class="w-full h-touch-target bg-surface border border-outline-variant rounded-lg px-4 text-body-base appearance-none focus:border-secondary-container focus:ring-1 focus:ring-secondary-container outline-none transition-all">
+<option value="">Select Court Level</option>
+<option value="district">District &amp; Sessions Court</option>
+<option value="high">High Court</option>
+<option value="supreme">Supreme Court</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-1 ml-1">District</label>
+<div class="relative">
+<select class="w-full h-touch-target bg-surface border border-outline-variant rounded-lg px-4 text-body-base appearance-none focus:border-secondary-container focus:ring-1 focus:ring-secondary-container outline-none transition-all">
+<option value="">Select District</option>
+<option value="delhi">New Delhi</option>
+<option value="mumbai">Mumbai</option>
+<option value="bangalore">Bangalore</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-on-surface-variant" data-icon="expand_more">expand_more</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Section 2: Parties -->
+<div class="mb-6">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-primary" data-icon="groups">groups</span>
+<h2 class="font-headline-md text-body-base font-bold text-on-surface">Section 2: Parties</h2>
+</div>
+<div class="space-y-4 bg-surface-container-lowest p-4 rounded-xl border border-outline-variant shadow-sm">
+<div>
+<div class="flex justify-between items-center mb-1 ml-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant">Plaintiff Name</label>
+<button class="text-[10px] font-bold text-secondary flex items-center gap-0.5 uppercase tracking-wider">
+<span class="material-symbols-outlined text-sm" data-icon="add_circle">add_circle</span>
+                            Add Multiple
+                        </button>
+</div>
+<input class="w-full h-touch-target bg-surface border border-outline-variant rounded-lg px-4 text-body-base focus:border-secondary-container focus:ring-1 focus:ring-secondary-container outline-none transition-all" placeholder="Enter full name" type="text"/>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-1 ml-1">Respondent Name</label>
+<input class="w-full h-touch-target bg-surface border border-outline-variant rounded-lg px-4 text-body-base focus:border-secondary-container focus:ring-1 focus:ring-secondary-container outline-none transition-all" placeholder="Enter full name" type="text"/>
+</div>
+</div>
+</div>
+<!-- Section 3: Document Upload -->
+<div class="mb-6">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-primary" data-icon="upload_file">upload_file</span>
+<h2 class="font-headline-md text-body-base font-bold text-on-surface">Section 3: Document Upload</h2>
+</div>
+<div class="space-y-4">
+<!-- Petition Upload -->
+<div class="bg-surface-container-lowest p-4 rounded-xl border border-dashed border-outline-variant flex flex-col items-center justify-center gap-2 text-center group cursor-pointer hover:border-secondary-container transition-all">
+<div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center text-primary group-hover:bg-secondary-container group-hover:text-on-secondary-container transition-all">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+</div>
+<div>
+<p class="font-label-sm text-body-base font-semibold text-on-surface">Petition / Plaint</p>
+<p class="text-[10px] text-on-surface-variant">Upload PDF or JPG (Max 10MB)</p>
+</div>
+<button class="mt-1 text-label-sm font-bold text-secondary uppercase tracking-tighter">Browse Files</button>
+</div>
+<!-- Evidence Upload -->
+<div class="bg-surface-container-lowest p-4 rounded-xl border border-dashed border-outline-variant flex flex-col items-center justify-center gap-2 text-center group cursor-pointer hover:border-secondary-container transition-all">
+<div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center text-primary group-hover:bg-secondary-container group-hover:text-on-secondary-container transition-all">
+<span class="material-symbols-outlined" data-icon="cloud_upload">cloud_upload</span>
+</div>
+<div>
+<p class="font-label-sm text-body-base font-semibold text-on-surface">Supporting Evidence</p>
+<p class="text-[10px] text-on-surface-variant">Upload documents, photos or zip</p>
+</div>
+<button class="mt-1 text-label-sm font-bold text-secondary uppercase tracking-tighter">Browse Files</button>
+</div>
+</div>
+</div>
+<!-- Reference Case Monospace Card -->
+<div class="bg-primary-container p-4 rounded-xl text-on-primary-container flex justify-between items-center mb-10">
+<div>
+<p class="text-[10px] uppercase tracking-widest opacity-60 font-bold">Draft Identifier</p>
+<p class="font-case-number text-case-number text-secondary-container">NYA-DRAFT-2024-X99</p>
+</div>
+<span class="material-symbols-outlined opacity-30" data-icon="qr_code_2">qr_code_2</span>
+</div>
+</main>
+<!-- Footer Action Bar -->
+<footer class="fixed bottom-0 left-0 right-0 bg-surface-container-lowest border-t border-outline-variant px-margin-mobile py-4 flex gap-4 z-50 shadow-lg">
+<button class="flex-1 h-touch-target rounded-lg border border-primary text-primary font-bold hover:bg-primary/5 transition-all text-body-base">
+            Save Draft
+        </button>
+<button class="flex-1 h-touch-target rounded-lg bg-secondary-container text-on-secondary-container font-bold shadow-md active:scale-95 transition-all text-body-base">
+            Next Step
+        </button>
+</footer>
+<!-- BottomNavBar (Hidden on this specific sub-page per rules) -->
+</body></html>

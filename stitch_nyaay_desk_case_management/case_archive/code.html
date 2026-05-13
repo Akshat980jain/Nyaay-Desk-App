@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nyaay Desk - Case Archive</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-tint": "#525f71",
+                        "tertiary-fixed-dim": "#bbc6e2",
+                        "tertiary-fixed": "#d7e2ff",
+                        "surface-container-lowest": "#ffffff",
+                        "error": "#ba1a1a",
+                        "secondary-fixed": "#ffddb4",
+                        "on-primary-fixed-variant": "#3a4859",
+                        "on-primary-container": "#778598",
+                        "on-secondary-fixed-variant": "#633f00",
+                        "on-error": "#ffffff",
+                        "primary-fixed": "#d6e4f9",
+                        "surface-container": "#edeeef",
+                        "on-tertiary-fixed-variant": "#3c475d",
+                        "tertiary": "#000000",
+                        "on-secondary-container": "#6b4500",
+                        "surface-container-low": "#f3f4f5",
+                        "surface": "#f8f9fa",
+                        "on-tertiary": "#ffffff",
+                        "secondary-container": "#feae2c",
+                        "primary-container": "#0f1c2c",
+                        "surface-container-high": "#e7e8e9",
+                        "background": "#f8f9fa",
+                        "outline": "#74777d",
+                        "on-primary-fixed": "#0f1c2c",
+                        "primary": "#000000",
+                        "on-secondary": "#ffffff",
+                        "on-background": "#191c1d",
+                        "error-container": "#ffdad6",
+                        "surface-bright": "#f8f9fa",
+                        "outline-variant": "#c4c6cc",
+                        "surface-dim": "#d9dadb",
+                        "inverse-surface": "#2e3132",
+                        "on-surface": "#191c1d",
+                        "tertiary-container": "#101b30",
+                        "primary-fixed-dim": "#bac8dc",
+                        "on-tertiary-container": "#79849d",
+                        "on-surface-variant": "#44474c",
+                        "on-primary": "#ffffff",
+                        "on-secondary-fixed": "#291800",
+                        "on-error-container": "#93000a",
+                        "secondary": "#835500",
+                        "surface-container-highest": "#e1e3e4",
+                        "secondary-fixed-dim": "#ffb955",
+                        "inverse-primary": "#bac8dc",
+                        "inverse-on-surface": "#f0f1f2",
+                        "surface-variant": "#e1e3e4",
+                        "on-tertiary-fixed": "#101b30"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "touch-target": "48px",
+                        "margin-desktop": "32px",
+                        "gutter": "16px",
+                        "margin-mobile": "16px",
+                        "base": "8px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Inter"],
+                        "case-number": ["JetBrains Mono"],
+                        "label-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-base": ["Inter"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "case-number": ["15px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "body-base": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-base pb-24 min-h-screen flex flex-col items-center">
+<div class="w-full max-w-md bg-surface-container-lowest min-h-screen shadow-2xl relative overflow-hidden flex flex-col">
+<!-- TopAppBar -->
+<header class="bg-primary-container dark:bg-primary-container docked full-width top-0 z-50">
+<div class="flex justify-between items-center w-full px-margin-mobile h-touch-target">
+<button aria-label="Menu" class="text-on-primary-container opacity-80 hover:bg-primary/10 transition-colors h-touch-target w-touch-target flex items-center justify-center rounded-full">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">gavel</span>
+</button>
+<div class="text-headline-md font-headline-md font-bold text-secondary-container">
+                    Nyaay Desk
+                </div>
+<button class="text-on-primary-container opacity-80 hover:bg-primary/10 transition-colors px-3 py-1.5 rounded-lg font-label-sm text-label-sm">
+                    Logout
+                </button>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-1 overflow-y-auto w-full px-margin-mobile py-4 space-y-6">
+<!-- Page Title -->
+<div class="space-y-1">
+<h1 class="font-headline-md text-headline-md text-primary">Case Archive</h1>
+<p class="font-body-base text-body-base text-on-surface-variant">Search and view historical and disposed cases.</p>
+</div>
+<!-- Search Bar -->
+<div class="relative w-full">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline">search</span>
+</div>
+<input class="block w-full pl-10 pr-3 py-3 border-outline-variant rounded-lg text-on-surface bg-surface-container-lowest placeholder:text-outline focus:ring-2 focus:ring-secondary-container focus:border-secondary-container transition-shadow font-body-base text-body-base h-touch-target" placeholder="Search by Case Number, Party, or Year" type="text"/>
+</div>
+<!-- Filter Chips -->
+<div class="flex overflow-x-auto no-scrollbar gap-2 py-1 -mx-margin-mobile px-margin-mobile">
+<button class="flex items-center gap-1 px-4 py-2 bg-surface-container-high text-on-surface rounded-full border border-outline-variant font-label-sm text-label-sm whitespace-nowrap hover:bg-surface-container-highest transition-colors h-10">
+                    By Year <span class="material-symbols-outlined text-[16px]">arrow_drop_down</span>
+</button>
+<button class="flex items-center gap-1 px-4 py-2 bg-surface-container-high text-on-surface rounded-full border border-outline-variant font-label-sm text-label-sm whitespace-nowrap hover:bg-surface-container-highest transition-colors h-10">
+                    Civil
+                </button>
+<button class="flex items-center gap-1 px-4 py-2 bg-surface-container-high text-on-surface rounded-full border border-outline-variant font-label-sm text-label-sm whitespace-nowrap hover:bg-surface-container-highest transition-colors h-10">
+                    Criminal
+                </button>
+<button class="flex items-center gap-1 px-4 py-2 bg-primary-container text-secondary-container rounded-full border border-primary-container font-label-sm text-label-sm whitespace-nowrap h-10">
+                    Disposed <span class="material-symbols-outlined text-[16px]">check</span>
+</button>
+</div>
+<!-- Case Cards List -->
+<div class="space-y-4 pb-8">
+<!-- Card 1 -->
+<div class="bg-surface-container-lowest rounded-lg border border-outline-variant p-4 flex flex-col gap-4 relative overflow-hidden">
+<div class="flex justify-between items-start">
+<div class="space-y-1">
+<span class="font-case-number text-case-number text-primary bg-surface-container-low px-2 py-1 rounded">CV2021A009</span>
+<div class="font-body-base text-body-base font-semibold text-primary mt-2">Property Dispute</div>
+</div>
+<span class="bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm px-2.5 py-1 rounded-full uppercase tracking-wider font-bold">
+                            Disposed
+                        </span>
+</div>
+<div class="space-y-2 font-body-base text-body-base text-on-surface-variant">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-outline">group</span>
+<span>Sharma vs. Verma Corp.</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-outline">event</span>
+<span>Decided: 12/10/2022</span>
+</div>
+</div>
+<div class="pt-2">
+<button class="w-full bg-secondary-container text-on-secondary-container rounded-lg font-label-sm text-label-sm font-bold h-touch-target flex items-center justify-center gap-2 hover:bg-secondary-fixed-dim transition-colors shadow-sm">
+<span class="material-symbols-outlined">description</span> View Final Order
+                        </button>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-lowest rounded-lg border border-outline-variant p-4 flex flex-col gap-4 relative overflow-hidden">
+<div class="flex justify-between items-start">
+<div class="space-y-1">
+<span class="font-case-number text-case-number text-primary bg-surface-container-low px-2 py-1 rounded">CR2019B441</span>
+<div class="font-body-base text-body-base font-semibold text-primary mt-2">Financial Fraud</div>
+</div>
+<span class="bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm px-2.5 py-1 rounded-full uppercase tracking-wider font-bold">
+                            Closed
+                        </span>
+</div>
+<div class="space-y-2 font-body-base text-body-base text-on-surface-variant">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-outline">group</span>
+<span>State vs. A. Kumar</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-outline">event</span>
+<span>Decided: 05/03/2021</span>
+</div>
+</div>
+<div class="pt-2">
+<button class="w-full bg-secondary-container text-on-secondary-container rounded-lg font-label-sm text-label-sm font-bold h-touch-target flex items-center justify-center gap-2 hover:bg-secondary-fixed-dim transition-colors shadow-sm">
+<span class="material-symbols-outlined">description</span> View Final Order
+                        </button>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-lowest rounded-lg border border-outline-variant p-4 flex flex-col gap-4 relative overflow-hidden">
+<div class="flex justify-between items-start">
+<div class="space-y-1">
+<span class="font-case-number text-case-number text-primary bg-surface-container-low px-2 py-1 rounded">FAM2020C112</span>
+<div class="font-body-base text-body-base font-semibold text-primary mt-2">Family/Divorce</div>
+</div>
+<span class="bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm px-2.5 py-1 rounded-full uppercase tracking-wider font-bold">
+                            Decided
+                        </span>
+</div>
+<div class="space-y-2 font-body-base text-body-base text-on-surface-variant">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-outline">group</span>
+<span>P. Singh vs. R. Singh</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-outline">event</span>
+<span>Decided: 28/11/2020</span>
+</div>
+</div>
+<div class="pt-2">
+<button class="w-full bg-secondary-container text-on-secondary-container rounded-lg font-label-sm text-label-sm font-bold h-touch-target flex items-center justify-center gap-2 hover:bg-secondary-fixed-dim transition-colors shadow-sm">
+<span class="material-symbols-outlined">description</span> View Final Order
+                        </button>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="bg-primary-container dark:bg-primary-container fixed bottom-0 w-full max-w-md z-50 md:hidden shadow-lg border-t-0">
+<div class="flex justify-around items-center h-16 pb-safe px-2">
+<!-- Home (Inactive) -->
+<button class="flex flex-col items-center justify-center text-on-primary-container opacity-60 hover:text-secondary-fixed-dim transition-transform duration-150 active:scale-95 w-16">
+<span class="material-symbols-outlined mb-1">home</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</button>
+<!-- Cases (Active) -->
+<button class="flex flex-col items-center justify-center text-secondary-container font-bold bg-tertiary-container/50 rounded-xl px-2 py-1 transition-transform duration-150 active:scale-95 w-16">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">folder_open</span>
+<span class="font-label-sm text-label-sm">Cases</span>
+</button>
+<!-- Hearings (Inactive) -->
+<button class="flex flex-col items-center justify-center text-on-primary-container opacity-60 hover:text-secondary-fixed-dim transition-transform duration-150 active:scale-95 w-16">
+<span class="material-symbols-outlined mb-1">event_note</span>
+<span class="font-label-sm text-label-sm">Hearings</span>
+</button>
+<!-- Notifications (Inactive) -->
+<button class="flex flex-col items-center justify-center text-on-primary-container opacity-60 hover:text-secondary-fixed-dim transition-transform duration-150 active:scale-95 w-16">
+<span class="material-symbols-outlined mb-1">notifications</span>
+<span class="font-label-sm text-label-sm">Notifications</span>
+</button>
+</div>
+</nav>
+</div>
+</body></html>

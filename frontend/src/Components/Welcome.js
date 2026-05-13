@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { 
-  Briefcase, User, Settings, ChevronRight, ChevronDown, 
-  Info, Calendar, FileText, Bell, Shield, HelpCircle, Phone, Mail, 
+import {
+  Briefcase, User, Settings, ChevronRight, ChevronDown,
+  Info, Calendar, FileText, Bell, Shield, HelpCircle, Phone, Mail,
   Linkedin, MapPin, Link as LinkIcon, ArrowRight
 } from "lucide-react";
 import "../ComponentsCSS/welcome.css";
- 
+
 import emblem from "../images/aadiimage4.svg";
 import logo from "../images/aadiimage4.png";
 import banner1 from "../images/aadiimage9.jpg";
@@ -186,7 +186,7 @@ const CaseManagement = () => {
                 <ArrowRight size={16} />
               </a>
             </div>
-            
+
             <div className="portal-card clerk">
               <Settings size={48} className="portal-icon" />
               <h3>Admin</h3>

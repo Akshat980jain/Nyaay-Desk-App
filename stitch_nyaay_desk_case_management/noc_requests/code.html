@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NOC Requests - Nyaay Desk</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "secondary-container": "#feae2c",
+                    "surface": "#f8f9fa",
+                    "surface-container-low": "#f3f4f5",
+                    "inverse-on-surface": "#f0f1f2",
+                    "surface-variant": "#e1e3e4",
+                    "on-primary-container": "#778598",
+                    "tertiary-fixed": "#d7e2ff",
+                    "surface-bright": "#f8f9fa",
+                    "on-tertiary-fixed-variant": "#3c475d",
+                    "outline-variant": "#c4c6cc",
+                    "on-background": "#191c1d",
+                    "on-surface-variant": "#44474c",
+                    "on-secondary": "#ffffff",
+                    "surface-container": "#edeeef",
+                    "secondary-fixed-dim": "#ffb955",
+                    "primary-container": "#0f1c2c",
+                    "surface-container-high": "#e7e8e9",
+                    "on-tertiary-container": "#79849d",
+                    "surface-dim": "#d9dadb",
+                    "primary": "#000000",
+                    "outline": "#74777d",
+                    "on-primary": "#ffffff",
+                    "error-container": "#ffdad6",
+                    "error": "#ba1a1a",
+                    "primary-fixed-dim": "#bac8dc",
+                    "tertiary-fixed-dim": "#bbc6e2",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-highest": "#e1e3e4",
+                    "on-surface": "#191c1d",
+                    "tertiary": "#000000",
+                    "on-tertiary-fixed": "#101b30",
+                    "on-error": "#ffffff",
+                    "inverse-surface": "#2e3132",
+                    "surface-tint": "#525f71",
+                    "on-primary-fixed": "#0f1c2c",
+                    "tertiary-container": "#101b30",
+                    "on-secondary-container": "#6b4500",
+                    "background": "#f8f9fa",
+                    "secondary-fixed": "#ffddb4",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary-fixed-variant": "#633f00",
+                    "on-error-container": "#93000a",
+                    "secondary": "#835500",
+                    "primary-fixed": "#d6e4f9",
+                    "inverse-primary": "#bac8dc",
+                    "on-secondary-fixed": "#291800",
+                    "on-primary-fixed-variant": "#3a4859"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "16px",
+                    "touch-target": "48px",
+                    "base": "8px",
+                    "margin-desktop": "32px",
+                    "margin-mobile": "16px"
+            },
+            "fontFamily": {
+                    "label-sm": [
+                            "Inter"
+                    ],
+                    "headline-md": [
+                            "Inter"
+                    ],
+                    "display-lg": [
+                            "Inter"
+                    ],
+                    "case-number": [
+                            "JetBrains Mono"
+                    ],
+                    "body-base": [
+                            "Inter"
+                    ]
+            },
+            "fontSize": {
+                    "label-sm": [
+                            "12px",
+                            {
+                                    "lineHeight": "16px",
+                                    "fontWeight": "500"
+                            }
+                    ],
+                    "headline-md": [
+                            "24px",
+                            {
+                                    "lineHeight": "32px",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "display-lg": [
+                            "32px",
+                            {
+                                    "lineHeight": "40px",
+                                    "letterSpacing": "-0.02em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "case-number": [
+                            "15px",
+                            {
+                                    "lineHeight": "20px",
+                                    "letterSpacing": "0.05em",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "body-base": [
+                            "16px",
+                            {
+                                    "lineHeight": "24px",
+                                    "fontWeight": "400"
+                            }
+                    ]
+            }
+        },
+        },
+      }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body-base text-on-surface antialiased min-h-screen flex flex-col md:flex-row">
+<!-- Mobile TopAppBar -->
+<header class="bg-primary-container dark:bg-primary-container flex justify-between items-center w-full px-margin-mobile h-touch-target border-b border-outline-variant fixed top-0 z-50 md:hidden flat no shadows">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary-container" data-icon="gavel">gavel</span>
+<span class="text-headline-md font-headline-md font-bold text-secondary-container">Nyaay Desk</span>
+</div>
+<button class="font-label-sm text-label-sm text-on-primary-container hover:bg-primary/10 transition-colors px-3 py-2 rounded-lg opacity-80">
+            Logout
+        </button>
+</header>
+<!-- Desktop Sidebar Navigation -->
+<aside class="hidden md:flex flex-col p-4 gap-2 h-full w-80 rounded-r-xl border-r border-outline-variant shadow-md bg-surface dark:bg-surface-dim fixed top-0 left-0 z-40">
+<div class="flex items-center gap-3 px-4 py-6 mb-4">
+<span class="material-symbols-outlined text-primary" data-icon="gavel">gavel</span>
+<span class="text-headline-md font-headline-md font-bold text-primary">Nyaay Desk</span>
+</div>
+<div class="flex items-center gap-4 px-4 pb-6 mb-4 border-b border-outline-variant left_align">
+<div class="w-12 h-12 rounded-full bg-surface-container-highest overflow-hidden flex-shrink-0">
+<img alt="User Profile Avatar" class="w-full h-full object-cover" data-alt="Professional headshot of a confident Indian advocate with neat dark hair, wearing a dark formal suit over a crisp white shirt, softly lit in an institutional light-gray office environment with subtle navy blue elements. The mood is authoritative and trustworthy." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBHoc9iwOTPC4hh6h3A84X4qb2wLWUWLzJiX_OQ6TvpOiSzQDclY8Doi0PJoazO0TEVc8kXZbXfctkGEdAsPgIc9VkdR-2qqvkOaye3l4L4WmjCRnfQcP0X2vy0dywrxxgYmEFNCPpnFipQpszOl8tu-Xh4PXnjULhR5-JWWzWsZ2CqU_zMpxadz0Wifwu5ozqwCNlQZswiR8yCc02Lv8i9ckpCkHMuS2Brhv8_IcaIxYxZ0MfCP172dwNLOOGZLi4T4KECWv_JgpTq"/>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-md text-[16px] font-bold text-primary">Rahul Sharma</span>
+<span class="font-body-base text-[12px] text-on-surface-variant">Litigant ID: L-2024-089</span>
+<span class="font-label-sm text-label-sm text-secondary mt-1">Active Status</span>
+</div>
+</div>
+<nav class="flex flex-col gap-1 flex-1">
+<a class="flex items-center gap-3 px-4 h-touch-target rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:bg-surface-container-highest transition-colors font-body-base text-body-base" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>Dashboard</span>
+</a>
+<!-- Active State Semantically Mapped to 'My Documents' / 'Cases' equivalent -->
+<a class="flex items-center gap-3 px-4 h-touch-target bg-secondary-container text-on-secondary-container font-semibold rounded-lg font-body-base text-body-base" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+<span>My Documents</span>
+</a>
+<a class="flex items-center gap-3 px-4 h-touch-target rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:bg-surface-container-highest transition-colors font-body-base text-body-base" href="#">
+<span class="material-symbols-outlined" data-icon="assignment">assignment</span>
+<span>Notice Board</span>
+</a>
+<a class="flex items-center gap-3 px-4 h-touch-target rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:bg-surface-container-highest transition-colors font-body-base text-body-base" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_month">calendar_month</span>
+<span>Court Calendar</span>
+</a>
+<a class="flex items-center gap-3 px-4 h-touch-target rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:bg-surface-container-highest transition-colors font-body-base text-body-base" href="#">
+<span class="material-symbols-outlined" data-icon="person_search">person_search</span>
+<span>Find Advocate</span>
+</a>
+<a class="flex items-center gap-3 px-4 h-touch-target rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:bg-surface-container-highest transition-colors font-body-base text-body-base mt-auto" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 w-full md:ml-80 pt-[calc(48px+24px)] md:pt-8 pb-24 md:pb-8 px-margin-mobile md:px-margin-desktop max-w-5xl mx-auto flex flex-col gap-6">
+<!-- Page Header & Search -->
+<div class="flex flex-col gap-4">
+<div class="flex justify-between items-end">
+<div>
+<h1 class="font-display-lg text-display-lg text-primary tracking-tight">NOC Requests</h1>
+<p class="font-body-base text-body-base text-on-surface-variant mt-1">Manage and review No Objection Certificates from clients.</p>
+</div>
+</div>
+<div class="relative w-full max-w-xl">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full h-touch-target pl-12 pr-4 rounded-lg bg-surface-container-lowest border border-outline-variant focus:border-secondary-container focus:ring-2 focus:ring-secondary-container focus:outline-none transition-all font-body-base text-body-base text-on-surface placeholder:text-on-surface-variant/70" placeholder="Search by Case Number or Client Name..." type="text"/>
+</div>
+</div>
+<!-- Filter Tabs -->
+<div class="flex gap-2 overflow-x-auto no-scrollbar py-1">
+<button class="h-touch-target px-5 rounded-full bg-surface-container-lowest border border-outline-variant text-on-surface-variant font-label-sm text-label-sm whitespace-nowrap hover:bg-surface-container transition-colors">
+                All Requests
+            </button>
+<button class="h-touch-target px-5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-bold whitespace-nowrap shadow-sm">
+                Pending (3)
+            </button>
+<button class="h-touch-target px-5 rounded-full bg-surface-container-lowest border border-outline-variant text-on-surface-variant font-label-sm text-label-sm whitespace-nowrap hover:bg-surface-container transition-colors">
+                Signed
+            </button>
+<button class="h-touch-target px-5 rounded-full bg-surface-container-lowest border border-outline-variant text-on-surface-variant font-label-sm text-label-sm whitespace-nowrap hover:bg-surface-container transition-colors">
+                Rejected
+            </button>
+</div>
+<!-- NOC Request Cards Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+<!-- Card 1: Pending -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-5 flex flex-col gap-4 transition-shadow hover:shadow-md">
+<div class="flex justify-between items-start">
+<div class="flex flex-col gap-1">
+<span class="font-case-number text-case-number text-primary">CL2026M874</span>
+<span class="font-headline-md text-[18px] font-semibold text-primary">Akash Sharma</span>
+</div>
+<span class="px-3 py-1 rounded-full bg-secondary-container/20 border border-secondary-container/30 text-on-secondary-container font-label-sm text-label-sm font-bold flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-secondary-container"></span>
+                        Pending
+                    </span>
+</div>
+<div class="grid grid-cols-2 gap-y-3 gap-x-4 py-3 border-y border-surface-variant">
+<div class="flex flex-col">
+<span class="font-label-sm text-[11px] text-on-surface-variant uppercase tracking-wider">Request Date</span>
+<span class="font-body-base text-body-base text-on-surface font-medium">14 Oct 2023</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-[11px] text-on-surface-variant uppercase tracking-wider">Current Court</span>
+<span class="font-body-base text-body-base text-on-surface font-medium">District Court, Delhi</span>
+</div>
+<div class="flex flex-col col-span-2">
+<span class="font-label-sm text-[11px] text-on-surface-variant uppercase tracking-wider">Reason for Request</span>
+<span class="font-body-base text-body-base text-on-surface mt-1">Change of Advocate due to relocation.</span>
+</div>
+</div>
+<div class="flex gap-3 pt-1">
+<button class="flex-1 h-touch-target rounded-lg bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-bold shadow-sm hover:opacity-90 transition-opacity">
+                        Review &amp; Sign
+                    </button>
+<button class="px-6 h-touch-target rounded-lg bg-transparent border border-primary-container text-primary-container font-label-sm text-label-sm font-bold hover:bg-surface-container transition-colors">
+                        Decline
+                    </button>
+</div>
+</div>
+<!-- Card 2: Pending -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-5 flex flex-col gap-4 transition-shadow hover:shadow-md">
+<div class="flex justify-between items-start">
+<div class="flex flex-col gap-1">
+<span class="font-case-number text-case-number text-primary">CR2023X412</span>
+<span class="font-headline-md text-[18px] font-semibold text-primary">Meera Devi</span>
+</div>
+<span class="px-3 py-1 rounded-full bg-secondary-container/20 border border-secondary-container/30 text-on-secondary-container font-label-sm text-label-sm font-bold flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-secondary-container"></span>
+                        Pending
+                    </span>
+</div>
+<div class="grid grid-cols-2 gap-y-3 gap-x-4 py-3 border-y border-surface-variant">
+<div class="flex flex-col">
+<span class="font-label-sm text-[11px] text-on-surface-variant uppercase tracking-wider">Request Date</span>
+<span class="font-body-base text-body-base text-on-surface font-medium">12 Oct 2023</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-[11px] text-on-surface-variant uppercase tracking-wider">Current Court</span>
+<span class="font-body-base text-body-base text-on-surface font-medium">High Court, Mumbai</span>
+</div>
+<div class="flex flex-col col-span-2">
+<span class="font-label-sm text-[11px] text-on-surface-variant uppercase tracking-wider">Reason for Request</span>
+<span class="font-body-base text-body-base text-on-surface mt-1">Client prefers local representation.</span>
+</div>
+</div>
+<div class="flex gap-3 pt-1">
+<button class="flex-1 h-touch-target rounded-lg bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-bold shadow-sm hover:opacity-90 transition-opacity">
+                        Review &amp; Sign
+                    </button>
+<button class="px-6 h-touch-target rounded-lg bg-transparent border border-primary-container text-primary-container font-label-sm text-label-sm font-bold hover:bg-surface-container transition-colors">
+                        Decline
+                    </button>
+</div>
+</div>
+<!-- Card 3: Signed (For context, though filter is on Pending, showing one for visual variety of states if it were 'All') -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-5 flex flex-col gap-4 opacity-80">
+<div class="flex justify-between items-start">
+<div class="flex flex-col gap-1">
+<span class="font-case-number text-case-number text-primary">CV2021A009</span>
+<span class="font-headline-md text-[18px] font-semibold text-primary">Rajesh Kumar</span>
+</div>
+<span class="px-3 py-1 rounded-full bg-surface-variant text-on-surface-variant font-label-sm text-label-sm font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+                        Signed
+                    </span>
+</div>
+<div class="grid grid-cols-2 gap-y-3 gap-x-4 py-3 border-y border-surface-variant">
+<div class="flex flex-col">
+<span class="font-label-sm text-[11px] text-on-surface-variant uppercase tracking-wider">Request Date</span>
+<span class="font-body-base text-body-base text-on-surface font-medium">05 Oct 2023</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-[11px] text-on-surface-variant uppercase tracking-wider">Signed Date</span>
+<span class="font-body-base text-body-base text-on-surface font-medium">08 Oct 2023</span>
+</div>
+<div class="flex flex-col col-span-2">
+<span class="font-label-sm text-[11px] text-on-surface-variant uppercase tracking-wider">Reason for Request</span>
+<span class="font-body-base text-body-base text-on-surface mt-1">Mutual agreement to dissolve representation.</span>
+</div>
+</div>
+<div class="flex gap-3 pt-1">
+<button class="flex-1 h-touch-target rounded-lg bg-transparent border border-outline-variant text-on-surface font-label-sm text-label-sm font-bold flex justify-center items-center gap-2 hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[18px]">visibility</span>
+                        View NOC
+                    </button>
+<button class="flex-1 h-touch-target rounded-lg bg-surface-variant text-on-surface-variant font-label-sm text-label-sm font-bold flex justify-center items-center gap-2 hover:bg-outline-variant/30 transition-colors">
+<span class="material-symbols-outlined text-[18px]">download</span>
+                        Download
+                    </button>
+</div>
+</div>
+</div>
+</main>
+<!-- Mobile BottomNavBar -->
+<nav class="bg-primary-container dark:bg-primary-container fixed bottom-0 w-full z-50 flex justify-around items-center h-16 pb-safe px-2 md:hidden">
+<a class="flex flex-col items-center justify-center text-on-primary-container opacity-60 hover:text-secondary-fixed-dim Tap: scale-95 transition-transform duration-150 w-16" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="home">home</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</a>
+<!-- Active State: Semantic Match for managing 'Requests/Cases' -->
+<a class="flex flex-col items-center justify-center text-secondary-container font-bold bg-tertiary-container/50 rounded-xl px-2 py-1 w-16 Tap: scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="folder_open" style="font-variation-settings: 'FILL' 1;">folder_open</span>
+<span class="font-label-sm text-label-sm">Cases</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-primary-container opacity-60 hover:text-secondary-fixed-dim Tap: scale-95 transition-transform duration-150 w-16" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="event_note">event_note</span>
+<span class="font-label-sm text-label-sm">Hearings</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-primary-container opacity-60 hover:text-secondary-fixed-dim Tap: scale-95 transition-transform duration-150 w-16" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="notifications">notifications</span>
+<span class="font-label-sm text-label-sm">Notifications</span>
+</a>
+</nav>
+</body></html>

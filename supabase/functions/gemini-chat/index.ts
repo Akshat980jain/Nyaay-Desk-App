@@ -1,3 +1,5 @@
+/// <reference lib="deno.ns" />
+/// <reference lib="deno.window" />
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const corsHeaders = {
@@ -6,7 +8,7 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
-serve(async (req) => {
+serve(async (req: Request) => {
   // Handle CORS preflight
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders, status: 200 });
@@ -74,9 +76,9 @@ serve(async (req) => {
     );
 
   } catch (error) {
-    console.error("Edge function uncaught error:", error.message);
+    console.error("Edge function uncaught error:", (error as any).message);
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ error: (error as any).message }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }

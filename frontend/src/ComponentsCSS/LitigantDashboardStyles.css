@@ -973,6 +973,7 @@
   background-color: var(--color-white);
   border: 1px solid var(--color-gray-200);
 }
+
 /* Continuing from loading spinner... */
 
 .litigantdash-loading-spinner {
@@ -1494,6 +1495,7 @@
 
 /* Print Styles */
 @media print {
+
   .litigantdash-main-header-container,
   .litigantdash-sidebar-navigation,
   .litigantdash-logout-buttons-group,
@@ -1687,6 +1689,7 @@
     margin: 1cm;
   }
 }
+
 /* Document Requests Section */
 .litigantdash-document-requests-section {
   margin-bottom: 32px;
@@ -2018,7 +2021,8 @@
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(15, 23, 42, 0.25);
   background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
-  color: #fbbf24; /* Gold accent on hover */
+  color: #fbbf24;
+  /* Gold accent on hover */
 }
 
 .litigantdash-download-doc-button:active {

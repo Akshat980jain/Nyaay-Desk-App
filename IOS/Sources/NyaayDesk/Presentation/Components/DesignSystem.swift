@@ -1,38 +1,20 @@
 import SwiftUI
 
-// MARK: - Brand Colors
+// MARK: - Brand Colors (Consolidated)
 extension Color {
-    static let nyaayNavy       = Color(hex: "0F2C59")
-    static let nyaayNavyDark   = Color(hex: "081D3B")
-    static let nyaayNavyLight  = Color(hex: "1A3F7A")
-    static let nyaayGold       = Color(hex: "DAC0A3")
-    static let nyaayOffWhite   = Color(hex: "F8F0E5")
-    static let statusPending   = Color(hex: "FFC107")
-    static let statusDisposed  = Color(hex: "4CAF50")
-    static let statusStayed    = Color(hex: "F44336")
-    static let statusActive    = Color(hex: "2196F3")
-
-    init(hex: String) {
-        let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
-        var int: UInt64 = 0
-        Scanner(string: hex).scanHexInt64(&int)
-        let r = Double((int >> 16) & 0xFF) / 255
-        let g = Double((int >> 8) & 0xFF) / 255
-        let b = Double(int & 0xFF) / 255
-        self.init(red: r, green: g, blue: b)
-    }
+    // Colors are now primarily defined in AppColors.swift
+    // These static properties serve as convenient accessors
+    static let statusApprovedColor = Color.appApproved
+    static let statusPendingColor  = Color.appPending
+    static let statusUrgentColor   = Color.appUrgent
+    static let statusActiveColor   = Color.appNavy
 }
 
 // MARK: - Shared Auth Background Modifier
 struct NyaayAuthBackground: ViewModifier {
     func body(content: Content) -> some View {
         ZStack {
-            LinearGradient(
-                colors: [.nyaayNavyDark, .nyaayNavy],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-            .ignoresSafeArea()
+            Color.appBackground.ignoresSafeArea()
             content
         }
     }
@@ -44,7 +26,7 @@ extension View {
     }
 }
 
-// MARK: - NyaayButton (iOS)
+// MARK: - NyaayButton (iOS) — Gold/Amber background, Deep Navy text
 struct NyaayButton: View {
     let title: String
     let isLoading: Bool
@@ -53,19 +35,19 @@ struct NyaayButton: View {
     var body: some View {
         Button(action: action) {
             ZStack {
-                RoundedRectangle(cornerRadius: 14)
-                    .fill(Color.nyaayNavy)
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(Color.appGold)
                     .frame(maxWidth: .infinity)
                     .frame(height: 52)
 
                 if isLoading {
                     ProgressView()
                         .progressViewStyle(.circular)
-                        .tint(.nyaayGold)
+                        .tint(Color.appNavy)
                 } else {
                     Text(title)
-                        .font(.headline)
-                        .foregroundStyle(.nyaayGold)
+                        .font(.system(size: 16, weight: .bold))
+                        .foregroundStyle(Color.appNavy)
                 }
             }
         }
@@ -84,16 +66,19 @@ struct NyaayTextField: View {
     @State private var isVisible = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            HStack {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(spacing: 12) {
                 Image(systemName: systemImage)
-                    .foregroundStyle(.nyaayNavy.opacity(0.6))
-                    .frame(width: 20)
+                    .foregroundStyle(Color.appNavy.opacity(0.8))
+                    .font(.system(size: 18))
+                    .frame(width: 24)
 
                 if isSecure && !isVisible {
                     SecureField(label, text: $text)
+                        .font(.system(size: 16))
                 } else {
                     TextField(label, text: $text)
+                        .font(.system(size: 16))
                         .autocorrectionDisabled()
                         .textInputAutocapitalization(.never)
                 }
@@ -101,45 +86,62 @@ struct NyaayTextField: View {
                 if isSecure {
                     Button(action: { isVisible.toggle() }) {
                         Image(systemName: isVisible ? "eye.slash" : "eye")
-                            .foregroundStyle(.nyaayNavy.opacity(0.5))
+                            .foregroundStyle(Color.appNavy.opacity(0.5))
                     }
                 }
             }
-            .padding()
+            .padding(.horizontal, 16)
+            .padding(.vertical, 18)
             .background(
-                RoundedRectangle(cornerRadius: 12)
-                    .stroke(errorMessage != nil ? .red : Color.nyaayNavy.opacity(0.3), lineWidth: 1.5)
-                    .background(RoundedRectangle(cornerRadius: 12).fill(Color.white))
+                RoundedRectangle(cornerRadius: 8) // Updated to 8px as per Stitch
+                    .stroke(errorMessage != nil ? .red : Color.appNavy.opacity(0.1), lineWidth: 1)
+                    .background(RoundedRectangle(cornerRadius: 8).fill(Color.white))
             )
 
             if let error = errorMessage {
-                Text(error).font(.caption).foregroundStyle(.red)
+                Text(error).font(.caption).foregroundStyle(.red).padding(.leading, 4)
             }
         }
     }
 }
 
-// MARK: - CaseStatusBadge
+// MARK: - CaseStatusBadge (Stitch design)
 struct CaseStatusBadge: View {
     let status: String
 
-    private var color: Color {
+    private var badgeStyle: (bg: Color, fg: Color, label: String, outlined: Bool) {
         switch status.lowercased() {
-        case "pending": return .statusPending
-        case "disposed": return .statusDisposed
-        case "stayed": return .statusStayed
-        default: return .statusActive
+        case "hearing", "scheduled", "hearing scheduled":
+            return (Color.appGold, Color.appNavy, "HEARING", false)
+        case "filed":
+            return (Color.appNavy.opacity(0.1), Color.appNavy, "FILED", false)
+        case "disposed":
+            return (Color(hex: "F0F1F2"), Color(hex: "74777D"), "DISPOSED", false)
+        case "urgent":
+            return (Color.appUrgent.opacity(0.12), Color.appUrgent, "URGENT", false)
+        case "pending":
+            return (Color.clear, Color(hex: "74777D"), "PENDING", true)
+        case "active":
+            return (Color.appApproved.opacity(0.1), Color.appApproved, "ACTIVE", false)
+        default:
+            return (Color.appNavy.opacity(0.08), Color.appNavy, status.uppercased(), false)
         }
     }
 
     var body: some View {
-        Text(status.capitalized)
-            .font(.caption2.bold())
-            .padding(.horizontal, 8)
+        let style = badgeStyle
+        Text(style.label)
+            .font(.system(size: 10, weight: .bold))
+            .foregroundStyle(style.fg)
+            .padding(.horizontal, 10)
             .padding(.vertical, 4)
-            .background(color.opacity(0.15))
-            .foregroundStyle(color)
+            .background(style.bg)
+            .overlay(
+                Capsule().stroke(
+                    style.outlined ? Color(hex: "74777D").opacity(0.5) : Color.clear,
+                    lineWidth: 1
+                )
+            )
             .clipShape(Capsule())
-            .overlay(Capsule().stroke(color.opacity(0.4), lineWidth: 1))
     }
 }

@@ -78,6 +78,7 @@ const LitigantDashboard = () => {
   const initialFormState = {
     court: 'District & Sessions Court',
     case_type: 'Civil',
+    district: '',
     plaintiff_details: {
       party_id: '',
       name: '',
@@ -94,6 +95,7 @@ const LitigantDashboard = () => {
       phone: '',
       mobile: '',
       fax: '',
+      district: '',
       subject: '',
       advocate_id: '',
       advocate: '',
@@ -1068,10 +1070,13 @@ const LitigantDashboard = () => {
                           <span className="litigantdash-detail-value-text">{selectedCase.court}</span>
                         </div>
                         <div className="litigantdash-detail-item-row">
-                          <span className="litigantdash-detail-label-text">Filed Date:</span>
                           <span className="litigantdash-detail-value-text">
                             {selectedCase.createdAt && new Date(selectedCase.createdAt).toLocaleDateString()}
                           </span>
+                        </div>
+                        <div className="litigantdash-detail-item-row">
+                          <span className="litigantdash-detail-label-text">District:</span>
+                          <span className="litigantdash-detail-value-text">{selectedCase.district || 'N/A'}</span>
                         </div>
                       </div>
                       <div className="litigantdash-detail-group-section">
@@ -1083,6 +1088,10 @@ const LitigantDashboard = () => {
                         <div className="litigantdash-detail-item-row">
                           <span className="litigantdash-detail-label-text">Contact:</span>
                           <span className="litigantdash-detail-value-text">{selectedCase.plaintiff_details?.mobile}</span>
+                        </div>
+                        <div className="litigantdash-detail-item-row">
+                          <span className="litigantdash-detail-label-text">District:</span>
+                          <span className="litigantdash-detail-value-text">{selectedCase.plaintiff_details?.district}</span>
                         </div>
                         <div className="litigantdash-detail-item-row">
                           <span className="litigantdash-detail-label-text">Address:</span>
@@ -1098,6 +1107,10 @@ const LitigantDashboard = () => {
                         <div className="litigantdash-detail-item-row">
                           <span className="litigantdash-detail-label-text">Contact:</span>
                           <span className="litigantdash-detail-value-text">{selectedCase.respondent_details?.mobile}</span>
+                        </div>
+                        <div className="litigantdash-detail-item-row">
+                          <span className="litigantdash-detail-label-text">District:</span>
+                          <span className="litigantdash-detail-value-text">{selectedCase.respondent_details?.district}</span>
                         </div>
                         <div className="litigantdash-detail-item-row">
                           <span className="litigantdash-detail-label-text">Address:</span>
@@ -1161,17 +1174,20 @@ const LitigantDashboard = () => {
                       <div className="lit-case-filing-details">
                         <p><strong>Case Type:</strong> {selectedCase.case_type || 'CIVIL CASE'}</p>
                         <p><strong>Court:</strong> {selectedCase.court}</p>
+                        <p><strong>District:</strong> {selectedCase.district}</p>
                       </div>
                       <div className="lit-party-details">
                         <div className="lit-applicant-details">
                           <h3>Plaintiff Details:</h3>
                           <p>{selectedCase.plaintiff_details?.name}</p>
+                          <p>District: {selectedCase.plaintiff_details?.district}</p>
                           <p>{selectedCase.plaintiff_details?.address}</p>
                           <p>Contact: {selectedCase.plaintiff_details?.mobile}</p>
                         </div>
                         <div className="lit-respondent-details">
                           <h3>Respondent Details:</h3>
                           <p>{selectedCase.respondent_details?.name}</p>
+                          <p>District: {selectedCase.respondent_details?.district}</p>
                           <p>{selectedCase.respondent_details?.address}</p>
                           <p>Contact: {selectedCase.respondent_details?.mobile}</p>
                         </div>
@@ -1269,6 +1285,16 @@ const LitigantDashboard = () => {
                 <option value="CRIM APPEAL">CRIM APPEAL</option>
               </select>
             </div>
+            <div className="litigantdash-form-group-item">
+              <label>District</label>
+              <input
+                type="text"
+                value={formData.district}
+                onChange={(e) => handleTopLevelChange('district', e.target.value)}
+                placeholder="Enter district name"
+                required
+              />
+            </div>
           </div>
         </div>
         <div className="litigantdash-form-section-block">
@@ -1302,6 +1328,26 @@ const LitigantDashboard = () => {
                 onChange={(e) => handleNestedChange('plaintiff_details', 'address', e.target.value)}
                 minLength={5}
                 placeholder="Enter full address"
+                required
+              />
+            </div>
+            <div className="litigantdash-form-group-item">
+              <label>District</label>
+              <input
+                type="text"
+                value={formData.plaintiff_details.district}
+                onChange={(e) => handleNestedChange('plaintiff_details', 'district', e.target.value)}
+                placeholder="Enter district"
+                required
+              />
+            </div>
+            <div className="litigantdash-form-group-item">
+              <label>District</label>
+              <input
+                type="text"
+                value={formData.plaintiff_details.district}
+                onChange={(e) => handleNestedChange('plaintiff_details', 'district', e.target.value)}
+                placeholder="Enter district"
                 required
               />
             </div>
@@ -1486,6 +1532,16 @@ const LitigantDashboard = () => {
                 onChange={(e) => handleNestedChange('respondent_details', 'address', e.target.value)}
                 minLength={5}
                 placeholder="Enter full address"
+                required
+              />
+            </div>
+            <div className="litigantdash-form-group-item">
+              <label>District</label>
+              <input
+                type="text"
+                value={formData.respondent_details.district}
+                onChange={(e) => handleNestedChange('respondent_details', 'district', e.target.value)}
+                placeholder="Enter district"
                 required
               />
             </div>

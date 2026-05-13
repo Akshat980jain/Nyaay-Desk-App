@@ -3,32 +3,95 @@ import SwiftUI
 /** Litigant Main View (iOS) — TabView with real dashboard */
 struct LitigantMainView: View {
     @Environment(AuthViewModel.self) private var auth
+    @State private var showAIChat = false
 
     var body: some View {
-        TabView {
-            LitigantDashboardView()
-                .tabItem { Label("Dashboard", systemImage: "house.fill") }
+        ZStack(alignment: .bottomTrailing) {
+            TabView {
+                LitigantDashboardView()
+                    .tabItem { Label("Dashboard", systemImage: "house.fill") }
 
-            NavigationStack {
-                LitigantCaseListView()
-            }
-            .tabItem { Label("My Cases", systemImage: "folder.fill") }
+                NavigationStack {
+                    LitigantCaseListView()
+                }
+                .tabItem { Label("My Cases", systemImage: "folder.fill") }
 
-            NavigationStack {
-                ContentUnavailableView("Hearing Calendar", systemImage: "calendar",
-                    description: Text("Your upcoming hearings in a monthly view."))
+                NavigationStack {
+                    VStack(spacing: 0) {
+                        DatePicker("Hearing Date", selection: .constant(Date()), displayedComponents: .date)
+                            .datePickerStyle(.graphical)
+                            .tint(Color.appNavy)
+                            .padding(20)
+                            .background(Color.white)
+                            .clipShape(RoundedRectangle(cornerRadius: 30))
+                            .shadow(color: .black.opacity(0.04), radius: 10, y: 5)
+                            .padding(24)
+
+                        VStack(alignment: .leading, spacing: 16) {
+                            Text("Scheduled Hearings")
+                                .font(.system(size: 20, weight: .bold))
+                                .foregroundStyle(Color.appNavy)
+                            
+                            HStack(spacing: 16) {
+                                ZStack {
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .fill(Color.appNavy.opacity(0.05))
+                                        .frame(width: 44, height: 44)
+                                    Image(systemName: "calendar.badge.clock").foregroundStyle(Color.appNavy)
+                                }
+                                
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text("Evidence Submission").font(.system(size: 16, weight: .bold)).foregroundStyle(Color.appNavy)
+                                    Text("Case DL-1002 • 10:30 AM").font(.system(size: 13)).foregroundStyle(Color.appNavy.opacity(0.5))
+                                }
+                            }
+                            .padding(20)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(Color.white)
+                            .clipShape(RoundedRectangle(cornerRadius: 24))
+                            .shadow(color: .black.opacity(0.03), radius: 8, y: 4)
+                        }
+                        .padding(.horizontal, 24)
+                        Spacer()
+                    }
+                    .background(Color.appBackground)
                     .navigationTitle("Calendar")
-            }
-            .tabItem { Label("Calendar", systemImage: "calendar") }
+                    .navigationBarTitleDisplayMode(.inline)
+                }
+                .tabItem { Label("Calendar", systemImage: "calendar") }
 
-            NavigationStack {
-                ProfileView()
+                NavigationStack {
+                    ProfileView()
+                }
+                .tabItem { Label("Profile", systemImage: "person.fill") }
             }
-            .tabItem { Label("Profile", systemImage: "person.fill") }
+
+            .tint(Color.appNavy)
+
+            // AI FAB
+            Button(action: { showAIChat = true }) {
+                HStack(spacing: 8) {
+                    Image(systemName: "sparkles")
+                    Text("Nyaa AI")
+                }
+                .font(.system(size: 14, weight: .bold))
+                .foregroundStyle(.white)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 12)
+                .background(Color.appNavy)
+                .clipShape(Capsule())
+                .shadow(color: Color.appNavy.opacity(0.3), radius: 10, y: 5)
+            }
+            .padding(.trailing, 20)
+            .padding(.bottom, 60) // Above TabBar
         }
-        .tint(.nyaayNavy)
+        .fullScreenCover(isPresented: $showAIChat) {
+            NyaaChatView()
+        }
+
     }
 }
+
 
 // Litigant full case list
 struct LitigantCaseListView: View {
@@ -66,6 +129,50 @@ struct AdvocateMainView: View {
                 .tabItem { Label("Dashboard", systemImage: "house.fill") }
 
             NavigationStack {
+                VStack(spacing: 0) {
+                    DatePicker("Hearing Schedule", selection: .constant(Date()), displayedComponents: .date)
+                        .datePickerStyle(.graphical)
+                        .tint(Color.appNavy)
+                        .padding(20)
+                        .background(Color.white)
+                        .clipShape(RoundedRectangle(cornerRadius: 30))
+                        .shadow(color: .black.opacity(0.04), radius: 10, y: 5)
+                        .padding(24)
+
+                    VStack(alignment: .leading, spacing: 16) {
+                        Text("My Hearings")
+                            .font(.system(size: 20, weight: .bold))
+                            .foregroundStyle(Color.appNavy)
+                        
+                        HStack(spacing: 16) {
+                            ZStack {
+                                RoundedRectangle(cornerRadius: 12)
+                                    .fill(Color.appNavy.opacity(0.05))
+                                    .frame(width: 44, height: 44)
+                                Image(systemName: "gavel.fill").foregroundStyle(Color.appNavy)
+                            }
+                            
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text("Cross Examination").font(.system(size: 16, weight: .bold)).foregroundStyle(Color.appNavy)
+                                Text("Session Court Room 4 • 11:00 AM").font(.system(size: 13)).foregroundStyle(Color.appNavy.opacity(0.5))
+                            }
+                        }
+                        .padding(20)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(Color.white)
+                        .clipShape(RoundedRectangle(cornerRadius: 24))
+                        .shadow(color: .black.opacity(0.03), radius: 8, y: 4)
+                    }
+                    .padding(.horizontal, 24)
+                    Spacer()
+                }
+                .background(Color.appBackground)
+                .navigationTitle("Calendar")
+                .navigationBarTitleDisplayMode(.inline)
+            }
+            .tabItem { Label("Calendar", systemImage: "calendar") }
+
+            NavigationStack {
                 ContentUnavailableView("NOC Requests", systemImage: "arrow.left.arrow.right",
                     description: Text("Pending Change-of-Advocate requests."))
                     .navigationTitle("NOC")
@@ -75,9 +182,10 @@ struct AdvocateMainView: View {
             NavigationStack { ProfileView() }
                 .tabItem { Label("Profile", systemImage: "person.fill") }
         }
-        .tint(.nyaayNavy)
+        .tint(Color.appNavy)
     }
 }
+
 
 /** Clerk Main View (iOS) */
 struct ClerkMainView: View {
@@ -131,55 +239,105 @@ struct AdminMainView: View {
 // MARK: - Shared Profile View
 struct ProfileView: View {
     @Environment(AuthViewModel.self) private var auth
+    @State private var showDeleteConfirm = false
 
     var body: some View {
-        List {
-            Section {
-                HStack(spacing: 14) {
-                    Circle().fill(Color.nyaayNavy).frame(width: 56, height: 56)
+        ScrollView {
+            VStack(spacing: 24) {
+                // Profile Card
+                VStack(spacing: 16) {
+                    Circle()
+                        .fill(Color.appNavy.opacity(0.1))
+                        .frame(width: 80, height: 80)
                         .overlay(
-                            Text(String(auth.currentUser?.fullName?.first ?? "U"))
-                                .font(.title2.bold()).foregroundStyle(.nyaayGold)
+                            Text(auth.currentUser?.fullName?.first?.uppercased() ?? "U")
+                                .font(.system(size: 32, weight: .bold)).foregroundStyle(Color.appNavy)
                         )
-                    VStack(alignment: .leading) {
-                        Text(auth.currentUser?.fullName ?? "User").font(.headline.bold())
-                        Text(auth.currentUser?.email ?? "").font(.caption).foregroundStyle(.secondary)
-                        Text((auth.userType ?? "unknown").capitalized).font(.caption2)
-                            .foregroundStyle(.nyaayNavy)
+                    
+                    VStack(spacing: 4) {
+                        Text(auth.currentUser?.fullName ?? "User").font(.system(size: 20, weight: .bold)).foregroundStyle(Color.appNavy)
+                        Text(auth.currentUser?.email ?? "").font(.system(size: 14)).foregroundStyle(Color.appNavy.opacity(0.5))
+                    }
+                    
+                    Text((auth.userType ?? "unknown").uppercased())
+                        .font(.system(size: 10, weight: .black))
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 4)
+                        .background(Color.appNavy)
+                        .foregroundStyle(.white)
+                        .clipShape(Capsule())
+                }
+                .padding(.top, 40)
+
+                // Info Sections
+                VStack(spacing: 20) {
+                    ProfileRow(icon: "person.fill", label: "Full Name", value: auth.currentUser?.fullName ?? "N/A")
+                    ProfileRow(icon: "envelope.fill", label: "Email Address", value: auth.currentUser?.email ?? "N/A")
+                    ProfileRow(icon: "shield.fill", label: "Account Role", value: (auth.userType ?? "Unknown").capitalized)
+                    if let barId = auth.currentUser?.barCouncilId {
+                        ProfileRow(icon: "briefcase.fill", label: "Bar Council ID", value: barId)
                     }
                 }
-                .padding(.vertical, 6)
-            }
+                .padding(24)
+                .background(Color.white)
+                .clipShape(RoundedRectangle(cornerRadius: 30))
+                .shadow(color: .black.opacity(0.03), radius: 10, y: 5)
+                .padding(.horizontal, 24)
 
-            Section("Account") {
-                LabeledContent("Email", value: auth.currentUser?.email ?? "N/A")
-                LabeledContent("Role", value: (auth.userType ?? "Unknown").capitalized)
-                if let barId = auth.currentUser?.barCouncilId {
-                    LabeledContent("Bar Council ID", value: barId)
-                }
-            }
+                Spacer(minLength: 40)
 
-            Section("Security & Privacy") {
-                Button(action: { showDeleteConfirm = true }) {
-                    Label("Delete My Account", systemImage: "trash")
+                VStack(spacing: 12) {
+                    Button(action: { auth.signOut() }) {
+                        HStack {
+                            Image(systemName: "rectangle.portrait.and.arrow.right")
+                            Text("Sign Out")
+                        }
+                        .font(.system(size: 16, weight: .bold))
                         .foregroundStyle(.red)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 16)
+                        .background(Color.red.opacity(0.05))
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                    }
+                    
+                    Button(action: { showDeleteConfirm = true }) {
+                        Text("Delete Account")
+                            .font(.system(size: 13, weight: .medium))
+                            .foregroundStyle(.red.opacity(0.6))
+                    }
                 }
-            }
-
-            Section {
-                Button("Sign Out", role: .destructive) { auth.signOut() }
+                .padding(.horizontal, 24)
             }
         }
-        .listStyle(.insetGrouped)
+        .background(Color.appBackground)
         .navigationTitle("Profile")
+        .navigationBarTitleDisplayMode(.inline)
         .alert("Delete Account?", isPresented: $showDeleteConfirm) {
             Button("Cancel", role: .cancel) { }
-            Button("Delete Forever", role: .destructive) {
-                // Call Supabase Edge Function to wipe data
-                auth.signOut()
-            }
+            Button("Delete Forever", role: .destructive) { auth.signOut() }
         } message: {
             Text("This action is permanent and will wipe all your legal records from NyaayDesk. This cannot be undone.")
         }
     }
 }
+
+private struct ProfileRow: View {
+    let icon: String
+    let label: String
+    let value: String
+    
+    var body: some View {
+        HStack(spacing: 16) {
+            ZStack {
+                Circle().fill(Color.appNavy.opacity(0.05)).frame(width: 36, height: 36)
+                Image(systemName: icon).font(.system(size: 14)).foregroundStyle(Color.appNavy)
+            }
+            VStack(alignment: .leading, spacing: 2) {
+                Text(label).font(.system(size: 11)).foregroundStyle(Color.appNavy.opacity(0.4))
+                Text(value).font(.system(size: 15, weight: .semibold)).foregroundStyle(Color.appNavy)
+            }
+            Spacer()
+        }
+    }
+}
+

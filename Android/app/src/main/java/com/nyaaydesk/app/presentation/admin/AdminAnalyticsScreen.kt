@@ -77,14 +77,14 @@ fun AdminAnalyticsScreen(
             // 3. System Health Card
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                colors = CardDefaults.cardColors(containerColor = GovNavyBlue)
+                colors = CardDefaults.cardColors(containerColor = DeepNavy)
             ) {
                 Row(
                     modifier = Modifier.padding(20.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
-                        Text("Blockchain Integrity", color = AccentBronze, fontWeight = FontWeight.Bold)
+                        Text("Blockchain Integrity", color = GoldAmber, fontWeight = FontWeight.Bold)
                         Text("All blocks verified & synced", color = Color.White.copy(alpha = 0.7f), fontSize = 12.sp)
                     }
                     Text("100%", color = StatusDisposed, fontWeight = FontWeight.Bold, fontSize = 24.sp)

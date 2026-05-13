@@ -1,48 +1,48 @@
 :root {
-  /* Primary Background Colors - Claude.ai inspired */
-  --bg-primary: #FFFFFF;
-  --bg-secondary: #F9FAFB;
-  --bg-tertiary: #F3F4F6;
+  /* Primary Background Colors - Premium Legal Theme */
+  --bg-primary: #F5F4F0; /* Warm Cream / Beige */
+  --bg-secondary: #FFFFFF; /* Pure White for Cards */
+  --bg-tertiary: #FAF9F6; /* Lighter Cream */
   
   /* Text Colors */
-  --text-primary: #1F2937;
-  --text-secondary: #6B7280;
-  --text-tertiary: #9CA3AF;
+  --text-primary: #0F172A; /* Deep Navy */
+  --text-secondary: rgba(15, 23, 42, 0.6); /* Navy 60% */
+  --text-tertiary: rgba(15, 23, 42, 0.4); /* Navy 40% */
   
-  /* Accent Colors - Claude theme */
-  --accent-primary: #9B6B43;
-  --accent-primary-hover: #8A5F3B;
-  --accent-primary-active: #795333;
+  /* Accent Colors */
+  --accent-primary: #0F172A; /* Navy Buttons */
+  --accent-primary-hover: #1E293B; /* Slate Navy */
+  --accent-primary-active: #020617; /* Darkest Navy */
   
-  --accent-secondary: #7C3AED;
-  --accent-secondary-hover: #6D28D9;
-  --accent-secondary-active: #5B21B6;
+  --accent-secondary: #D4AF37; /* Premium Gold */
+  --accent-secondary-hover: #C5A059;
+  --accent-secondary-active: #B8860B;
   
-  --accent-tertiary: #059669;
-  --accent-tertiary-hover: #047857;
-  --accent-tertiary-active: #065F46;
+  --accent-tertiary: #2E7D32; /* Approved/Success */
+  --accent-tertiary-hover: #1B5E20;
+  --accent-tertiary-active: #003300;
   
-  --accent-quaternary: #DC2626;
-  --accent-quaternary-hover: #B91C1C;
-  --accent-quaternary-active: #991B1B;
+  --accent-quaternary: #C62828; /* Urgent/Error */
+  --accent-quaternary-hover: #B71C1C;
+  --accent-quaternary-active: #D32F2F;
   
   /* Border Colors */
-  --border-color: #E5E7EB;
-  --border-subtle: #F3F4F6;
+  --border-color: rgba(15, 23, 42, 0.1);
+  --border-subtle: rgba(15, 23, 42, 0.05);
   
   /* Interactive States */
-  --hover-bg: #F3F4F6;
-  --active-bg: #E5E7EB;
+  --hover-bg: rgba(15, 23, 42, 0.05);
+  --active-bg: rgba(15, 23, 42, 0.1);
   
   /* Gradient Colors */
-  --gradient-start: #FEF3F2;
-  --gradient-end: #FFFBEB;
+  --gradient-start: #FDFBF7;
+  --gradient-end: #F5F4F0;
   
-  /* Shadow Colors */
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  /* Shadow Colors - Elevated premium feel */
+  --shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(15, 23, 42, 0.1);
 }
 
 /* Dark mode support (optional) */

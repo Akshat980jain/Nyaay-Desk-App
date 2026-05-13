@@ -1,6 +1,6 @@
 import SwiftUI
 
-// MARK: - Clerk Cause List View
+// MARK: - Clerk Overview (Stitch Design - matches clerk_admin_overview)
 struct ClerkCauseListView: View {
     @Environment(AuthViewModel.self) private var auth
     @State private var vm = ClerkViewModel()
@@ -9,77 +9,188 @@ struct ClerkCauseListView: View {
 
     var body: some View {
         NavigationStack {
-            List {
-                Section {
-                    HStack(spacing: 12) {
-                        Image(systemName: "list.bullet.clipboard.fill").foregroundStyle(.nyaayNavy)
-                        VStack(alignment: .leading) {
-                            Text("Daily Cause List").font(.headline)
-                            Text(Date().formatted(date: .complete, time: .omitted))
-                                .font(.caption).foregroundStyle(.secondary)
-                        }
-                        Spacer()
-                        Text("\(vm.todaysList.count)").font(.caption.bold())
-                            .padding(.horizontal, 10).padding(.vertical, 4)
-                            .background(Color.nyaayNavy).foregroundStyle(.white)
-                            .clipShape(Capsule())
-                    }
-                    .padding(.vertical, 4)
-                }
+            ScrollView {
+                VStack(spacing: 0) {
+                    NyaayTopBarView()
 
-                if vm.todaysList.isEmpty {
-                    ContentUnavailableView("No Hearings Today",
-                        systemImage: "calendar.badge.exclamationmark",
-                        description: Text("All clear for today!"))
-                } else {
-                    Section("Scheduled Cases") {
-                        ForEach(Array(vm.todaysList.enumerated()), id: \.element.id) { index, case_ in
-                            ClerkCauseRow(srNo: index + 1, case_: case_) {
-                                selectedCase = case_
-                                showHearingSheet = true
+                    // Overview Header
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Overview")
+                            .font(.system(size: 26, weight: .bold))
+                            .foregroundStyle(Color.appNavy)
+                        Text("System statistics for today.")
+                            .font(.system(size: 14))
+                            .foregroundStyle(Color.appNavy.opacity(0.6))
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(16)
+
+                    // 2x2 stat grid
+                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 8) {
+                        AdminStatTileSwift(label: "ACTIVE CASES", value: "\(vm.todaysList.count)", valueColor: Color.appNavy, icon: "scalemass.fill")
+                        AdminStatTileSwift(label: "TODAY'S HEARINGS", value: "\(vm.todaysList.count)", valueColor: Color.appGold, icon: "calendar")
+                        AdminStatTileSwift(label: "PENDING CASES", value: "45", valueColor: Color.appUrgent, icon: "hourglass")
+                        AdminStatTileSwift(label: "DISPOSED CASES", value: "300", valueColor: Color.appNavy, icon: "checkmark.circle")
+                    }
+                    .padding(.horizontal, 16)
+
+                    // Action Required
+                    HStack(spacing: 8) {
+                        Image(systemName: "exclamationmark.circle.fill").foregroundStyle(Color.appUrgent)
+                        Text("Action Required").font(.system(size: 22, weight: .bold)).foregroundStyle(Color.appNavy)
+                        Spacer()
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.top, 24)
+                    .padding(.bottom, 4)
+
+                    Divider().padding(.horizontal, 16)
+
+                    // Advocate Verifications
+                    AdminActionTile(
+                        iconName: "person.badge.shield.checkmark.fill",
+                        iconBgColor: Color(hex: "E8EAF6"),
+                        iconColor: Color(hex: "3F51B5"),
+                        title: "Advocate Verifications",
+                        subtitle: "Requires review",
+                        pendingLabel: "2 Pending"
+                    )
+
+                    // NOC Review
+                    AdminActionTile(
+                        iconName: "checkmark.seal.fill",
+                        iconBgColor: Color(hex: "FFF3E0"),
+                        iconColor: Color.appGold,
+                        title: "NOC Review",
+                        subtitle: "No Objection Certificates",
+                        pendingLabel: "1 Pending"
+                    )
+
+                    // Quick action buttons
+                    HStack(spacing: 8) {
+                        Button(action: {}) {
+                            VStack(spacing: 8) {
+                                Image(systemName: "plus.circle").font(.system(size: 26)).foregroundStyle(Color.appNavy)
+                                Text("New Case Entry").font(.system(size: 14, weight: .semibold)).foregroundStyle(Color.appNavy)
                             }
+                            .frame(maxWidth: .infinity).padding(16)
+                            .background(Color.white)
+                            .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color(hex: "DEE2E6"), lineWidth: 1))
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                        }
+                        Button(action: {}) {
+                            VStack(spacing: 8) {
+                                Image(systemName: "arrow.up.doc").font(.system(size: 26)).foregroundStyle(Color.appNavy)
+                                Text("Upload Order").font(.system(size: 14, weight: .semibold)).foregroundStyle(Color.appNavy)
+                            }
+                            .frame(maxWidth: .infinity).padding(16)
+                            .background(Color.white)
+                            .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color(hex: "DEE2E6"), lineWidth: 1))
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
                         }
                     }
+                    .padding(16)
+
+                    Spacer().frame(height: 80)
                 }
             }
-            .listStyle(.insetGrouped)
-            .navigationTitle("Cause List")
-            .refreshable { vm.loadData(courtId: auth.currentUser?.courtId ?? "") }
-            .sheet(isPresented: $showHearingSheet) {
-                if let case_ = selectedCase {
-                    HearingUpdateSheet(case_: case_, vm: vm)
-                }
-            }
+            .background(Color.appBackground)
+            .navigationBarHidden(true)
             .onAppear { vm.loadData(courtId: auth.currentUser?.courtId ?? "") }
         }
     }
 }
 
-private struct ClerkCauseRow: View {
-    let srNo: Int
-    let case_: NyaayCase
-    let onUpdate: () -> Void
+// MARK: - Admin Dashboard (same design as Clerk Overview)
+struct AdminDashboardView: View {
+    @Environment(AuthViewModel.self) private var auth
+    @State private var vm = AdminViewModel()
 
     var body: some View {
-        HStack(spacing: 12) {
-            ZStack {
-                Circle().fill(Color.nyaayNavy).frame(width: 28, height: 28)
-                Text("\(srNo)").font(.caption.bold()).foregroundStyle(.white)
+        ClerkCauseListView()
+    }
+}
+
+// MARK: - Admin Stat Tile
+private struct AdminStatTileSwift: View {
+    let label: String
+    let value: String
+    let valueColor: Color
+    let icon: String
+
+    var body: some View {
+        ZStack(alignment: .topTrailing) {
+            VStack(alignment: .leading, spacing: 8) {
+                Text(label)
+                    .font(.system(size: 10, weight: .semibold))
+                    .foregroundStyle(Color.appNavy.opacity(0.5))
+                    .kerning(0.5)
+                Spacer()
+                Text(value)
+                    .font(.system(size: 28, weight: .bold))
+                    .foregroundStyle(valueColor)
             }
-            VStack(alignment: .leading, spacing: 2) {
-                Text(case_.caseTitle).font(.subheadline.bold()).lineLimit(1)
-                Text(case_.caseNumber).font(.caption).foregroundStyle(.secondary)
-            }
-            Spacer()
-            CaseStatusBadge(status: case_.status)
-        }
-        .swipeActions(edge: .trailing) {
-            Button("Update", systemImage: "pencil") { onUpdate() }
-                .tint(.nyaayNavy)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(14)
+            .frame(height: 100)
+            .background(Color.white)
+            .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color(hex: "DEE2E6"), lineWidth: 1))
+            .clipShape(RoundedRectangle(cornerRadius: 8))
+
+            Image(systemName: icon)
+                .font(.system(size: 24))
+                .foregroundStyle(Color(hex: "DEE2E6"))
+                .padding(10)
         }
     }
 }
 
+// MARK: - Admin Action Tile
+private struct AdminActionTile: View {
+    let iconName: String
+    let iconBgColor: Color
+    let iconColor: Color
+    let title: String
+    let subtitle: String
+    let pendingLabel: String
+
+    var body: some View {
+        HStack(spacing: 12) {
+            RoundedRectangle(cornerRadius: 8)
+                .fill(iconBgColor)
+                .frame(width: 44, height: 44)
+                .overlay(Image(systemName: iconName).foregroundStyle(iconColor))
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title).font(.system(size: 15, weight: .semibold)).foregroundStyle(Color.appNavy)
+                Text(subtitle).font(.system(size: 12)).foregroundStyle(Color.appNavy.opacity(0.5))
+            }
+
+            Spacer()
+
+            Text(pendingLabel)
+                .font(.system(size: 12, weight: .bold))
+                .foregroundStyle(.white)
+                .padding(.horizontal, 10).padding(.vertical, 4)
+                .background(Color.appUrgent)
+                .clipShape(Capsule())
+
+            Button("Review") {}
+                .font(.system(size: 13, weight: .medium))
+                .foregroundStyle(Color.appNavy)
+                .padding(.horizontal, 12).padding(.vertical, 6)
+                .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.appNavy.opacity(0.3), lineWidth: 1))
+        }
+        .padding(16)
+        .background(Color.white)
+        .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color(hex: "DEE2E6"), lineWidth: 1))
+        .clipShape(RoundedRectangle(cornerRadius: 8))
+        .padding(.horizontal, 16)
+        .padding(.vertical, 6)
+    }
+}
+
+// MARK: - Hearing Update Sheet
 struct HearingUpdateSheet: View {
     let case_: NyaayCase
     let vm: ClerkViewModel
@@ -111,92 +222,5 @@ struct HearingUpdateSheet: View {
             }
         }
         .presentationDetents([.medium, .large])
-    }
-}
-
-// MARK: - Admin Dashboard View
-struct AdminDashboardView: View {
-    @Environment(AuthViewModel.self) private var auth
-    @State private var vm = AdminViewModel()
-
-    var body: some View {
-        NavigationStack {
-            List {
-                // Stats Grid
-                Section {
-                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 12) {
-                        StatCard2(label: "Total Cases", value: "\(vm.summary?.totalCases ?? 0)", icon: "folder.fill", color: .nyaayNavy)
-                        StatCard2(label: "Pending", value: "\(vm.summary?.pendingCases ?? 0)", icon: "clock.fill", color: .orange)
-                        StatCard2(label: "Disposed", value: "\(vm.summary?.disposedCases ?? 0)", icon: "checkmark.seal.fill", color: .green)
-                        StatCard2(label: "NOC Req.", value: "\(vm.summary?.pendingNocRequests ?? 0)", icon: "arrow.left.arrow.right", color: .purple)
-                    }
-                }
-
-                // Advocate Approval Queue
-                Section("Advocate Approval Queue (\(vm.pendingAdvocates.count))") {
-                    if vm.pendingAdvocates.isEmpty {
-                        Label("All verifications complete!", systemImage: "checkmark.circle.fill")
-                            .foregroundStyle(.green)
-                    } else {
-                        ForEach(vm.pendingAdvocates, id: \.id) { advocate in
-                            AdvocateApprovalRow(advocate: advocate,
-                                onApprove: { vm.approveAdvocate(advocate.id) },
-                                onReject: {})
-                        }
-                    }
-                }
-            }
-            .listStyle(.insetGrouped)
-            .navigationTitle("Admin Overview")
-            .refreshable { vm.loadData(adminId: auth.currentUser?.id ?? "") }
-            .onAppear { vm.loadData(adminId: auth.currentUser?.id ?? "") }
-        }
-    }
-}
-
-private struct StatCard2: View {
-    let label: String; let value: String; let icon: String; let color: Color
-    var body: some View {
-        HStack(spacing: 10) {
-            Image(systemName: icon).font(.title3).foregroundStyle(color)
-            VStack(alignment: .leading) {
-                Text(value).font(.title2.bold())
-                Text(label).font(.caption).foregroundStyle(.secondary)
-            }
-        }
-        .padding(12)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(color.opacity(0.08))
-        .clipShape(RoundedRectangle(cornerRadius: 12))
-    }
-}
-
-private struct AdvocateApprovalRow: View {
-    let advocate: UserProfile
-    let onApprove: () -> Void
-    let onReject: () -> Void
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Circle().fill(Color.nyaayNavy).frame(width: 36, height: 36)
-                    .overlay(Text(String(advocate.fullName?.first ?? "A")).foregroundStyle(.nyaayGold).font(.headline))
-                VStack(alignment: .leading) {
-                    Text(advocate.fullName ?? "Unknown").font(.subheadline.bold())
-                    Text(advocate.email).font(.caption).foregroundStyle(.secondary)
-                    if let barId = advocate.barCouncilId {
-                        Text("Bar ID: \(barId)").font(.caption2).foregroundStyle(.nyaayNavy)
-                    }
-                }
-            }
-            HStack(spacing: 12) {
-                Button("Reject", role: .destructive) { onReject() }
-                    .frame(maxWidth: .infinity).buttonStyle(.bordered)
-                Button("Approve") { onApprove() }
-                    .frame(maxWidth: .infinity).buttonStyle(.borderedProminent)
-                    .tint(.green)
-            }
-        }
-        .padding(.vertical, 4)
     }
 }

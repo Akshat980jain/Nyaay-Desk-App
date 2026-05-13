@@ -106,7 +106,8 @@ const LitigantAdvocateSearch = () => {
     try {
       setLoading(true);
       setError('');
-      const district = selectedCase?.district?.trim();
+      let district = selectedCase?.district?.trim();
+      if (district && district.toLowerCase() === 'unknown') district = '';
       
       console.log('Searching for advocates in district:', district);
 
@@ -370,7 +371,7 @@ const LitigantAdvocateSearch = () => {
                     <td>{caseItem.case_num || 'N/A'}</td>
                     <td>{caseItem.court}</td>
                     <td>{caseItem.case_type}</td>
-                    <td>{caseItem.district}</td>
+                    <td>{caseItem.district && caseItem.district.toLowerCase() !== 'unknown' ? caseItem.district : 'Not Specified'}</td>
                     <td>
                       {caseItem.plaintiff_details.name}
                       {caseItem.plaintiff_details.advocate && (
@@ -416,7 +417,7 @@ const LitigantAdvocateSearch = () => {
                   </div>
                   <div className="las-detail-item">
                     <span className="las-detail-label">District:</span>
-                    <span className="las-detail-value">{selectedCase.district}</span>
+                    <span className="las-detail-value">{selectedCase.district && selectedCase.district.toLowerCase() !== 'unknown' ? selectedCase.district : 'Not Specified'}</span>
                   </div>
                 </div>
                 <div>
@@ -626,7 +627,7 @@ const LitigantAdvocateSearch = () => {
                       </div>
                       <div className="las-detail-item">
                         <span className="las-detail-label">District:</span>
-                        <span className="las-detail-value">{request.district}</span>
+                        <span className="las-detail-value">{request.district && request.district.toLowerCase() !== 'unknown' ? request.district : 'Not Specified'}</span>
                       </div>
                     </div>
                     <div>

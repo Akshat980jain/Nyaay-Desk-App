@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nyaay Desk - User Profile</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error": "#ffffff",
+                        "surface-container": "#edeeef",
+                        "outline": "#74777d",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "secondary": "#835500",
+                        "on-secondary-fixed-variant": "#633f00",
+                        "secondary-fixed-dim": "#ffb955",
+                        "surface-container-low": "#f3f4f5",
+                        "surface-container-high": "#e7e8e9",
+                        "background": "#f8f9fa",
+                        "error": "#ba1a1a",
+                        "on-tertiary-container": "#79849d",
+                        "primary-fixed-dim": "#bac8dc",
+                        "inverse-on-surface": "#f0f1f2",
+                        "surface-dim": "#d9dadb",
+                        "surface-container-highest": "#e1e3e4",
+                        "on-surface": "#191c1d",
+                        "surface-bright": "#f8f9fa",
+                        "surface": "#f8f9fa",
+                        "on-primary-fixed": "#0f1c2c",
+                        "on-tertiary-fixed-variant": "#3c475d",
+                        "error-container": "#ffdad6",
+                        "tertiary-container": "#101b30",
+                        "on-tertiary": "#ffffff",
+                        "primary-container": "#0f1c2c",
+                        "on-surface-variant": "#44474c",
+                        "outline-variant": "#c4c6cc",
+                        "on-secondary-fixed": "#291800",
+                        "on-secondary-container": "#6b4500",
+                        "tertiary": "#000000",
+                        "inverse-surface": "#2e3132",
+                        "on-primary-container": "#778598",
+                        "tertiary-fixed-dim": "#bbc6e2",
+                        "secondary-fixed": "#ffddb4",
+                        "on-error-container": "#93000a",
+                        "primary-fixed": "#d6e4f9",
+                        "inverse-primary": "#bac8dc",
+                        "on-background": "#191c1d",
+                        "on-primary-fixed-variant": "#3a4859",
+                        "on-tertiary-fixed": "#101b30",
+                        "surface-tint": "#525f71",
+                        "secondary-container": "#feae2c",
+                        "surface-variant": "#e1e3e4",
+                        "on-secondary": "#ffffff",
+                        "tertiary-fixed": "#d7e2ff",
+                        "primary": "#000000"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-desktop": "32px",
+                        "margin-mobile": "16px",
+                        "gutter": "16px",
+                        "touch-target": "48px",
+                        "base": "8px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "case-number": ["JetBrains Mono"],
+                        "body-base": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "display-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "case-number": ["15px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "body-base": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom, 16px); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-base text-body-base antialiased min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="bg-primary-container dark:bg-primary-container text-on-primary-container dark:text-on-primary-container docked full-width top-0 border-b border-outline-variant flat no shadows flex justify-between items-center w-full px-margin-mobile h-touch-target z-40 sticky">
+<div class="flex items-center gap-4">
+<button aria-label="Menu" class="hover:bg-primary/10 transition-colors opacity-70 transition-opacity p-2 -ml-2 rounded-full">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="font-headline-md text-headline-md font-bold text-secondary-container">Nyaay Desk</h1>
+</div>
+<button aria-label="Logout" class="hover:bg-primary/10 transition-colors font-label-sm text-label-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[20px]">logout</span>
+<span>Logout</span>
+</button>
+</header>
+<!-- Main Content -->
+<main class="flex-grow flex flex-col pb-24 md:pb-8 pt-4">
+<!-- Profile Overview Canvas -->
+<section class="px-margin-mobile mb-6">
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-6 flex flex-col items-center justify-center text-center">
+<div class="relative mb-4">
+<img alt="Rahul Sharma Profile Avatar" class="w-24 h-24 rounded-full object-cover border-2 border-outline-variant" data-alt="A professional headshot of a middle-aged Indian man with short dark hair, wearing a dark navy blazer over a light blue shirt. He has a calm, approachable expression. The background is a soft, blurred light gray office setting, aligning with a corporate modernist aesthetic. The lighting is bright and evenly distributed, casting soft highlights on his face." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBy0qaB26OcXEpfzUMy-RUIR5bDvCHHNklmhIbhnZpPNETWkkxjxotgF1M4uaMO83RdfjoVoSevUWWjeAkVEIap5heoxRdt6GaIJ5xYE1hcz1PdrDdLLDbTSKTZQyyI8abXd1ep-ADDD6kvlaIR-iRaKkpPqDEC3GBprnwNCGUVyfwfZHwnu8eoJzFwuZOEMXOwyB1D-cNikLpk4qyLZcMroFUqnusjaYmIv3Nm3o4WHg6-lxyl1WWbM29bj5SZv4gqAt2IcXXJGv7d"/>
+<div class="absolute bottom-0 right-0 bg-secondary-container text-on-secondary-container p-1 rounded-full shadow-md flex items-center justify-center border-2 border-surface-container-lowest">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+</div>
+<h2 class="font-headline-md text-headline-md text-primary-container mb-1">Rahul Sharma</h2>
+<p class="font-case-number text-case-number text-on-surface-variant mb-2">Litigant ID: L-2024-089</p>
+<div class="inline-flex items-center gap-1 bg-surface-container text-on-surface-variant px-3 py-1 rounded-full font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">shield_person</span>
+<span>Verified Profile</span>
+</div>
+</div>
+</section>
+<!-- Account Sections Grid -->
+<section class="px-margin-mobile grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Personal Information -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-4">
+<div class="flex items-center gap-2 mb-4 border-b border-outline-variant pb-2">
+<span class="material-symbols-outlined text-primary-container">person</span>
+<h3 class="font-headline-md text-[18px] leading-snug text-primary-container">Personal Information</h3>
+</div>
+<div class="space-y-4">
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-1">Full Name</p>
+<p class="font-body-base text-body-base text-on-background">Rahul Sharma</p>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-1">Email Address</p>
+<p class="font-body-base text-body-base text-on-background">rahul.sharma@email.com</p>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-1">Phone Number</p>
+<p class="font-body-base text-body-base text-on-background">+91 98765 43210</p>
+</div>
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant mb-1">Registered Address</p>
+<p class="font-body-base text-body-base text-on-background">Flat 4B, Residency Towers, MG Road, Bangalore, Karnataka 560001</p>
+</div>
+<button class="w-full mt-2 bg-transparent border border-primary-container text-primary-container hover:bg-surface-container-low py-2 rounded-lg font-label-sm text-label-sm transition-colors flex items-center justify-center gap-2 h-[48px]">
+<span class="material-symbols-outlined text-[18px]">edit</span> Edit Details
+                    </button>
+</div>
+</div>
+<!-- Identity & Verification -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-4">
+<div class="flex items-center gap-2 mb-4 border-b border-outline-variant pb-2">
+<span class="material-symbols-outlined text-primary-container">fingerprint</span>
+<h3 class="font-headline-md text-[18px] leading-snug text-primary-container">Identity &amp; Verification</h3>
+</div>
+<div class="space-y-4">
+<div class="flex justify-between items-center p-3 bg-surface-container-low rounded-lg border border-outline-variant">
+<div>
+<p class="font-body-base text-body-base text-on-background font-medium">Aadhaar Link</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Linked on 12 Mar 2024</p>
+</div>
+<div class="bg-[#E6F4EA] text-[#1E8E3E] px-2 py-1 rounded flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+<span class="font-label-sm text-label-sm">Verified</span>
+</div>
+</div>
+<div class="flex justify-between items-center p-3 bg-surface-container-low rounded-lg border border-outline-variant">
+<div>
+<p class="font-body-base text-body-base text-on-background font-medium">Digital Signature</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Valid till Dec 2025</p>
+</div>
+<div class="bg-[#E6F4EA] text-[#1E8E3E] px-2 py-1 rounded flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+<span class="font-label-sm text-label-sm">Active</span>
+</div>
+</div>
+<div class="flex justify-between items-center p-3 bg-surface-container-low rounded-lg border border-outline-variant">
+<div>
+<p class="font-body-base text-body-base text-on-background font-medium">PAN Status</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Pending verification</p>
+</div>
+<div class="bg-surface-container-highest text-on-surface-variant px-2 py-1 rounded flex items-center gap-1 border border-outline-variant">
+<span class="material-symbols-outlined text-[14px]">pending</span>
+<span class="font-label-sm text-label-sm">Pending</span>
+</div>
+</div>
+</div>
+</div>
+<!-- App Settings -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-4">
+<div class="flex items-center gap-2 mb-4 border-b border-outline-variant pb-2">
+<span class="material-symbols-outlined text-primary-container">settings</span>
+<h3 class="font-headline-md text-[18px] leading-snug text-primary-container">App Settings</h3>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between items-center p-2 hover:bg-surface-container-low rounded-lg transition-colors cursor-pointer min-h-[48px]">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+<p class="font-body-base text-body-base text-on-background">Push Notifications</p>
+</div>
+<!-- Toggle Switch Mock -->
+<div class="w-10 h-6 bg-secondary-container rounded-full relative flex items-center p-1 cursor-pointer">
+<div class="w-4 h-4 bg-on-secondary-container rounded-full absolute right-1"></div>
+</div>
+</div>
+<div class="flex justify-between items-center p-2 hover:bg-surface-container-low rounded-lg transition-colors cursor-pointer min-h-[48px]">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant">language</span>
+<div>
+<p class="font-body-base text-body-base text-on-background">Language</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">English</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</div>
+<div class="flex justify-between items-center p-2 hover:bg-surface-container-low rounded-lg transition-colors cursor-pointer min-h-[48px]">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant">dark_mode</span>
+<div>
+<p class="font-body-base text-body-base text-on-background">Theme</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">System Default</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</div>
+</div>
+</div>
+<!-- Security & Privacy -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-4">
+<div class="flex items-center gap-2 mb-4 border-b border-outline-variant pb-2">
+<span class="material-symbols-outlined text-primary-container">security</span>
+<h3 class="font-headline-md text-[18px] leading-snug text-primary-container">Security &amp; Privacy</h3>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between items-center p-2 hover:bg-surface-container-low rounded-lg transition-colors cursor-pointer min-h-[48px]">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant">password</span>
+<p class="font-body-base text-body-base text-on-background">Change Password</p>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</div>
+<div class="flex justify-between items-center p-2 hover:bg-surface-container-low rounded-lg transition-colors cursor-pointer min-h-[48px]">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant">phonelink_lock</span>
+<p class="font-body-base text-body-base text-on-background">Two-Factor Authentication</p>
+</div>
+<!-- Toggle Switch Mock -->
+<div class="w-10 h-6 bg-surface-container-highest rounded-full relative flex items-center p-1 cursor-pointer border border-outline-variant">
+<div class="w-4 h-4 bg-outline rounded-full absolute left-1"></div>
+</div>
+</div>
+<div class="mt-4 pt-4 border-t border-outline-variant">
+<button class="w-full bg-error-container text-on-error-container hover:bg-error-container/80 py-2 rounded-lg font-label-sm text-label-sm transition-colors flex items-center justify-center gap-2 h-[48px]">
+<span class="material-symbols-outlined text-[18px]">logout</span> Sign Out Completely
+                        </button>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="bg-primary-container dark:bg-primary-container fixed bottom-0 w-full z-50 border-t border-outline-variant shadow-lg flex justify-around items-center h-16 pb-safe px-2 md:hidden">
+<!-- Assuming Home is active for contextual demonstration if Profile isn't in JSON -->
+<a class="flex flex-col items-center justify-center text-secondary-container font-bold bg-tertiary-container/50 rounded-xl px-2 py-1 hover:text-secondary-fixed-dim Tap: scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined text-[24px]">home</span>
+<span class="font-label-sm text-label-sm mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-primary-container opacity-60 hover:text-secondary-fixed-dim Tap: scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined text-[24px]">folder_open</span>
+<span class="font-label-sm text-label-sm mt-1">Cases</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-primary-container opacity-60 hover:text-secondary-fixed-dim Tap: scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined text-[24px]">event_note</span>
+<span class="font-label-sm text-label-sm mt-1">Hearings</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-primary-container opacity-60 hover:text-secondary-fixed-dim Tap: scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined text-[24px]">notifications</span>
+<span class="font-label-sm text-label-sm mt-1">Notifications</span>
+</a>
+</nav>
+</body></html>

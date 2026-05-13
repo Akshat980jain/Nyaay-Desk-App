@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Notification Settings - Nyaay Desk</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-lowest": "#ffffff",
+                        "surface": "#f8f9fa",
+                        "surface-variant": "#e1e3e4",
+                        "on-tertiary-fixed-variant": "#3c475d",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed": "#291800",
+                        "secondary-fixed-dim": "#ffb955",
+                        "secondary-container": "#feae2c",
+                        "on-error": "#ffffff",
+                        "tertiary-container": "#101b30",
+                        "surface-dim": "#d9dadb",
+                        "surface-container-high": "#e7e8e9",
+                        "inverse-surface": "#2e3132",
+                        "surface-tint": "#525f71",
+                        "on-secondary-fixed-variant": "#633f00",
+                        "inverse-primary": "#bac8dc",
+                        "primary-fixed-dim": "#bac8dc",
+                        "tertiary-fixed": "#d7e2ff",
+                        "on-primary-fixed-variant": "#3a4859",
+                        "on-surface-variant": "#44474c",
+                        "background": "#f8f9fa",
+                        "surface-container-low": "#f3f4f5",
+                        "secondary": "#835500",
+                        "on-primary-container": "#778598",
+                        "on-secondary-container": "#6b4500",
+                        "on-primary-fixed": "#0f1c2c",
+                        "on-error-container": "#93000a",
+                        "primary": "#000000",
+                        "primary-fixed": "#d6e4f9",
+                        "on-tertiary-fixed": "#101b30",
+                        "inverse-on-surface": "#f0f1f2",
+                        "tertiary-fixed-dim": "#bbc6e2",
+                        "on-surface": "#191c1d",
+                        "secondary-fixed": "#ffddb4",
+                        "on-tertiary-container": "#79849d",
+                        "on-background": "#191c1d",
+                        "on-primary": "#ffffff",
+                        "surface-container": "#edeeef",
+                        "on-secondary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "primary-container": "#0f1c2c",
+                        "error-container": "#ffdad6",
+                        "tertiary": "#000000",
+                        "outline-variant": "#c4c6cc",
+                        "surface-container-highest": "#e1e3e4",
+                        "surface-bright": "#f8f9fa",
+                        "outline": "#74777d"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "base": "8px",
+                        "touch-target": "48px",
+                        "margin-mobile": "16px",
+                        "margin-desktop": "32px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Inter"],
+                        "case-number": ["JetBrains Mono"],
+                        "body-base": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "display-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "case-number": ["15px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "body-base": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "display-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined[data-weight="fill"] {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-base min-h-screen flex flex-col md:flex-row pb-16 md:pb-0">
+<!-- Desktop Navigation Drawer (Hidden on Mobile) -->
+<nav class="hidden md:flex bg-surface h-full w-80 rounded-r-xl border-r border-outline-variant shadow-md flex-col p-4 gap-2 shrink-0">
+<div class="flex items-center gap-4 mb-6 mt-4">
+<div class="w-12 h-12 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-headline-md text-headline-md font-bold shrink-0">RS</div>
+<div class="flex flex-col">
+<span class="font-headline-md text-[18px] leading-[24px] font-semibold text-primary">Rahul Sharma</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Litigant ID: L-2024-089</span>
+</div>
+</div>
+<div class="h-px bg-outline-variant w-full mb-4"></div>
+<a class="flex items-center gap-4 p-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors font-body-base text-body-base" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span>Dashboard</span>
+</a>
+<a class="flex items-center gap-4 p-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors font-body-base text-body-base" href="#">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+<span>My Documents</span>
+</a>
+<a class="flex items-center gap-4 p-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors font-body-base text-body-base" href="#">
+<span class="material-symbols-outlined" data-icon="assignment">assignment</span>
+<span>Notice Board</span>
+</a>
+<a class="flex items-center gap-4 p-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors font-body-base text-body-base" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_month">calendar_month</span>
+<span>Court Calendar</span>
+</a>
+<a class="flex items-center gap-4 p-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors font-body-base text-body-base" href="#">
+<span class="material-symbols-outlined" data-icon="person_search">person_search</span>
+<span>Find Advocate</span>
+</a>
+<a class="flex items-center gap-4 p-3 bg-secondary-container text-on-secondary-container font-semibold rounded-lg hover:bg-surface-container-highest transition-colors font-body-base text-body-base mt-auto" href="#">
+<span class="material-symbols-outlined" data-icon="settings" data-weight="fill">settings</span>
+<span>Settings</span>
+</a>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-1 flex flex-col min-h-screen">
+<!-- TopAppBar -->
+<header class="bg-primary-container text-on-primary-container flex justify-between items-center w-full px-margin-mobile h-touch-target docked full-width top-0 border-b border-outline-variant flat no shadows">
+<div class="flex items-center gap-3">
+<button aria-label="Back to Profile" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-primary/10 transition-colors text-on-primary-container opacity-80">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-headline-md text-headline-md text-secondary-container font-bold">Nyaay Desk</h1>
+</div>
+<button class="px-4 py-2 font-label-sm text-label-sm hover:bg-primary/10 transition-colors text-on-primary-container opacity-80 rounded-lg">
+                Logout
+            </button>
+</header>
+<!-- Page Content -->
+<div class="flex-1 p-margin-mobile md:p-margin-desktop max-w-4xl w-full mx-auto space-y-8">
+<div class="mb-6">
+<h2 class="font-headline-md text-headline-md text-primary mb-2">Notification Settings</h2>
+<p class="font-body-base text-body-base text-on-surface-variant">Manage how and when you receive updates regarding your legal matters.</p>
+</div>
+<!-- Categories Section -->
+<section class="bg-surface-container-lowest rounded-xl border border-outline-variant p-0 overflow-hidden shadow-sm">
+<h3 class="font-headline-md text-[18px] leading-[24px] text-primary p-6 border-b border-outline-variant bg-surface-container-low font-semibold">Notification Categories</h3>
+<div class="divide-y divide-outline-variant">
+<!-- Case Updates -->
+<div class="p-6 flex items-start justify-between gap-4">
+<div class="flex gap-4">
+<div class="w-10 h-10 rounded-full bg-tertiary-fixed flex items-center justify-center shrink-0 text-on-tertiary-fixed">
+<span class="material-symbols-outlined" data-icon="folder_open">folder_open</span>
+</div>
+<div>
+<h4 class="font-body-base text-body-base font-semibold text-on-background">Case Updates</h4>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-1">Alerts for new filings, status changes, and document uploads on your active cases.</p>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer shrink-0 mt-1">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary-container"></div>
+</label>
+</div>
+<!-- Hearing Alerts -->
+<div class="p-6 flex items-start justify-between gap-4">
+<div class="flex gap-4">
+<div class="w-10 h-10 rounded-full bg-tertiary-fixed flex items-center justify-center shrink-0 text-on-tertiary-fixed">
+<span class="material-symbols-outlined" data-icon="event_note">event_note</span>
+</div>
+<div>
+<h4 class="font-body-base text-body-base font-semibold text-on-background">Hearing Alerts</h4>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-1">Schedule reminders, courtroom assignments, and sudden adjournments.</p>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer shrink-0 mt-1">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary-container"></div>
+</label>
+</div>
+<!-- Notice Board -->
+<div class="p-6 flex items-start justify-between gap-4">
+<div class="flex gap-4">
+<div class="w-10 h-10 rounded-full bg-tertiary-fixed flex items-center justify-center shrink-0 text-on-tertiary-fixed">
+<span class="material-symbols-outlined" data-icon="assignment_late">assignment_late</span>
+</div>
+<div>
+<h4 class="font-body-base text-body-base font-semibold text-on-background">Notice Board</h4>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-1">New official announcements, circulars, and general court information.</p>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer shrink-0 mt-1">
+<input class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary-container"></div>
+</label>
+</div>
+<!-- Account Activity -->
+<div class="p-6 flex items-start justify-between gap-4">
+<div class="flex gap-4">
+<div class="w-10 h-10 rounded-full bg-tertiary-fixed flex items-center justify-center shrink-0 text-on-tertiary-fixed">
+<span class="material-symbols-outlined" data-icon="security">security</span>
+</div>
+<div>
+<h4 class="font-body-base text-body-base font-semibold text-on-background">Account Activity</h4>
+<p class="font-label-sm text-label-sm text-on-surface-variant mt-1">Critical security alerts, new login notifications, and profile changes.</p>
+</div>
+</div>
+<label class="relative inline-flex items-center cursor-pointer shrink-0 mt-1">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary-container"></div>
+</label>
+</div>
+</div>
+</section>
+<!-- Delivery Methods Section -->
+<section class="bg-surface-container-lowest rounded-xl border border-outline-variant p-0 overflow-hidden shadow-sm">
+<h3 class="font-headline-md text-[18px] leading-[24px] text-primary p-6 border-b border-outline-variant bg-surface-container-low font-semibold">Delivery Methods</h3>
+<div class="divide-y divide-outline-variant">
+<!-- Push Notifications -->
+<div class="p-6 flex items-center justify-between gap-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="smartphone">smartphone</span>
+<span class="font-body-base text-body-base font-semibold text-on-background">Push Notifications</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary-container"></div>
+</label>
+</div>
+<!-- Email Alerts -->
+<div class="p-6 flex items-center justify-between gap-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="mail">mail</span>
+<span class="font-body-base text-body-base font-semibold text-on-background">Email Alerts</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary-container"></div>
+</label>
+</div>
+<!-- SMS Notifications -->
+<div class="p-6 flex items-center justify-between gap-4">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="sms">sms</span>
+<span class="font-body-base text-body-base font-semibold text-on-background">SMS Notifications</span>
+</div>
+<label class="relative inline-flex items-center cursor-pointer">
+<input class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-surface-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-secondary-container"></div>
+</label>
+</div>
+</div>
+</section>
+<!-- Action Area -->
+<div class="pt-6 flex justify-end">
+<button class="bg-secondary-container text-on-secondary-fixed font-body-base text-body-base font-semibold px-8 py-3 rounded-lg hover:bg-secondary-fixed-dim transition-colors h-touch-target flex items-center justify-center shadow-sm">
+                    Save Changes
+                </button>
+</div>
+</div>
+</main>
+<!-- Mobile Bottom NavBar (Hidden on Desktop) -->
+<!-- Suppressed on Settings page per Shared Components Logic ("Automatic Suppression" for sub-pages implying departure from main flow) -->
+</body></html>

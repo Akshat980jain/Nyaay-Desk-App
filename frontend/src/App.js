@@ -89,7 +89,7 @@ const NavigationHeader = () => {
           </svg>
           Refresh
         </button>
-        <button style={{...styles.navButton, ...styles.homeButton}} onClick={() => navigate('/')} title="Home"
+        <button style={{ ...styles.navButton, ...styles.homeButton }} onClick={() => navigate('/')} title="Home"
           onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f59e0b'}
           onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#fbbf24'}>
           <svg style={styles.icon} fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -141,8 +141,8 @@ function AppRoutes() {
     const type = localStorage.getItem('userType')?.toLowerCase();
     if (type === 'litigant') return '/litidash';
     if (type === 'advocate') return '/advdash';
-    if (type === 'clerk')    return '/clerkdash';
-    if (type === 'admin')    return '/admindash';
+    if (type === 'clerk') return '/clerkdash';
+    if (type === 'admin') return '/admindash';
     return '/';
   };
 
@@ -150,7 +150,7 @@ function AppRoutes() {
   useEffect(() => {
     const token = localStorage.getItem('token');
     const type = localStorage.getItem('userType')?.toLowerCase();
-    
+
     // If on home page and logged in, redirect to dashboard
     if (location.pathname === '/' && token && type) {
       const target = loggedInDash();
@@ -179,15 +179,15 @@ function AppRoutes() {
         {/* ── Role selection landing pages ──────────────────────────────── */}
         <Route path="/advocate" element={<Advocate />} />
         <Route path="/litigant" element={<Litigant />} />
-        <Route path="/clerk"    element={<Clerk />} />   {/* → links to /clerklogin */}
-        <Route path="/admin"    element={<Admin />} />   {/* → links to /adminlogin */}
+        <Route path="/clerk" element={<Clerk />} />   {/* → links to /clerklogin */}
+        <Route path="/admin" element={<Admin />} />   {/* → links to /adminlogin */}
 
         {/* ── Advocate ──────────────────────────────────────────────────── */}
-        <Route path="/advlogin"           element={<AdvocateLogin />} />
-        <Route path="/register"           element={<AdvocateRegistration />} />
+        <Route path="/advlogin" element={<AdvocateLogin />} />
+        <Route path="/register" element={<AdvocateRegistration />} />
         <Route path="/advocatecaseassign" element={<Advocatecaseassign />} />
-        <Route path="/advocatefilecase"   element={<Advocatefilecase />} />
-        <Route path="/advocatemeeting"    element={<Advocatemeeting />} />
+        <Route path="/advocatefilecase" element={<Advocatefilecase />} />
+        <Route path="/advocatemeeting" element={<Advocatemeeting />} />
         <Route path="/advdash" element={
           <ProtectedRoute requiredRole="advocate" redirectTo="/advlogin">
             <Advocatedashboard />
@@ -195,9 +195,9 @@ function AppRoutes() {
         } />
 
         {/* ── Litigant ──────────────────────────────────────────────────── */}
-        <Route path="/litilogin"          element={<LitigantLogin />} />
-        <Route path="/litiregister"       element={<LitigantRegister />} />
-        <Route path="/litigantmeeting"    element={<Litigantmeeting />} />
+        <Route path="/litilogin" element={<LitigantLogin />} />
+        <Route path="/litiregister" element={<LitigantRegister />} />
+        <Route path="/litigantmeeting" element={<Litigantmeeting />} />
         <Route path="/litigantcaseassign" element={<Litigantcaseassign />} />
         <Route path="/litidash" element={
           <ProtectedRoute requiredRole="litigant" redirectTo="/litilogin">
@@ -212,7 +212,7 @@ function AppRoutes() {
           /clerkregister → Clerk self-registration form.
           /clerkdash     → Protected — requires userType='clerk' in localStorage.
         */}
-        <Route path="/clerklogin"    element={<ClerkLogin expectedRole="clerk" />} />
+        <Route path="/clerklogin" element={<ClerkLogin expectedRole="clerk" />} />
         <Route path="/clerkregister" element={<ClerkRegister />} />
         <Route path="/clerkdash" element={
           <ProtectedRoute requiredRole="clerk" redirectTo="/clerklogin">
@@ -236,13 +236,13 @@ function AppRoutes() {
         } />
 
         {/* ── Shared court resources ────────────────────────────────────── */}
-        <Route path="/noticeform"      element={<NoticeForm />} />
-        <Route path="/noticeboard"     element={<NoticeBoard />} />
-        <Route path="/noticelist"      element={<NoticeList />} />
-        <Route path="/usercalendar"    element={<UserCalendarPanel />} />
-        <Route path="/videopleading"   element={<Videoplead />} />
+        <Route path="/noticeform" element={<NoticeForm />} />
+        <Route path="/noticeboard" element={<NoticeBoard />} />
+        <Route path="/noticelist" element={<NoticeList />} />
+        <Route path="/usercalendar" element={<UserCalendarPanel />} />
+        <Route path="/videopleading" element={<Videoplead />} />
         <Route path="/uploadvideoplead" element={<UploadVideoplead />} />
-        <Route path="/chatbot"         element={<LegalAssistantChatbot />} />
+        <Route path="/chatbot" element={<LegalAssistantChatbot />} />
 
         {/* ── Catch-all: redirect unknown routes to home ────────────────── */}
         <Route path="*" element={<Navigate to="/" replace />} />

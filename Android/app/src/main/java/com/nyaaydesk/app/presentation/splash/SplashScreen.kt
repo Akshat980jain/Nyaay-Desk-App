@@ -46,21 +46,22 @@ fun SplashScreen(
     }
 
     val isDark = androidx.compose.foundation.isSystemInDarkTheme()
-    val bgStart = if (isDark) BackgroundDark else BackgroundLight
-    val bgEnd = if (isDark) SurfaceDarkFrontend else SurfaceLight
+    val bgColor = if (isDark) BackgroundDark else BackgroundLight
     val textColor = if (isDark) OnBackgroundDark else OnBackgroundLight
-    val accentColor = if (isDark) AccentBronze else GovNavyBlue
+    val brandColor = DeepNavy
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Brush.verticalGradient(listOf(bgStart, bgEnd))),
+            .background(bgColor),
         contentAlignment = Alignment.Center
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
-            modifier = Modifier.alpha(alpha.value).scale(scale.value)
+            modifier = Modifier
+                .alpha(alpha.value)
+                .scale(scale.value)
         ) {
             Text(
                 "⚖️",
@@ -71,16 +72,26 @@ fun SplashScreen(
                 "NyaayDesk",
                 style = MaterialTheme.typography.displayMedium,
                 fontWeight = FontWeight.ExtraBold,
-                color = accentColor
+                color = brandColor
             )
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(
+                "Digital Justice Platform",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Medium,
+                color = brandColor.copy(alpha = 0.8f),
+                letterSpacing = 1.sp
+            )
+            Spacer(modifier = Modifier.height(24.dp))
             Text(
                 "न्याय your way",
-                style = MaterialTheme.typography.titleMedium,
-                color = textColor.copy(alpha = 0.7f),
+                style = MaterialTheme.typography.labelLarge,
+                color = textColor.copy(alpha = 0.5f),
                 letterSpacing = 2.sp
             )
         }
     }
+
 }
 
 /** Utility to convert Android Interpolator to Compose Easing */

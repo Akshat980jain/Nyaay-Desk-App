@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nyaay Desk - Notice Board</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                            "primary-fixed": "#d6e4f9",
+                            "surface-dim": "#d9dadb",
+                            "outline": "#74777d",
+                            "inverse-surface": "#2e3132",
+                            "error": "#ba1a1a",
+                            "on-surface": "#191c1d",
+                            "on-tertiary-fixed": "#101b30",
+                            "surface-container-highest": "#e1e3e4",
+                            "primary-container": "#0f1c2c",
+                            "surface-container": "#edeeef",
+                            "inverse-primary": "#bac8dc",
+                            "tertiary-fixed": "#d7e2ff",
+                            "tertiary-fixed-dim": "#bbc6e2",
+                            "on-tertiary": "#ffffff",
+                            "primary-fixed-dim": "#bac8dc",
+                            "on-secondary-container": "#6b4500",
+                            "surface-container-lowest": "#ffffff",
+                            "tertiary": "#000000",
+                            "secondary-container": "#feae2c",
+                            "surface-container-low": "#f3f4f5",
+                            "outline-variant": "#c4c6cc",
+                            "secondary-fixed-dim": "#ffb955",
+                            "surface-bright": "#f8f9fa",
+                            "inverse-on-surface": "#f0f1f2",
+                            "surface-tint": "#525f71",
+                            "on-primary": "#ffffff",
+                            "on-secondary-fixed-variant": "#633f00",
+                            "primary": "#000000",
+                            "on-primary-fixed-variant": "#3a4859",
+                            "on-error": "#ffffff",
+                            "secondary-fixed": "#ffddb4",
+                            "secondary": "#835500",
+                            "surface-container-high": "#e7e8e9",
+                            "on-background": "#191c1d",
+                            "on-tertiary-fixed-variant": "#3c475d",
+                            "on-primary-container": "#778598",
+                            "on-surface-variant": "#44474c",
+                            "surface": "#f8f9fa",
+                            "error-container": "#ffdad6",
+                            "on-secondary-fixed": "#291800",
+                            "on-secondary": "#ffffff",
+                            "on-primary-fixed": "#0f1c2c",
+                            "background": "#f8f9fa",
+                            "tertiary-container": "#101b30",
+                            "surface-variant": "#e1e3e4",
+                            "on-tertiary-container": "#79849d",
+                            "on-error-container": "#93000a"
+                    },
+                    "borderRadius": {
+                            "DEFAULT": "0.25rem",
+                            "lg": "0.5rem",
+                            "xl": "0.75rem",
+                            "full": "9999px"
+                    },
+                    "spacing": {
+                            "touch-target": "48px",
+                            "base": "8px",
+                            "margin-desktop": "32px",
+                            "margin-mobile": "16px",
+                            "gutter": "16px"
+                    },
+                    "fontFamily": {
+                            "headline-md": [
+                                    "Inter"
+                            ],
+                            "display-lg": [
+                                    "Inter"
+                            ],
+                            "case-number": [
+                                    "JetBrains Mono"
+                            ],
+                            "label-sm": [
+                                    "Inter"
+                            ],
+                            "body-base": [
+                                    "Inter"
+                            ]
+                    },
+                    "fontSize": {
+                            "headline-md": [
+                                    "24px",
+                                    {
+                                            "lineHeight": "32px",
+                                            "fontWeight": "600"
+                                    }
+                            ],
+                            "display-lg": [
+                                    "32px",
+                                    {
+                                            "lineHeight": "40px",
+                                            "letterSpacing": "-0.02em",
+                                            "fontWeight": "700"
+                                    }
+                            ],
+                            "case-number": [
+                                    "15px",
+                                    {
+                                            "lineHeight": "20px",
+                                            "letterSpacing": "0.05em",
+                                            "fontWeight": "700"
+                                    }
+                            ],
+                            "label-sm": [
+                                    "12px",
+                                    {
+                                            "lineHeight": "16px",
+                                            "fontWeight": "500"
+                                    }
+                            ],
+                            "body-base": [
+                                    "16px",
+                                    {
+                                            "lineHeight": "24px",
+                                            "fontWeight": "400"
+                                    }
+                            ]
+                    }
+            },
+                },
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body-base pb-24 md:pb-0 md:flex">
+<!-- Desktop Navigation Drawer (Hidden on Mobile) -->
+<nav class="hidden md:flex flex-col p-4 gap-2 bg-surface dark:bg-surface-dim h-screen w-80 rounded-r-xl border-r border-outline-variant shadow-md fixed left-0 top-0 z-40">
+<div class="flex items-center gap-3 mb-6 px-2">
+<span class="material-symbols-outlined text-display-lg text-primary font-bold">gavel</span>
+<span class="font-headline-md text-headline-md text-primary font-bold">Nyaay Desk</span>
+</div>
+<div class="flex items-center gap-3 p-3 bg-surface-container-low rounded-lg mb-4">
+<div class="w-10 h-10 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold">
+                RS
+            </div>
+<div>
+<div class="font-headline-md text-headline-md text-primary dark:text-primary-fixed text-sm">Rahul Sharma</div>
+<div class="font-body-base text-body-base text-on-surface-variant text-xs">Litigant ID: L-2024-089</div>
+</div>
+</div>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:bg-surface-container-highest transition-colors font-body-base text-body-base" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+            Dashboard
+        </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:bg-surface-container-highest transition-colors font-body-base text-body-base" href="#">
+<span class="material-symbols-outlined">description</span>
+            My Documents
+        </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg bg-secondary-container text-on-secondary-container font-semibold hover:bg-surface-container-highest transition-colors font-body-base text-body-base" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">assignment</span>
+            Notice Board
+        </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:bg-surface-container-highest transition-colors font-body-base text-body-base" href="#">
+<span class="material-symbols-outlined">calendar_month</span>
+            Court Calendar
+        </a>
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:bg-surface-container-highest transition-colors font-body-base text-body-base" href="#">
+<span class="material-symbols-outlined">person_search</span>
+            Find Advocate
+        </a>
+<div class="mt-auto">
+<a class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:bg-surface-container-highest transition-colors font-body-base text-body-base" href="#">
+<span class="material-symbols-outlined">settings</span>
+                Settings
+            </a>
+<button class="flex items-center gap-3 px-4 py-3 w-full text-left rounded-lg text-error hover:bg-error-container hover:text-on-error-container transition-colors font-body-base text-body-base mt-2">
+<span class="material-symbols-outlined">logout</span>
+                Logout
+            </button>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="w-full md:ml-80 min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="bg-primary-container dark:bg-primary-container text-on-primary-container dark:text-on-primary-container docked full-width top-0 border-b border-outline-variant flat no shadows flex justify-between items-center w-full px-margin-mobile h-touch-target sticky z-30">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary-container">gavel</span>
+<span class="font-headline-md text-headline-md text-secondary-container font-bold">Notice Board</span>
+</div>
+<button class="font-label-sm text-label-sm hover:bg-primary/10 transition-colors px-3 py-1.5 rounded-DEFAULT text-on-primary-container opacity-80 flex items-center gap-1">
+                Logout
+                <span class="material-symbols-outlined text-[16px]">logout</span>
+</button>
+</header>
+<!-- Search and Filter Section -->
+<section class="p-margin-mobile md:p-margin-desktop bg-surface-bright sticky top-[48px] z-20 border-b border-outline-variant shadow-sm">
+<div class="flex gap-2 max-w-4xl mx-auto">
+<div class="relative flex-1">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full h-touch-target pl-10 pr-4 rounded-lg border border-outline-variant bg-surface-container-lowest focus:border-secondary-container focus:ring-1 focus:ring-secondary-container outline-none font-body-base text-body-base text-on-surface placeholder:text-on-surface-variant transition-colors" placeholder="Search notices, circulars..." type="text"/>
+</div>
+<button class="h-touch-target px-4 rounded-lg border border-outline-variant bg-surface-container-lowest text-primary flex items-center justify-center hover:bg-surface-container-low transition-colors gap-2 font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined">filter_list</span>
+<span class="hidden sm:inline">Filter</span>
+</button>
+</div>
+<!-- Quick Filter Chips -->
+<div class="flex gap-2 mt-4 overflow-x-auto pb-2 no-scrollbar max-w-4xl mx-auto">
+<button class="px-4 py-1.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm whitespace-nowrap font-bold border border-secondary-container">All Notices</button>
+<button class="px-4 py-1.5 rounded-full bg-surface-container-lowest text-on-surface-variant border border-outline-variant hover:bg-surface-container-low font-label-sm text-label-sm whitespace-nowrap transition-colors">Administrative</button>
+<button class="px-4 py-1.5 rounded-full bg-surface-container-lowest text-on-surface-variant border border-outline-variant hover:bg-surface-container-low font-label-sm text-label-sm whitespace-nowrap transition-colors">Urgent</button>
+<button class="px-4 py-1.5 rounded-full bg-surface-container-lowest text-on-surface-variant border border-outline-variant hover:bg-surface-container-low font-label-sm text-label-sm whitespace-nowrap transition-colors">General Circulars</button>
+</div>
+</section>
+<!-- Notice List -->
+<section class="p-margin-mobile md:p-margin-desktop flex-1 max-w-4xl mx-auto w-full">
+<div class="flex flex-col gap-4">
+<!-- Notice Card 1 (Urgent) -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-4 hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-2 gap-4">
+<span class="font-case-number text-case-number text-on-surface-variant">NOT-2023-1042</span>
+<span class="bg-error text-on-error px-2 py-0.5 rounded-full font-label-sm text-label-sm text-[10px] uppercase tracking-wider font-bold shrink-0">Urgent</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-primary text-lg mb-1 leading-tight">Revised Court Timings for Winter Session</h3>
+<div class="flex items-center gap-1 text-on-surface-variant font-label-sm text-label-sm mb-3">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span>
+<span>15/11/2023</span>
+</div>
+<p class="font-body-base text-body-base text-on-surface-variant mb-4 line-clamp-2 text-sm">
+                        In view of the upcoming winter season, the court working hours have been revised. The new timings will be effective from December 1st, 2023. All hearings scheduled before 10:00 AM stand rescheduled.
+                    </p>
+<div class="flex gap-2 justify-end border-t border-outline-variant pt-3 mt-auto">
+<button class="h-[36px] px-4 rounded-DEFAULT border border-primary text-primary font-label-sm text-label-sm font-semibold hover:bg-surface-container-low transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">visibility</span>
+                            View PDF
+                        </button>
+<button class="h-[36px] px-4 rounded-DEFAULT bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-semibold hover:bg-secondary-fixed-dim transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">download</span>
+                            Download
+                        </button>
+</div>
+</div>
+<!-- Notice Card 2 (Administrative) -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-4 hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-2 gap-4">
+<span class="font-case-number text-case-number text-on-surface-variant">ADM-2023-0891</span>
+<span class="bg-primary-container text-on-primary-container px-2 py-0.5 rounded-full font-label-sm text-label-sm text-[10px] uppercase tracking-wider font-bold shrink-0">Administrative</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-primary text-lg mb-1 leading-tight">New Guidelines for E-Filing System</h3>
+<div class="flex items-center gap-1 text-on-surface-variant font-label-sm text-label-sm mb-3">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span>
+<span>10/11/2023</span>
+</div>
+<p class="font-body-base text-body-base text-on-surface-variant mb-4 line-clamp-2 text-sm">
+                        Detailed instructions and updated guidelines regarding the mandatory use of the new e-filing portal for all civil matters starting next month. Training sessions will be conducted.
+                    </p>
+<div class="flex gap-2 justify-end border-t border-outline-variant pt-3 mt-auto">
+<button class="h-[36px] px-4 rounded-DEFAULT border border-primary text-primary font-label-sm text-label-sm font-semibold hover:bg-surface-container-low transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">visibility</span>
+                            View PDF
+                        </button>
+<button class="h-[36px] px-4 rounded-DEFAULT bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-semibold hover:bg-secondary-fixed-dim transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">download</span>
+                            Download
+                        </button>
+</div>
+</div>
+<!-- Notice Card 3 (Circular) -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-4 hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start mb-2 gap-4">
+<span class="font-case-number text-case-number text-on-surface-variant">CIR-2023-0552</span>
+<span class="bg-surface-tint text-on-primary px-2 py-0.5 rounded-full font-label-sm text-label-sm text-[10px] uppercase tracking-wider font-bold shrink-0">Circular</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-primary text-lg mb-1 leading-tight">Holiday Declaration for Diwali Festival</h3>
+<div class="flex items-center gap-1 text-on-surface-variant font-label-sm text-label-sm mb-3">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span>
+<span>05/11/2023</span>
+</div>
+<p class="font-body-base text-body-base text-on-surface-variant mb-4 line-clamp-2 text-sm">
+                        Official declaration of court holidays for the upcoming Diwali festival. The registry will remain closed from November 10th to November 14th, 2023.
+                    </p>
+<div class="flex gap-2 justify-end border-t border-outline-variant pt-3 mt-auto">
+<button class="h-[36px] px-4 rounded-DEFAULT border border-primary text-primary font-label-sm text-label-sm font-semibold hover:bg-surface-container-low transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">visibility</span>
+                            View PDF
+                        </button>
+<button class="h-[36px] px-4 rounded-DEFAULT bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-semibold hover:bg-secondary-fixed-dim transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">download</span>
+                            Download
+                        </button>
+</div>
+</div>
+</div>
+<!-- Load More -->
+<div class="mt-8 flex justify-center">
+<button class="px-6 py-2 rounded-full border border-outline-variant text-on-surface-variant font-label-sm text-label-sm hover:bg-surface-container-low transition-colors flex items-center gap-2">
+                    Load More Notices
+                    <span class="material-symbols-outlined text-[18px]">expand_more</span>
+</button>
+</div>
+</section>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden bg-primary-container dark:bg-primary-container fixed bottom-0 w-full z-50 border-t border-outline-variant shadow-lg flex justify-around items-center h-16 pb-safe px-2">
+<a class="flex flex-col items-center justify-center text-on-primary-container opacity-60 hover:text-secondary-fixed-dim Tap: scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-sm text-label-sm mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-primary-container opacity-60 hover:text-secondary-fixed-dim Tap: scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">folder_open</span>
+<span class="font-label-sm text-label-sm mt-1">Cases</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-primary-container opacity-60 hover:text-secondary-fixed-dim Tap: scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">event_note</span>
+<span class="font-label-sm text-label-sm mt-1">Hearings</span>
+</a>
+<a class="flex flex-col items-center justify-center text-secondary-container font-bold bg-tertiary-container/50 rounded-xl px-2 py-1 Tap: scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">notifications</span>
+<span class="font-label-sm text-label-sm mt-1">Notifications</span>
+</a>
+</nav>
+</body></html>

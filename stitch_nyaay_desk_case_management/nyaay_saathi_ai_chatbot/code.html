@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nyaay-Saathi AI Chatbot</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Hide scrollbar for quick replies */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary-fixed": "#0f1c2c",
+                        "inverse-surface": "#2e3132",
+                        "primary-container": "#0f1c2c",
+                        "surface-container": "#edeeef",
+                        "secondary": "#835500",
+                        "on-surface": "#191c1d",
+                        "on-secondary-fixed": "#291800",
+                        "on-secondary": "#ffffff",
+                        "surface-variant": "#e1e3e4",
+                        "secondary-container": "#feae2c",
+                        "secondary-fixed": "#ffddb4",
+                        "on-tertiary-container": "#79849d",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed-variant": "#633f00",
+                        "surface": "#f8f9fa",
+                        "on-tertiary-fixed": "#101b30",
+                        "tertiary": "#000000",
+                        "primary": "#000000",
+                        "on-primary": "#ffffff",
+                        "on-error-container": "#93000a",
+                        "surface-container-high": "#e7e8e9",
+                        "surface-container-highest": "#e1e3e4",
+                        "surface-bright": "#f8f9fa",
+                        "error": "#ba1a1a",
+                        "background": "#f8f9fa",
+                        "primary-fixed": "#d6e4f9",
+                        "inverse-primary": "#bac8dc",
+                        "tertiary-fixed-dim": "#bbc6e2",
+                        "on-secondary-container": "#6b4500",
+                        "inverse-on-surface": "#f0f1f2",
+                        "surface-container-low": "#f3f4f5",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-dim": "#d9dadb",
+                        "outline-variant": "#c4c6cc",
+                        "tertiary-container": "#101b30",
+                        "on-primary-fixed-variant": "#3a4859",
+                        "primary-fixed-dim": "#bac8dc",
+                        "surface-tint": "#525f71",
+                        "on-background": "#191c1d",
+                        "on-primary-container": "#778598",
+                        "on-tertiary-fixed-variant": "#3c475d",
+                        "tertiary-fixed": "#d7e2ff",
+                        "secondary-fixed-dim": "#ffb955",
+                        "on-surface-variant": "#44474c",
+                        "error-container": "#ffdad6",
+                        "outline": "#74777d",
+                        "on-error": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "base": "8px",
+                        "margin-desktop": "32px",
+                        "touch-target": "48px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "case-number": ["JetBrains Mono"],
+                        "label-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-base": ["Inter"]
+                    },
+                    "fontSize": {
+                        "case-number": ["15px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "display-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-base": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface h-screen flex flex-col overflow-hidden font-body-base">
+<!-- TopAppBar -->
+<header class="flex justify-between items-center w-full px-margin-mobile h-touch-target border-b border-outline-variant bg-primary-container dark:bg-primary-container text-on-primary-container dark:text-on-primary-container shrink-0 z-20">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary-container">gavel</span>
+<h1 class="font-headline-md text-headline-md font-bold text-secondary-container">Nyaay Desk</h1>
+</div>
+<button class="font-label-sm text-label-sm text-on-primary-container opacity-80 hover:bg-primary/10 transition-colors px-2 py-1 rounded">Logout</button>
+</header>
+<!-- Main Chat Canvas -->
+<main class="flex-1 overflow-y-auto px-margin-mobile pt-6 pb-48 flex flex-col gap-6 relative">
+<!-- Welcome / Date Indicator -->
+<div class="flex justify-center w-full">
+<span class="font-label-sm text-label-sm text-on-surface-variant bg-surface-container px-3 py-1 rounded-full">Today, 10:00 AM</span>
+</div>
+<!-- AI Message -->
+<div class="flex items-start gap-3 w-full max-w-[90%] md:max-w-[70%]">
+<div class="w-10 h-10 rounded-full overflow-hidden shrink-0 bg-surface-container flex items-center justify-center border border-outline-variant">
+<span class="material-symbols-outlined text-primary">robot_2</span>
+</div>
+<div class="bg-surface-container-high text-on-surface p-4 rounded-2xl rounded-tl-sm shadow-sm border border-outline-variant">
+<p class="font-body-base text-body-base">Hello! I am Nyaay-Saathi, your AI legal assistant. How can I help you with your case today?</p>
+</div>
+</div>
+<!-- User Message -->
+<div class="flex items-end justify-end gap-3 w-full max-w-[90%] md:max-w-[70%] self-end">
+<div class="bg-primary-container text-on-primary p-4 rounded-2xl rounded-tr-sm shadow-sm">
+<p class="font-body-base text-body-base">I need to check the status of my civil suit regarding property dispute.</p>
+</div>
+</div>
+<!-- AI Message -->
+<div class="flex items-start gap-3 w-full max-w-[90%] md:max-w-[70%]">
+<div class="w-10 h-10 rounded-full overflow-hidden shrink-0 bg-surface-container flex items-center justify-center border border-outline-variant">
+<span class="material-symbols-outlined text-primary">robot_2</span>
+</div>
+<div class="bg-surface-container-high text-on-surface p-4 rounded-2xl rounded-tl-sm shadow-sm border border-outline-variant">
+<p class="font-body-base text-body-base mb-3">Certainly. To help you with the specific status, I will need your Case Number or CNR Number. Do you have that information available?</p>
+<!-- Quick Reply Chips within conversation context -->
+<div class="flex flex-wrap gap-2 mt-2">
+<button class="border border-outline-variant text-primary rounded-full px-4 py-2 font-label-sm text-label-sm whitespace-nowrap bg-surface hover:bg-surface-container-high transition-colors">Yes, I have it</button>
+<button class="border border-outline-variant text-primary rounded-full px-4 py-2 font-label-sm text-label-sm whitespace-nowrap bg-surface hover:bg-surface-container-high transition-colors">Search by Name instead</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Fixed Input Area Container -->
+<div class="fixed bottom-16 w-full bg-surface/95 backdrop-blur-md border-t border-outline-variant z-10">
+<!-- Global Quick Replies (above input) -->
+<div class="flex gap-2 overflow-x-auto px-margin-mobile py-3 no-scrollbar border-b border-surface-container-highest">
+<button class="border border-outline-variant text-on-surface-variant rounded-full px-4 py-1.5 font-label-sm text-label-sm whitespace-nowrap bg-surface hover:bg-surface-container-high transition-colors flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[16px]">manage_search</span> Check case status
+            </button>
+<button class="border border-outline-variant text-on-surface-variant rounded-full px-4 py-1.5 font-label-sm text-label-sm whitespace-nowrap bg-surface hover:bg-surface-container-high transition-colors flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[16px]">person_search</span> Find an advocate
+            </button>
+<button class="border border-outline-variant text-on-surface-variant rounded-full px-4 py-1.5 font-label-sm text-label-sm whitespace-nowrap bg-surface hover:bg-surface-container-high transition-colors flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[16px]">description</span> How to file a new case
+            </button>
+</div>
+<!-- Input Box -->
+<div class="px-margin-mobile py-3 flex items-end gap-2 bg-surface">
+<div class="relative w-full">
+<textarea class="w-full bg-surface-container rounded-2xl pl-4 pr-12 py-3 h-touch-target focus:outline-none focus:border-secondary-container focus:ring-1 focus:ring-secondary-container border border-transparent font-body-base text-body-base resize-none overflow-hidden text-on-surface placeholder:text-on-surface-variant/60 shadow-inner" placeholder="Type your message to Nyaay-Saathi..." rows="1"></textarea>
+<button class="absolute right-2 bottom-2 w-8 h-8 flex items-center justify-center bg-secondary-container text-on-secondary-fixed rounded-full hover:bg-secondary-fixed transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[20px]">send</span>
+</button>
+</div>
+</div>
+</div>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 border-t border-outline-variant shadow-lg flex justify-around items-center h-16 pb-safe px-2 bg-primary-container dark:bg-primary-container md:hidden">
+<!-- Home (Active Fallback for Chat/Dashboard intent) -->
+<a class="flex flex-col items-center justify-center text-secondary-container font-bold bg-tertiary-container/50 rounded-xl px-4 py-1 hover:text-secondary-fixed-dim transition-transform duration-150 active:scale-95" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="font-label-sm text-label-sm mt-0.5">Home</span>
+</a>
+<!-- Cases (Inactive) -->
+<a class="flex flex-col items-center justify-center text-on-primary-container opacity-60 hover:text-secondary-fixed-dim transition-transform duration-150 active:scale-95 px-2" href="#">
+<span class="material-symbols-outlined">folder_open</span>
+<span class="font-label-sm text-label-sm mt-0.5">Cases</span>
+</a>
+<!-- Hearings (Inactive) -->
+<a class="flex flex-col items-center justify-center text-on-primary-container opacity-60 hover:text-secondary-fixed-dim transition-transform duration-150 active:scale-95 px-2" href="#">
+<span class="material-symbols-outlined">event_note</span>
+<span class="font-label-sm text-label-sm mt-0.5">Hearings</span>
+</a>
+<!-- Notifications (Inactive) -->
+<a class="flex flex-col items-center justify-center text-on-primary-container opacity-60 hover:text-secondary-fixed-dim transition-transform duration-150 active:scale-95 px-2" href="#">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-label-sm text-label-sm mt-0.5">Notifications</span>
+</a>
+</nav>
+</body></html>

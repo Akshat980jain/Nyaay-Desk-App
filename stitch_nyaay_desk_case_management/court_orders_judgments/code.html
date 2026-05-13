@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Nyaay Desk - Orders &amp; Judgments</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-family: 'Material Symbols Outlined';
+            font-weight: normal;
+            font-style: normal;
+            font-size: 24px;
+            line-height: 1;
+            letter-spacing: normal;
+            text-transform: none;
+            display: inline-block;
+            white-space: nowrap;
+            word-wrap: normal;
+            direction: ltr;
+            -webkit-font-feature-settings: 'liga';
+            -webkit-font-smoothing: antialiased;
+        }
+        /* Hide scrollbar for horizontal scrolling areas */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-background": "#191c1d",
+                        "error": "#ba1a1a",
+                        "on-surface": "#191c1d",
+                        "surface-container-low": "#f3f4f5",
+                        "surface-container-highest": "#e1e3e4",
+                        "on-tertiary-fixed-variant": "#3c475d",
+                        "on-primary-fixed": "#0f1c2c",
+                        "secondary-fixed-dim": "#ffb955",
+                        "surface-dim": "#d9dadb",
+                        "primary-fixed-dim": "#bac8dc",
+                        "on-tertiary-container": "#79849d",
+                        "on-secondary": "#ffffff",
+                        "surface-tint": "#525f71",
+                        "tertiary": "#000000",
+                        "surface-bright": "#f8f9fa",
+                        "primary": "#000000",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-fixed": "#d7e2ff",
+                        "tertiary-container": "#101b30",
+                        "on-tertiary-fixed": "#101b30",
+                        "error-container": "#ffdad6",
+                        "on-surface-variant": "#44474c",
+                        "outline-variant": "#c4c6cc",
+                        "outline": "#74777d",
+                        "surface-variant": "#e1e3e4",
+                        "on-secondary-container": "#6b4500",
+                        "on-primary": "#ffffff",
+                        "secondary-container": "#feae2c",
+                        "on-primary-fixed-variant": "#3a4859",
+                        "background": "#f8f9fa",
+                        "tertiary-fixed-dim": "#bbc6e2",
+                        "surface-container": "#edeeef",
+                        "surface": "#f8f9fa",
+                        "primary-fixed": "#d6e4f9",
+                        "inverse-primary": "#bac8dc",
+                        "on-secondary-fixed": "#291800",
+                        "secondary": "#835500",
+                        "secondary-fixed": "#ffddb4",
+                        "on-error-container": "#93000a",
+                        "on-error": "#ffffff",
+                        "on-secondary-fixed-variant": "#633f00",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-high": "#e7e8e9",
+                        "primary-container": "#0f1c2c",
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-primary-container": "#778598",
+                        "inverse-surface": "#2e3132"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "margin-mobile": "16px",
+                        "base": "8px",
+                        "margin-desktop": "32px",
+                        "touch-target": "48px"
+                    },
+                    "fontFamily": {
+                        "display-lg": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "case-number": ["JetBrains Mono"],
+                        "body-base": ["Inter"]
+                    },
+                    "fontSize": {
+                        "display-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "case-number": ["15px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "body-base": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-base text-body-base">
+<!-- TopAppBar -->
+<header class="bg-primary-container fixed w-full top-0 z-50 border-b border-outline-variant flex justify-between items-center px-margin-mobile h-touch-target">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary-container" style="font-variation-settings: 'FILL' 1;">gavel</span>
+<h1 class="text-secondary-container font-headline-md text-headline-md font-bold tracking-tight">Nyaay Desk</h1>
+</div>
+<button class="font-label-sm text-label-sm text-on-primary-container hover:bg-primary/10 transition-colors px-3 py-2 rounded-lg opacity-80 hover:opacity-100 flex items-center gap-2">
+            Logout
+            <span class="material-symbols-outlined text-[18px]">logout</span>
+</button>
+</header>
+<div class="flex flex-1 pt-[48px] overflow-hidden">
+<!-- NavigationDrawer (Desktop) -->
+<aside class="hidden md:flex flex-col h-[calc(100vh-48px)] w-80 rounded-r-xl border-r border-outline-variant shadow-md bg-surface p-4 gap-2 overflow-y-auto sticky top-[48px]">
+<!-- Profile Header -->
+<div class="flex items-center gap-4 p-4 mb-4 border-b border-outline-variant">
+<div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center border-2 border-secondary-container overflow-hidden">
+<span class="material-symbols-outlined text-on-surface-variant">person</span>
+</div>
+<div class="flex flex-col">
+<span class="font-headline-md text-[18px] text-primary font-bold">Rahul Sharma</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Litigant ID: L-2024-089</span>
+<div class="flex items-center gap-1 mt-1">
+<div class="w-2 h-2 rounded-full bg-[#10B981]"></div>
+<span class="font-label-sm text-[10px] text-on-surface-variant uppercase tracking-wider">Active Status</span>
+</div>
+</div>
+</div>
+<!-- Nav Items -->
+<nav class="flex flex-col gap-1">
+<a class="flex items-center gap-3 p-3 rounded-lg text-on-surface-variant hover:bg-surface-container-highest transition-colors font-body-base text-body-base" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                    Dashboard
+                </a>
+<!-- Active Item: My Documents maps to Orders/Judgments contextually for this screen -->
+<a class="flex items-center gap-3 p-3 rounded-lg bg-secondary-container text-on-secondary-container font-semibold transition-colors font-body-base text-body-base" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">description</span>
+                    My Documents
+                </a>
+<a class="flex items-center gap-3 p-3 rounded-lg text-on-surface-variant hover:bg-surface-container-highest transition-colors font-body-base text-body-base" href="#">
+<span class="material-symbols-outlined">assignment</span>
+                    Notice Board
+                </a>
+<a class="flex items-center gap-3 p-3 rounded-lg text-on-surface-variant hover:bg-surface-container-highest transition-colors font-body-base text-body-base" href="#">
+<span class="material-symbols-outlined">calendar_month</span>
+                    Court Calendar
+                </a>
+<a class="flex items-center gap-3 p-3 rounded-lg text-on-surface-variant hover:bg-surface-container-highest transition-colors font-body-base text-body-base" href="#">
+<span class="material-symbols-outlined">person_search</span>
+                    Find Advocate
+                </a>
+<a class="flex items-center gap-3 p-3 rounded-lg text-on-surface-variant hover:bg-surface-container-highest transition-colors font-body-base text-body-base mt-auto" href="#">
+<span class="material-symbols-outlined">settings</span>
+                    Settings
+                </a>
+</nav>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 overflow-y-auto pb-24 md:pb-8 bg-background">
+<!-- Page Header & Search -->
+<div class="bg-surface border-b border-outline-variant pb-6 sticky top-0 z-40 shadow-sm">
+<div class="px-margin-mobile md:px-margin-desktop pt-6">
+<h2 class="font-headline-md text-headline-md text-primary tracking-tight">Court Orders &amp; Judgments</h2>
+<p class="font-body-base text-body-base text-on-surface-variant mt-1">Search, view, and request certified copies of case outcomes.</p>
+</div>
+<div class="px-margin-mobile md:px-margin-desktop mt-6">
+<div class="relative w-full max-w-3xl">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full h-touch-target pl-12 pr-4 rounded-lg border-2 border-outline-variant focus:border-secondary-container focus:ring-0 bg-surface-container-lowest font-body-base text-body-base text-on-surface placeholder-on-surface-variant transition-colors outline-none" placeholder="Search by Case Number (e.g., CL2026M874) or Party Name..." type="text"/>
+</div>
+</div>
+<!-- Filter Chips -->
+<div class="px-margin-mobile md:px-margin-desktop mt-4 flex gap-2 overflow-x-auto no-scrollbar pb-2">
+<button class="px-5 py-2 rounded-full bg-primary text-on-primary font-label-sm text-label-sm whitespace-nowrap transition-transform active:scale-95">All</button>
+<button class="px-5 py-2 rounded-full bg-surface-container-lowest border border-outline-variant text-on-surface-variant hover:bg-surface-container-high font-label-sm text-label-sm whitespace-nowrap transition-colors">Recent</button>
+<button class="px-5 py-2 rounded-full bg-surface-container-lowest border border-outline-variant text-on-surface-variant hover:bg-surface-container-high font-label-sm text-label-sm whitespace-nowrap transition-colors">Judgments</button>
+<button class="px-5 py-2 rounded-full bg-surface-container-lowest border border-outline-variant text-on-surface-variant hover:bg-surface-container-high font-label-sm text-label-sm whitespace-nowrap transition-colors">Interim Orders</button>
+</div>
+</div>
+<div class="px-margin-mobile md:px-margin-desktop py-6 max-w-5xl space-y-6">
+<!-- Order Card 1 (Judgment) -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden flex flex-col md:flex-row hover:border-secondary-container/50 transition-colors group">
+<div class="p-5 flex-1 flex flex-col gap-3">
+<div class="flex justify-between items-start">
+<div class="flex flex-col">
+<span class="font-case-number text-case-number text-primary">CL2026M874</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-1">State of Mah. vs. Acme Corp</span>
+</div>
+<!-- Status Badge -->
+<div class="px-3 py-1 rounded-full bg-surface-tint text-on-primary font-label-sm text-[11px] uppercase tracking-wider font-bold">
+                                Final Judgment
+                            </div>
+</div>
+<div class="flex items-center gap-4 mt-2">
+<div class="flex items-center gap-1.5 text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">calendar_today</span>
+<span class="font-label-sm text-label-sm">12/10/2023</span>
+</div>
+<div class="flex items-center gap-1.5 text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">gavel</span>
+<span class="font-label-sm text-label-sm">Hon'ble Justice R.K. Desai</span>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low p-4 md:w-64 border-t md:border-t-0 md:border-l border-outline-variant flex flex-row md:flex-col items-center justify-end md:justify-center gap-3">
+<button class="flex-1 md:w-full h-10 flex items-center justify-center gap-2 rounded-lg bg-transparent border border-primary text-primary font-label-sm text-label-sm hover:bg-primary/5 transition-colors">
+<span class="material-symbols-outlined text-[18px]">download</span>
+                            Download PDF
+                        </button>
+<button class="flex-1 md:w-full h-10 flex items-center justify-center gap-2 rounded-lg bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-bold shadow-sm hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-[18px]">verified</span>
+                            Certified Copy
+                        </button>
+</div>
+</div>
+<!-- Order Card 2 (Interim Order) -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden flex flex-col md:flex-row hover:border-secondary-container/50 transition-colors group">
+<div class="p-5 flex-1 flex flex-col gap-3">
+<div class="flex justify-between items-start">
+<div class="flex flex-col">
+<span class="font-case-number text-case-number text-primary">WP-2023-145</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant mt-1">Sharma vs. Municipal Corp</span>
+</div>
+<!-- Status Badge -->
+<div class="px-3 py-1 rounded-full bg-tertiary-container text-on-tertiary font-label-sm text-[11px] uppercase tracking-wider font-bold">
+                                Interim Order
+                            </div>
+</div>
+<div class="flex items-center gap-4 mt-2">
+<div class="flex items-center gap-1.5 text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">calendar_today</span>
+<span class="font-label-sm text-label-sm">05/09/2023</span>
+</div>
+<div class="flex items-center gap-1.5 text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">info</span>
+<span class="font-label-sm text-label-sm">Stay granted until next hearing.</span>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low p-4 md:w-64 border-t md:border-t-0 md:border-l border-outline-variant flex flex-row md:flex-col items-center justify-end md:justify-center gap-3">
+<button class="w-full h-10 flex items-center justify-center gap-2 rounded-lg bg-transparent text-primary font-label-sm text-label-sm hover:bg-primary/5 transition-colors">
+<span class="material-symbols-outlined text-[18px]">download</span>
+                            Download PDF
+                        </button>
+</div>
+</div>
+<!-- Empty State Example (Visually separated for demonstration) -->
+<div class="mt-12 pt-12 border-t border-outline-variant">
+<h3 class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest mb-6">Empty State Preview</h3>
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-12 flex flex-col items-center justify-center text-center">
+<div class="w-20 h-20 rounded-full bg-surface-container-highest flex items-center justify-center mb-4 text-outline">
+<span class="material-symbols-outlined text-[40px]">search_off</span>
+</div>
+<h3 class="font-headline-md text-[20px] text-primary mb-2">No records found</h3>
+<p class="font-body-base text-body-base text-on-surface-variant max-w-md">We couldn't find any orders or judgments matching your current search criteria or filters.</p>
+<button class="mt-6 px-6 h-touch-target rounded-lg border border-outline-variant text-primary font-label-sm text-label-sm hover:bg-surface-container-highest transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">refresh</span>
+                            Clear Search &amp; Filters
+                        </button>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- BottomNavBar (Mobile) -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 bg-primary-container border-t-0 shadow-[0_-4px_20px_rgba(0,0,0,0.1)] flex justify-around items-center h-16 pb-safe px-2">
+<a class="flex flex-col items-center justify-center text-on-primary-container opacity-60 hover:text-secondary-fixed-dim w-16 h-full transition-colors" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="font-label-sm text-[10px] mt-1">Home</span>
+</a>
+<!-- Active Tab: Cases matches the context of finding Orders -->
+<a class="flex flex-col items-center justify-center text-secondary-container font-bold bg-tertiary-container/50 rounded-xl px-4 py-1.5 transition-transform duration-150 active:scale-95" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">folder_open</span>
+<span class="font-label-sm text-[10px] mt-1">Cases</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-primary-container opacity-60 hover:text-secondary-fixed-dim w-16 h-full transition-colors" href="#">
+<span class="material-symbols-outlined">event_note</span>
+<span class="font-label-sm text-[10px] mt-1">Hearings</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-primary-container opacity-60 hover:text-secondary-fixed-dim w-16 h-full transition-colors" href="#">
+<span class="material-symbols-outlined">notifications</span>
+<span class="font-label-sm text-[10px] mt-1">Notifications</span>
+</a>
+</nav>
+</body></html>

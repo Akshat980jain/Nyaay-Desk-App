@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Registration - Nyaay Desk</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-on-surface": "#f0f1f2",
+                        "background": "#f8f9fa",
+                        "tertiary-container": "#101b30",
+                        "primary": "#000000",
+                        "on-primary": "#ffffff",
+                        "secondary": "#835500",
+                        "on-primary-container": "#778598",
+                        "inverse-primary": "#bac8dc",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-fixed": "#101b30",
+                        "on-primary-fixed-variant": "#3a4859",
+                        "on-error": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface": "#f8f9fa",
+                        "on-secondary-container": "#6b4500",
+                        "on-secondary-fixed-variant": "#633f00",
+                        "tertiary-fixed": "#d7e2ff",
+                        "on-surface": "#191c1d",
+                        "tertiary": "#000000",
+                        "on-background": "#191c1d",
+                        "on-surface-variant": "#44474c",
+                        "surface-tint": "#525f71",
+                        "on-tertiary-fixed-variant": "#3c475d",
+                        "surface-container-low": "#f3f4f5",
+                        "surface-container-high": "#e7e8e9",
+                        "on-error-container": "#93000a",
+                        "on-secondary": "#ffffff",
+                        "surface-dim": "#d9dadb",
+                        "secondary-fixed": "#ffddb4",
+                        "inverse-surface": "#2e3132",
+                        "tertiary-fixed-dim": "#bbc6e2",
+                        "primary-fixed": "#d6e4f9",
+                        "error": "#ba1a1a",
+                        "outline-variant": "#c4c6cc",
+                        "primary-fixed-dim": "#bac8dc",
+                        "on-tertiary-container": "#79849d",
+                        "surface-bright": "#f8f9fa",
+                        "surface-container": "#edeeef",
+                        "on-primary-fixed": "#0f1c2c",
+                        "surface-variant": "#e1e3e4",
+                        "secondary-container": "#feae2c",
+                        "surface-container-highest": "#e1e3e4",
+                        "outline": "#74777d",
+                        "on-secondary-fixed": "#291800",
+                        "primary-container": "#0f1c2c",
+                        "on-tertiary": "#ffffff",
+                        "secondary-fixed-dim": "#ffb955"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-desktop": "32px",
+                        "gutter": "16px",
+                        "touch-target": "48px",
+                        "base": "8px",
+                        "margin-mobile": "16px"
+                    },
+                    "fontFamily": {
+                        "case-number": ["JetBrains Mono"],
+                        "headline-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-base": ["Inter"],
+                        "label-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "case-number": ["15px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+                        "display-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-base": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1;
+        }
+        
+        /* Custom Accordion Logic (CSS only for demonstration, usually requires JS) */
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .accordion-item:focus-within .accordion-content,
+        .accordion-item.active .accordion-content {
+            max-height: 1000px; /* Arbitrary large number */
+        }
+        .accordion-item:focus-within .accordion-icon,
+        .accordion-item.active .accordion-icon {
+            transform: rotate(180deg);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-base min-h-screen flex flex-col">
+<!-- Header (Suppressed Navigation Shell since this is a Transactional/Linear page) -->
+<header class="bg-primary-container flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop h-touch-target border-b border-outline-variant flex-shrink-0">
+<div class="flex items-center gap-2 text-headline-md font-headline-md font-bold text-secondary-container">
+<span class="material-symbols-outlined fill text-secondary-container">gavel</span>
+            Nyaay Desk
+        </div>
+<div>
+<a class="text-label-sm font-label-sm text-on-primary-container hover:text-secondary-fixed-dim transition-colors" href="#">Back to Login</a>
+</div>
+</header>
+<!-- Main Canvas -->
+<main class="flex-grow flex items-center justify-center p-margin-mobile md:p-margin-desktop">
+<div class="w-full max-w-2xl bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm overflow-hidden flex flex-col">
+<div class="p-6 md:p-8 bg-tertiary-container text-on-primary text-center">
+<h1 class="font-display-lg text-display-lg text-on-primary">Registration</h1>
+<p class="font-body-base text-body-base text-primary-fixed-dim mt-2">Please complete the form below to create your account.</p>
+<!-- Role Selection Toggle -->
+<div class="mt-6 flex justify-center bg-surface-tint/20 p-1 rounded-lg inline-flex">
+<button class="px-4 py-2 rounded-md bg-secondary-container text-on-secondary-container font-label-sm font-bold text-sm">Litigant</button>
+<button class="px-4 py-2 rounded-md text-primary-fixed-dim font-label-sm font-medium text-sm hover:text-on-primary transition-colors">Advocate</button>
+<button class="px-4 py-2 rounded-md text-primary-fixed-dim font-label-sm font-medium text-sm hover:text-on-primary transition-colors">Court Clerk</button>
+</div>
+</div>
+<!-- Accordion Form Container -->
+<form class="flex flex-col flex-grow">
+<!-- Section 1: Personal Details -->
+<div class="accordion-item active border-b border-outline-variant bg-surface-container-lowest" tabindex="0">
+<div class="flex justify-between items-center p-4 md:p-6 cursor-pointer hover:bg-surface-container-low transition-colors outline-none focus:bg-surface-container-low">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center font-bold text-sm">1</div>
+<h2 class="font-headline-md text-lg font-semibold text-tertiary-container">Personal Details</h2>
+</div>
+<span class="material-symbols-outlined text-outline accordion-icon transition-transform">expand_more</span>
+</div>
+<div class="accordion-content bg-surface-container-lowest px-4 md:px-6 pb-6 pt-2">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Party Type -->
+<div class="flex flex-col gap-1 md:col-span-2">
+<label class="font-label-sm text-label-sm text-on-surface-variant" for="partyType">Party Type</label>
+<div class="relative">
+<select class="w-full h-touch-target px-4 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-base text-body-base text-on-surface appearance-none focus:border-secondary-container focus:ring-1 focus:ring-secondary-container outline-none transition-colors" id="partyType">
+<option disabled="" selected="" value="">Select Party Type</option>
+<option value="individual">Individual</option>
+<option value="organization">Organization</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-outline">arrow_drop_down</span>
+</div>
+</div>
+<!-- Full Name -->
+<div class="flex flex-col gap-1 md:col-span-2">
+<label class="font-label-sm text-label-sm text-on-surface-variant" for="fullName">Full Name</label>
+<input class="w-full h-touch-target px-4 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-base text-body-base text-on-surface focus:border-secondary-container focus:ring-1 focus:ring-secondary-container outline-none transition-colors" id="fullName" placeholder="Enter your full name" type="text"/>
+</div>
+<!-- Parent's Name -->
+<div class="flex flex-col gap-1 md:col-span-2">
+<label class="font-label-sm text-label-sm text-on-surface-variant" for="parentName">Parent's Name</label>
+<input class="w-full h-touch-target px-4 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-base text-body-base text-on-surface focus:border-secondary-container focus:ring-1 focus:ring-secondary-container outline-none transition-colors" id="parentName" placeholder="Enter parent's full name" type="text"/>
+</div>
+<!-- Gender -->
+<div class="flex flex-col gap-1 md:col-span-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant" for="gender">Gender</label>
+<div class="relative">
+<select class="w-full h-touch-target px-4 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-base text-body-base text-on-surface appearance-none focus:border-secondary-container focus:ring-1 focus:ring-secondary-container outline-none transition-colors" id="gender">
+<option disabled="" selected="" value="">Select Gender</option>
+<option value="male">Male</option>
+<option value="female">Female</option>
+<option value="other">Other</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-outline">arrow_drop_down</span>
+</div>
+</div>
+<!-- DOB (Placeholder for balance) -->
+<div class="flex flex-col gap-1 md:col-span-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant" for="dob">Date of Birth</label>
+<div class="relative">
+<input class="w-full h-touch-target px-4 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-base text-body-base text-on-surface focus:border-secondary-container focus:ring-1 focus:ring-secondary-container outline-none transition-colors" id="dob" type="date"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Section 2: Address Details -->
+<div class="accordion-item border-b border-outline-variant bg-surface-container-lowest" tabindex="0">
+<div class="flex justify-between items-center p-4 md:p-6 cursor-pointer hover:bg-surface-container-low transition-colors outline-none focus:bg-surface-container-low">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center font-bold text-sm">2</div>
+<h2 class="font-headline-md text-lg font-semibold text-tertiary-container">Address Details</h2>
+</div>
+<span class="material-symbols-outlined text-outline accordion-icon transition-transform">expand_more</span>
+</div>
+<div class="accordion-content bg-surface-container-lowest px-4 md:px-6 pb-6 pt-2">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Street/House/Village -->
+<div class="flex flex-col gap-1 md:col-span-2">
+<label class="font-label-sm text-label-sm text-on-surface-variant" for="street">Street/House/Village</label>
+<textarea class="w-full p-4 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-base text-body-base text-on-surface resize-none focus:border-secondary-container focus:ring-1 focus:ring-secondary-container outline-none transition-colors" id="street" placeholder="Enter complete address" rows="3"></textarea>
+</div>
+<!-- City -->
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant" for="city">City</label>
+<input class="w-full h-touch-target px-4 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-base text-body-base text-on-surface focus:border-secondary-container focus:ring-1 focus:ring-secondary-container outline-none transition-colors" id="city" placeholder="Enter city" type="text"/>
+</div>
+<!-- District -->
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant" for="district">District</label>
+<input class="w-full h-touch-target px-4 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-base text-body-base text-on-surface focus:border-secondary-container focus:ring-1 focus:ring-secondary-container outline-none transition-colors" id="district" placeholder="Enter district" type="text"/>
+</div>
+<!-- State -->
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant" for="state">State</label>
+<div class="relative">
+<select class="w-full h-touch-target px-4 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-base text-body-base text-on-surface appearance-none focus:border-secondary-container focus:ring-1 focus:ring-secondary-container outline-none transition-colors" id="state">
+<option disabled="" selected="" value="">Select State</option>
+<option value="dl">Delhi</option>
+<option value="mh">Maharashtra</option>
+<option value="up">Uttar Pradesh</option>
+</select>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-outline">arrow_drop_down</span>
+</div>
+</div>
+<!-- Pincode -->
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant" for="pincode">Pincode</label>
+<input class="w-full h-touch-target px-4 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-base text-body-base text-on-surface focus:border-secondary-container focus:ring-1 focus:ring-secondary-container outline-none transition-colors" id="pincode" maxlength="6" placeholder="6-digit pincode" type="text"/>
+</div>
+</div>
+</div>
+</div>
+<!-- Section 3: Secure Account -->
+<div class="accordion-item bg-surface-container-lowest" tabindex="0">
+<div class="flex justify-between items-center p-4 md:p-6 cursor-pointer hover:bg-surface-container-low transition-colors outline-none focus:bg-surface-container-low">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center font-bold text-sm">3</div>
+<h2 class="font-headline-md text-lg font-semibold text-tertiary-container">Secure Account</h2>
+</div>
+<span class="material-symbols-outlined text-outline accordion-icon transition-transform">expand_more</span>
+</div>
+<div class="accordion-content bg-surface-container-lowest px-4 md:px-6 pb-6 pt-2">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Email -->
+<div class="flex flex-col gap-1 md:col-span-2">
+<label class="font-label-sm text-label-sm text-on-surface-variant" for="email">Email Address</label>
+<input class="w-full h-touch-target px-4 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-base text-body-base text-on-surface focus:border-secondary-container focus:ring-1 focus:ring-secondary-container outline-none transition-colors" id="email" placeholder="Enter valid email" type="email"/>
+</div>
+<!-- Mobile -->
+<div class="flex flex-col gap-1 md:col-span-2">
+<label class="font-label-sm text-label-sm text-on-surface-variant" for="mobile">Mobile Number</label>
+<div class="flex">
+<span class="inline-flex items-center px-4 rounded-l-lg border border-r-0 border-outline-variant bg-surface-container-low text-on-surface-variant font-body-base text-body-base">
+                                        +91
+                                    </span>
+<input class="w-full h-touch-target px-4 bg-surface-container-lowest border border-outline-variant rounded-r-lg font-body-base text-body-base text-on-surface focus:border-secondary-container focus:ring-1 focus:ring-secondary-container outline-none transition-colors" id="mobile" maxlength="10" placeholder="10-digit mobile number" type="tel"/>
+</div>
+</div>
+<!-- Password -->
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant" for="password">Password</label>
+<div class="relative">
+<input class="w-full h-touch-target px-4 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-base text-body-base text-on-surface focus:border-secondary-container focus:ring-1 focus:ring-secondary-container outline-none transition-colors" id="password" placeholder="Create password" type="password"/>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-outline hover:text-on-surface transition-colors">visibility_off</span>
+</div>
+</div>
+<!-- Confirm Password -->
+<div class="flex flex-col gap-1">
+<label class="font-label-sm text-label-sm text-on-surface-variant" for="confirmPassword">Confirm Password</label>
+<div class="relative">
+<input class="w-full h-touch-target px-4 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-base text-body-base text-on-surface focus:border-secondary-container focus:ring-1 focus:ring-secondary-container outline-none transition-colors" id="confirmPassword" placeholder="Confirm password" type="password"/>
+<span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-outline hover:text-on-surface transition-colors">visibility_off</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Form Actions -->
+<div class="p-6 bg-surface-container border-t border-outline-variant flex flex-col sm:flex-row gap-4 justify-end mt-auto rounded-b-xl">
+<button class="h-touch-target px-6 rounded-lg border border-tertiary-container text-tertiary-container font-label-sm font-bold bg-transparent hover:bg-tertiary-container/5 transition-colors text-center" type="button">
+                        Cancel
+                    </button>
+<button class="h-touch-target px-8 rounded-lg bg-secondary-container text-on-secondary-container font-label-sm font-bold hover:bg-secondary-fixed-dim transition-colors shadow-sm text-center flex items-center justify-center gap-2" type="submit">
+                        Complete Registration
+                        <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</form>
+</div>
+</main>
+</body></html>

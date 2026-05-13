@@ -5,9 +5,11 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.unit.dp
 
 /** NyaayDesk branded text field with floating label, leading icon, and error handling. */
 @Composable
@@ -30,11 +32,11 @@ fun NyaayTextField(
         value = value,
         onValueChange = onValueChange,
         label = { Text(label) },
-        leadingIcon = leadingIcon?.let { { Icon(it, contentDescription = null) } },
+        leadingIcon = leadingIcon?.let { { Icon(it, contentDescription = null, tint = MaterialTheme.colorScheme.primary) } },
         trailingIcon = trailingIcon?.let {
             {
                 IconButton(onClick = { onTrailingIconClick?.invoke() }) {
-                    Icon(it, contentDescription = "Toggle")
+                    Icon(it, contentDescription = "Toggle", tint = MaterialTheme.colorScheme.primary.copy(alpha = 0.6f))
                 }
             }
         },
@@ -47,6 +49,15 @@ fun NyaayTextField(
         singleLine = singleLine,
         maxLines = maxLines,
         modifier = modifier.fillMaxWidth(),
-        shape = MaterialTheme.shapes.medium
+        shape = RoundedCornerShape(16.dp),
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedBorderColor = MaterialTheme.colorScheme.primary,
+            unfocusedBorderColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.1f),
+            unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+            focusedContainerColor = MaterialTheme.colorScheme.surface,
+            focusedLabelColor = MaterialTheme.colorScheme.primary,
+            unfocusedLabelColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)
+        )
     )
+
 }

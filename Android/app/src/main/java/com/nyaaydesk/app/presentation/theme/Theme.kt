@@ -12,28 +12,29 @@ import androidx.core.view.WindowCompat
 import androidx.compose.ui.graphics.Color
 
 private val LightColorScheme = lightColorScheme(
-    primary = GovNavyBlue,
+    primary = DeepNavy,
     onPrimary = Color.White,
-    primaryContainer = GovNavyBlueLight,
-    onPrimaryContainer = Color.White,
-    secondary = AccentBronze,
-    onSecondary = Color.White,
-    background = BackgroundLight,
-    surface = SurfaceLight,
-    onBackground = OnBackgroundLight,
-    onSurface = OnSurfaceLight
+    primaryContainer = DeepNavy.copy(alpha = 0.1f),
+    onPrimaryContainer = DeepNavy,
+    secondary = GoldAmber,
+    onSecondary = DeepNavy,
+    background = LightGrayBackground,
+    surface = PureWhite,
+    onBackground = DeepNavy,
+    onSurface = DeepNavy
 )
 
 private val DarkColorScheme = darkColorScheme(
-    primary = GovNavyBlueLight,
+    primary = DeepNavy,
     onPrimary = Color.White,
-    secondary = AccentBronze,
-    onSecondary = Color.White,
-    background = BackgroundDark,
-    surface = SurfaceDarkFrontend,
-    onBackground = OnBackgroundDark,
-    onSurface = OnSurfaceDark
+    secondary = GoldAmber,
+    onSecondary = DeepNavy,
+    background = Color(0xFF0D1B2A),
+    surface = Color(0xFF1B263B),
+    onBackground = Color.White,
+    onSurface = Color.White
 )
+
 
 @Composable
 fun NyaayDeskTheme(
@@ -54,6 +55,8 @@ fun NyaayDeskTheme(
     MaterialTheme(
         colorScheme = colorScheme,
         typography = NyaayDeskTypography,
+        shapes = NyaayDeskShapes,
         content = content
     )
 }
+

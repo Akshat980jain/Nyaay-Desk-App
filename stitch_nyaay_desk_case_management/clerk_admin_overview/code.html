@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Clerk/Admin Dashboard - Nyaay Desk</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "primary-container": "#0f1c2c",
+                      "secondary-container": "#feae2c",
+                      "on-tertiary-fixed": "#101b30",
+                      "surface-bright": "#f8f9fa",
+                      "primary-fixed-dim": "#bac8dc",
+                      "on-primary-fixed": "#0f1c2c",
+                      "secondary": "#835500",
+                      "surface-container": "#edeeef",
+                      "on-tertiary": "#ffffff",
+                      "secondary-fixed": "#ffddb4",
+                      "tertiary-fixed": "#d7e2ff",
+                      "surface-variant": "#e1e3e4",
+                      "on-error-container": "#93000a",
+                      "surface-container-lowest": "#ffffff",
+                      "on-primary-container": "#778598",
+                      "secondary-fixed-dim": "#ffb955",
+                      "surface-dim": "#d9dadb",
+                      "on-tertiary-fixed-variant": "#3c475d",
+                      "tertiary": "#000000",
+                      "on-surface": "#191c1d",
+                      "on-secondary-fixed": "#291800",
+                      "tertiary-container": "#101b30",
+                      "surface-container-high": "#e7e8e9",
+                      "error-container": "#ffdad6",
+                      "tertiary-fixed-dim": "#bbc6e2",
+                      "on-primary-fixed-variant": "#3a4859",
+                      "outline-variant": "#c4c6cc",
+                      "inverse-primary": "#bac8dc",
+                      "surface-container-highest": "#e1e3e4",
+                      "on-tertiary-container": "#79849d",
+                      "primary-fixed": "#d6e4f9",
+                      "surface": "#f8f9fa",
+                      "on-surface-variant": "#44474c",
+                      "on-error": "#ffffff",
+                      "on-background": "#191c1d",
+                      "on-secondary": "#ffffff",
+                      "on-primary": "#ffffff",
+                      "surface-tint": "#525f71",
+                      "surface-container-low": "#f3f4f5",
+                      "error": "#ba1a1a",
+                      "on-secondary-container": "#6b4500",
+                      "on-secondary-fixed-variant": "#633f00",
+                      "primary": "#000000",
+                      "outline": "#74777d",
+                      "inverse-surface": "#2e3132",
+                      "inverse-on-surface": "#f0f1f2",
+                      "background": "#f8f9fa"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-desktop": "32px",
+                      "margin-mobile": "16px",
+                      "base": "8px",
+                      "gutter": "16px",
+                      "touch-target": "48px"
+              },
+              "fontFamily": {
+                      "display-lg": [
+                              "Inter"
+                      ],
+                      "body-base": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Inter"
+                      ],
+                      "label-sm": [
+                              "Inter"
+                      ],
+                      "case-number": [
+                              "JetBrains Mono"
+                      ]
+              },
+              "fontSize": {
+                      "display-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-base": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "case-number": [
+                              "15px",
+                              {
+                                      "lineHeight": "20px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "700"
+                              }
+                      ]
+              }
+            },
+          }
+        }
+      </script>
+<style>
+        .material-symbols-outlined {
+          font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+      </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body-base pb-24 md:pb-0 md:flex">
+<!-- Mobile Drawer Overlay (Hidden by default) -->
+<div aria-hidden="true" class="fixed inset-0 bg-primary/40 z-40 hidden md:hidden"></div>
+<!-- Navigation Drawer (Desktop Sidebar / Mobile Drawer) -->
+<nav class="fixed md:static inset-y-0 left-0 z-50 transform -translate-x-full md:translate-x-0 transition-transform duration-300 ease-out bg-surface dark:bg-surface-dim border-r border-outline-variant shadow-md h-full w-80 rounded-r-xl md:rounded-none md:shadow-none flex flex-col p-4 gap-2">
+<div class="flex items-center gap-4 p-4 border-b border-outline-variant mb-4">
+<div class="w-12 h-12 rounded-full bg-primary-container text-secondary-container flex items-center justify-center font-headline-md text-headline-md">
+                RS
+            </div>
+<div>
+<h2 class="font-headline-md text-headline-md text-primary font-bold">Rahul Sharma</h2>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Admin ID: A-2024-001</p>
+<p class="font-label-sm text-label-sm text-secondary-container font-semibold">Active Status</p>
+</div>
+</div>
+<ul class="flex-1 space-y-2">
+<li>
+<a class="flex items-center gap-3 px-4 py-3 bg-secondary-container text-on-secondary-container font-semibold rounded-lg font-body-base text-body-base hover:bg-surface-container-highest transition-colors" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+                    Dashboard
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high font-body-base text-body-base hover:bg-surface-container-highest transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">folder_managed</span>
+                    Case Management
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high font-body-base text-body-base hover:bg-surface-container-highest transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">calendar_month</span>
+                    Set Calendar
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high font-body-base text-body-base hover:bg-surface-container-highest transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">assignment</span>
+                    Notice Panel
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high font-body-base text-body-base hover:bg-surface-container-highest transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">manage_accounts</span>
+                    Manage Accounts
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container-high font-body-base text-body-base hover:bg-surface-container-highest transition-colors rounded-lg" href="#">
+<span class="material-symbols-outlined">settings</span>
+                    Settings
+                </a>
+</li>
+</ul>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 flex flex-col w-full">
+<!-- TopAppBar -->
+<header class="bg-primary-container dark:bg-primary-container text-on-primary-container dark:text-on-primary-container docked full-width top-0 border-b border-outline-variant flat no shadows flex justify-between items-center w-full px-margin-mobile h-touch-target md:px-margin-desktop z-30 sticky top-0">
+<div class="flex items-center gap-3 hover:bg-primary/10 transition-colors cursor-pointer active:opacity-70 transition-opacity rounded-full p-2 md:hidden">
+<span class="material-symbols-outlined">menu</span>
+</div>
+<h1 class="text-secondary-container font-bold font-headline-md text-headline-md truncate">Nyaay Desk</h1>
+<button class="font-label-sm text-label-sm text-on-primary-container opacity-80 hover:bg-primary/10 transition-colors px-3 py-2 rounded-lg active:opacity-70 transition-opacity">
+                Logout
+            </button>
+</header>
+<main class="flex-1 p-margin-mobile md:p-margin-desktop overflow-y-auto w-full max-w-7xl mx-auto space-y-6">
+<div class="flex flex-col gap-2">
+<h2 class="font-headline-md text-headline-md text-primary">Overview</h2>
+<p class="font-body-base text-body-base text-on-surface-variant">System statistics for today.</p>
+</div>
+<!-- Stats Grid -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+<!-- Active Cases -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-4 flex flex-col justify-between h-32 relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-4xl">gavel</span>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Active Cases</p>
+<p class="font-display-lg text-display-lg text-primary">120</p>
+</div>
+<!-- Today's Hearings -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-4 flex flex-col justify-between h-32 relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-4xl">event_note</span>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Today's Hearings</p>
+<p class="font-display-lg text-display-lg text-secondary-container">12</p>
+</div>
+<!-- Pending Cases -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-4 flex flex-col justify-between h-32 relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-4xl">hourglass_empty</span>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Pending Cases</p>
+<p class="font-display-lg text-display-lg text-error">45</p>
+</div>
+<!-- Disposed Cases -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-4 flex flex-col justify-between h-32 relative overflow-hidden group">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+<span class="material-symbols-outlined text-4xl">task_alt</span>
+</div>
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Disposed Cases</p>
+<p class="font-display-lg text-display-lg text-on-surface-variant">300</p>
+</div>
+</div>
+<!-- Action Required Section -->
+<div class="space-y-4">
+<div class="flex items-center justify-between border-b border-outline-variant pb-2">
+<h3 class="font-headline-md text-headline-md text-primary flex items-center gap-2">
+<span class="material-symbols-outlined text-error">error</span>
+                        Action Required
+                    </h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Verification Card -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-4 flex items-center justify-between shadow-sm">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-tertiary-fixed text-on-tertiary-fixed flex items-center justify-center">
+<span class="material-symbols-outlined">person_check</span>
+</div>
+<div>
+<p class="font-body-base text-body-base text-primary font-semibold">Advocate Verifications</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Requires review</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<span class="bg-error text-on-error font-label-sm text-label-sm px-2 py-1 rounded-full font-bold">2 Pending</span>
+<button class="h-touch-target px-4 bg-transparent border border-primary text-primary font-body-base text-body-base rounded-lg hover:bg-surface-container-low transition-colors">
+                                Review
+                            </button>
+</div>
+</div>
+<!-- NOC Card -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-4 flex items-center justify-between shadow-sm">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-secondary-fixed text-on-secondary-fixed flex items-center justify-center">
+<span class="material-symbols-outlined">fact_check</span>
+</div>
+<div>
+<p class="font-body-base text-body-base text-primary font-semibold">NOC Review</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">No Objection Certificates</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<span class="bg-error text-on-error font-label-sm text-label-sm px-2 py-1 rounded-full font-bold">1 Pending</span>
+<button class="h-touch-target px-4 bg-transparent border border-primary text-primary font-body-base text-body-base rounded-lg hover:bg-surface-container-low transition-colors">
+                                Review
+                            </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Quick Actions Grid (Mobile focus) -->
+<div class="grid grid-cols-2 gap-4 md:hidden">
+<button class="bg-surface-container-lowest border border-outline-variant rounded-lg p-4 flex flex-col items-center justify-center gap-2 h-24 hover:bg-surface-container-low transition-colors shadow-sm">
+<span class="material-symbols-outlined text-primary">add_circle</span>
+<span class="font-label-sm text-label-sm text-primary font-semibold">New Case Entry</span>
+</button>
+<button class="bg-surface-container-lowest border border-outline-variant rounded-lg p-4 flex flex-col items-center justify-center gap-2 h-24 hover:bg-surface-container-low transition-colors shadow-sm">
+<span class="material-symbols-outlined text-primary">publish</span>
+<span class="font-label-sm text-label-sm text-primary font-semibold">Upload Order</span>
+</button>
+</div>
+</main>
+</div>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="bg-primary-container dark:bg-primary-container text-secondary-container dark:text-secondary-container font-label-sm text-label-sm fixed bottom-0 w-full z-50 border-t border-outline-variant shadow-lg flex justify-around items-center h-16 pb-safe px-2 md:hidden">
+<a class="flex flex-col items-center justify-center text-secondary-container font-bold bg-tertiary-container/50 rounded-xl px-2 py-1 hover:text-secondary-fixed-dim active:scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+            Home
+        </a>
+<a class="flex flex-col items-center justify-center text-on-primary-container opacity-60 hover:text-secondary-fixed-dim active:scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">folder_open</span>
+            Cases
+        </a>
+<a class="flex flex-col items-center justify-center text-on-primary-container opacity-60 hover:text-secondary-fixed-dim active:scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">event_note</span>
+            Hearings
+        </a>
+<a class="flex flex-col items-center justify-center text-on-primary-container opacity-60 hover:text-secondary-fixed-dim active:scale-95 transition-transform duration-150 relative" href="#">
+<span class="material-symbols-outlined">notifications</span>
+            Notifications
+            <span class="absolute top-0 right-2 w-2 h-2 bg-error rounded-full"></span>
+</a>
+</nav>
+</body></html>

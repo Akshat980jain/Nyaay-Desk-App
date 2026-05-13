@@ -1,25 +1,30 @@
 package com.nyaaydesk.app.presentation.litigant
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
-import com.nyaaydesk.app.presentation.theme.NavyBlue
+import com.nyaaydesk.app.presentation.profile.ProfileScreen
+import com.nyaaydesk.app.presentation.theme.*
 
 sealed class LitigantTab(val route: String, val label: String,
     val icon: androidx.compose.ui.graphics.vector.ImageVector) {
-    object Dashboard : LitigantTab("lit_dashboard", "Dashboard", Icons.Default.Dashboard)
-    object Cases : LitigantTab("lit_cases", "My Cases", Icons.Default.Folder)
-    object Calendar : LitigantTab("lit_calendar", "Calendar", Icons.Default.CalendarMonth)
-    object Profile : LitigantTab("lit_profile", "Profile", Icons.Default.Person)
+    object Dashboard : LitigantTab("lit_dashboard", "Home", Icons.Default.Home)
+    object Cases : LitigantTab("lit_cases", "Cases", Icons.Default.Folder)
+    object Calendar : LitigantTab("lit_calendar", "Hearings", Icons.Default.CalendarMonth)
+    object Profile : LitigantTab("lit_profile", "Alerts", Icons.Default.NotificationsNone)
 }
 
 /**
- * Fully wired Litigant Main Screen with nested NavHost for tab navigation.
- * Each tab gets its own back stack via `rememberNavController`.
+ * LitigantMainScreen — Stitch-redesigned with Dark Navy bottom navigation bar.
+ * Gold active icon/label, white inactive icons on navy background.
  */
 @Composable
 fun LitigantMainScreen(onLogout: () -> Unit) {
@@ -30,11 +35,14 @@ fun LitigantMainScreen(onLogout: () -> Unit) {
 
     Scaffold(
         bottomBar = {
-            NavigationBar {
+            NavigationBar(
+                containerColor = DeepNavy,
+                tonalElevation = 0.dp
+            ) {
                 tabs.forEach { tab ->
                     NavigationBarItem(
                         icon = { Icon(tab.icon, contentDescription = tab.label) },
-                        label = { Text(tab.label) },
+                        label = { Text(tab.label, style = MaterialTheme.typography.labelSmall) },
                         selected = currentRoute == tab.route,
                         onClick = {
                             navController.navigate(tab.route) {
@@ -44,8 +52,11 @@ fun LitigantMainScreen(onLogout: () -> Unit) {
                             }
                         },
                         colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor = NavyBlue,
-                            indicatorColor = NavyBlue.copy(alpha = 0.1f)
+                            selectedIconColor = GoldAmber,
+                            selectedTextColor = GoldAmber,
+                            unselectedIconColor = PureWhite.copy(alpha = 0.5f),
+                            unselectedTextColor = PureWhite.copy(alpha = 0.5f),
+                            indicatorColor = Color.Transparent
                         )
                     )
                 }
@@ -55,7 +66,7 @@ fun LitigantMainScreen(onLogout: () -> Unit) {
         NavHost(
             navController = navController,
             startDestination = LitigantTab.Dashboard.route,
-            modifier = Modifier
+            modifier = Modifier.padding(bottom = padding.calculateBottomPadding())
         ) {
             composable(LitigantTab.Dashboard.route) {
                 LitigantDashboardScreen(onCaseClick = { caseId ->
@@ -79,6 +90,12 @@ fun LitigantMainScreen(onLogout: () -> Unit) {
                     caseId = caseId,
                     onBack = { navController.popBackStack() }
                 )
+            }
+            composable("nyaa_ai_chat") {
+                NyaaChatScreen(onBack = { navController.popBackStack() })
+            }
+            composable("doc_vault") {
+                DocumentVaultScreen(onBack = { navController.popBackStack() })
             }
         }
     }

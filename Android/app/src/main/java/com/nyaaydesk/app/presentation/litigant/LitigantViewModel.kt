@@ -21,6 +21,7 @@ data class LitigantUiState(
     val user: UserEntity? = null,
     val activeCases: List<CaseEntity> = emptyList(),
     val availableAdvocates: List<com.nyaaydesk.app.data.remote.dto.UserProfileDto> = emptyList(),
+    val nocRequests: List<com.nyaaydesk.app.data.remote.dto.JoinRequestDto> = emptyList(),
     val dashboardSummary: DashboardSummaryDto? = null,
     val isLoading: Boolean = true,
     val errorMessage: String? = null
@@ -105,6 +106,23 @@ class LitigantViewModel @Inject constructor(
                 .onSuccess { summary ->
                     _uiState.update { it.copy(dashboardSummary = summary) }
                 }
+        }
+
+        viewModelScope.launch {
+            val userId = supabase.auth.currentSessionOrNull()?.user?.id ?: return@launch
+            runCatching {
+                supabase.postgrest["case_join_requests"]
+                    .select { filter { eq("litigant_id", userId) } } // Assuming litigant_id exists or linked
+                    .decodeList<com.nyaaydesk.app.data.remote.dto.JoinRequestDto>()
+            }.onSuccess { requests ->
+                _uiState.update { it.copy(nocRequests = requests) }
+            }
+        }
+    }
+
+    fun signOut() {
+        viewModelScope.launch {
+            runCatching { supabase.auth.signOut() }
         }
     }
 
