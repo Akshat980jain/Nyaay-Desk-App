@@ -3,7 +3,7 @@ import PackageDescription
 
 let package = Package(
     name: "NyaayDesk",
-    platforms: [.iOS(.v17)],
+    platforms: [.iOS(.v17), .macOS(.v13)],
     dependencies: [
         // Official Supabase Swift client — connects to the SAME Supabase project as the web app
         .package(
