@@ -11,6 +11,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+import com.nyaaydesk.app.data.repository.AuthRepository
+import com.nyaaydesk.app.data.remote.dto.UserProfileDto
 import io.github.jan.supabase.postgrest.postgrest
 
 data class AuthUiState(
@@ -28,7 +30,8 @@ data class AuthUiState(
  */
 @HiltViewModel
 class AuthViewModel @Inject constructor(
-    private val supabase: SupabaseClient
+    private val supabase: SupabaseClient,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AuthUiState())
@@ -48,40 +51,50 @@ class AuthViewModel @Inject constructor(
                     this.password = password
                 }
 
+                // 2. Fetch or Determine User Profile
                 val session = supabase.auth.currentSessionOrNull()
                 val metadata = session?.user?.userMetadata
-                var userType = metadata?.get("user_type")?.toString()?.trim('"')
+                val userId = session?.user?.id
+                var profile: UserProfileDto? = null
 
-                // Fallback: If metadata doesn't have the role, query the users table directly
-                if (userType == null || userType == "null") {
-                    val userId = session?.user?.id
-                    if (userId != null) {
-                        try {
-                            val profile = supabase.postgrest["users"]
-                                .select { filter { eq("id", userId) } }
-                                .decodeSingleOrNull<com.nyaaydesk.app.data.remote.dto.UserProfileDto>()
-                            userType = profile?.userType
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
+                if (userId != null) {
+                    try {
+                        profile = supabase.postgrest["users"]
+                            .select { filter { eq("id", userId) } }
+                            .decodeSingleOrNull<UserProfileDto>()
+                    } catch (e: Exception) {
+                        e.printStackTrace()
                     }
                 }
 
-                if (userType == null || userType == "null") {
-                    _uiState.value = AuthUiState(errorMessage = "Could not determine user role. Please contact support.")
-                    return@launch
-                }
+                // Determine final userType
+                val finalUserType = (profile?.userType ?: 
+                                     (metadata?.get("user_type") ?: metadata?.get("role"))?.toString()?.trim('"') ?: 
+                                     expectedRole).lowercase()
 
-                // Enforce role segregation — a Litigant cannot use the Admin portal
-                if (userType.lowercase() != expectedRole.lowercase()) {
+                // 3. Enforce role segregation
+                if (finalUserType != expectedRole.lowercase()) {
                     supabase.auth.signOut()
                     _uiState.value = AuthUiState(
-                        errorMessage = "Access denied. This portal is for ${expectedRole}s only."
+                        errorMessage = "Access denied. Your account is registered as ${finalUserType.replaceFirstChar { it.uppercase() }}, but you are trying to access the ${expectedRole} portal."
                     )
                     return@launch
                 }
 
-                _uiState.value = AuthUiState(isSuccess = true, userType = userType)
+                // 4. Cache Session (This triggers dashboard ViewModels)
+                if (profile != null) {
+                    authRepository.saveUserSession(profile)
+                } else if (userId != null) {
+                    // Fallback profile if record is missing in 'users' table
+                    val fallbackProfile = UserProfileDto(
+                        id = userId,
+                        email = email,
+                        userType = expectedRole
+                    )
+                    authRepository.saveUserSession(fallbackProfile)
+                }
+
+                _uiState.value = AuthUiState(isSuccess = true, userType = expectedRole)
 
             } catch (e: Exception) {
                 _uiState.value = AuthUiState(

@@ -34,6 +34,14 @@ class AuthRepository @Inject constructor(
 
     val currentUser: Flow<UserEntity?> = userDao.observeCurrentUser()
 
+    suspend fun saveUserSession(profileDto: UserProfileDto) {
+        userDao.insertUser(profileDto.toEntity())
+        context.dataStore.edit {
+            it[USER_TYPE_KEY] = profileDto.userType
+            it[USER_ID_KEY] = profileDto.id
+        }
+    }
+
     suspend fun login(email: String, password: String): Result<String> = runCatching {
         supabase.auth.signInWith(Email) {
             this.email = email

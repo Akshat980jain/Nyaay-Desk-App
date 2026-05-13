@@ -138,8 +138,16 @@ struct AdvocateDashboardView_Full: View {
             .navigationBarHidden(true)
             .navigationDestination(item: $selectedCase) { CaseDetailView(case_: $0) }
             .sheet(isPresented: $showNewCaseSheet) { NewCaseSheetView(vm: vm) }
-            .onAppear { vm.loadData(advocateId: auth.currentUser?.id ?? "") }
-            .refreshable { vm.loadData(advocateId: auth.currentUser?.id ?? "") }
+            .task(id: auth.currentUser?.id) {
+                if let id = auth.currentUser?.id, !id.isEmpty {
+                    vm.loadData(advocateId: id)
+                }
+            }
+            .refreshable { 
+                if let id = auth.currentUser?.id {
+                    vm.loadData(advocateId: id)
+                }
+            }
         }
     }
 }

@@ -115,7 +115,11 @@ struct LitigantCaseListView: View {
         .listStyle(.plain)
         .searchable(text: $search, prompt: "Search by title, CNR...")
         .navigationTitle("My Cases")
-        .onAppear { vm.loadData(userId: auth.currentUser?.id ?? "") }
+        .task(id: auth.currentUser?.id) {
+            if let id = auth.currentUser?.id, !id.isEmpty {
+                vm.loadData(userId: id)
+            }
+        }
     }
 }
 
