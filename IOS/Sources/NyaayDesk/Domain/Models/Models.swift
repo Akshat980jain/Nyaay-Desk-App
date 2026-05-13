@@ -3,21 +3,22 @@ import Supabase
 
 // MARK: - Domain Models (mirror Supabase schema exactly)
 
-struct NyaayCase: Codable, Identifiable {
-    let id: String
-    let caseNumber: String
-    let cnrNumber: String?
-    let caseTitle: String
-    let status: String
-    let litigantId: String
-    let advocateId: String?
-    let courtId: String?
-    let judgeName: String?
-    let filingDate: String?
-    let nextHearingDate: String?
-    let caseType: String?
-    let description: String?
-    let documentUrls: [String]?
+struct NyaayCase: Codable, Identifiable, Hashable {
+    var id: String
+    var caseNumber: String
+    var cnrNumber: String? = nil
+    var caseTitle: String
+    var status: String
+    var litigantId: String
+    var advocateId: String? = nil
+    var courtId: String? = nil
+    var judgeName: String? = nil
+    var filingDate: String? = nil
+    var nextHearingDate: String? = nil
+    var caseType: String? = nil
+    var description: String? = nil
+    var documentUrls: [String]? = nil
+    var courtName: String? = nil // Added for UI
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -34,18 +35,19 @@ struct NyaayCase: Codable, Identifiable {
         case caseType = "case_type"
         case description
         case documentUrls = "document_urls"
+        case courtName = "court_name"
     }
 }
 
-struct NyaayHearing: Codable, Identifiable {
+struct NyaayHearing: Codable, Identifiable, Hashable {
     let id: String
     let caseId: String
     let hearingDate: String
-    let nextHearingDate: String?
-    let orderText: String?
+    let nextHearingDate: String? = nil
+    let orderText: String? = nil
     let attendanceMarked: Bool
-    let judgeNotes: String?
-    let createdAt: String?
+    let judgeNotes: String? = nil
+    let createdAt: String? = nil
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -59,7 +61,7 @@ struct NyaayHearing: Codable, Identifiable {
     }
 }
 
-struct UserProfile: Codable {
+struct UserProfile: Codable, Hashable {
     let id: String
     let email: String
     let userType: String
@@ -79,11 +81,14 @@ struct UserProfile: Codable {
         case isVerified = "is_verified"
         case avatarUrl = "avatar_url"
     }
+    
+    var userId: String { id } // Alias for UI compatibility
 }
 
-struct DashboardSummary: Codable {
+struct DashboardSummary: Codable, Hashable {
     let totalCases: Int
     let pendingCases: Int
+    let activeCases: Int? = 0 // Added for UI
     let disposedCases: Int
     let todayHearings: Int
     let pendingNocRequests: Int
@@ -91,6 +96,7 @@ struct DashboardSummary: Codable {
     enum CodingKeys: String, CodingKey {
         case totalCases = "total_cases"
         case pendingCases = "pending_cases"
+        case activeCases = "active_cases"
         case disposedCases = "disposed_cases"
         case todayHearings = "today_hearings"
         case pendingNocRequests = "pending_noc_requests"

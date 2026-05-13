@@ -95,13 +95,19 @@ fun LoginRoleSelectScreen(
                 Column(modifier = Modifier.padding(24.dp)) {
                     // Error Display
                     uiState.errorMessage?.let { error ->
-                        Text(
-                            text = error,
-                            color = MaterialTheme.colorScheme.error,
-                            style = MaterialTheme.typography.labelSmall,
+                        Surface(
                             modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
-                            textAlign = TextAlign.Center
-                        )
+                            color = MaterialTheme.colorScheme.errorContainer,
+                            shape = RoundedCornerShape(8.dp)
+                        ) {
+                            Text(
+                                text = error,
+                                color = MaterialTheme.colorScheme.onErrorContainer,
+                                style = MaterialTheme.typography.labelSmall,
+                                modifier = Modifier.padding(12.dp),
+                                textAlign = TextAlign.Center
+                            )
+                        }
                     }
 
                     Text(

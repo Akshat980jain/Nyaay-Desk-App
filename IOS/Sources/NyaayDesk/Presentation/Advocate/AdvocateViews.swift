@@ -15,6 +15,20 @@ struct AdvocateDashboardView_Full: View {
                     // ── TOP NAV ───────────────────────────────────────────
                     NyaayTopBarView(onLogout: {})
 
+                    // ── ERROR DISPLAY ─────────────────────────────────────
+                    if let error = vm.errorMessage {
+                        HStack(spacing: 12) {
+                            Image(systemName: "exclamationmark.triangle.fill").foregroundStyle(.red)
+                            Text(error).font(.system(size: 13)).foregroundStyle(.red)
+                        }
+                        .padding(12)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(Color.red.opacity(0.1))
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                        .padding(.horizontal, 16)
+                        .padding(.top, 8)
+                    }
+
                     // ── OVERVIEW HEADER ───────────────────────────────────
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Overview")

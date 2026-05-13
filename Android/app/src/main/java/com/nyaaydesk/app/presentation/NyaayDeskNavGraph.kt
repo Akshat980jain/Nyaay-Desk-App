@@ -46,11 +46,11 @@ fun NyaayDeskNavGraph(
         composable(Screen.RoleSelect.route) {
             LoginRoleSelectScreen(
                 onLoginSuccess = { role ->
-                    when (role) {
-                        "Litigant" -> navController.navigate(Screen.LitigantMain.route) { popUpTo(Screen.RoleSelect.route) { inclusive = true } }
-                        "Advocate" -> navController.navigate(Screen.AdvocateMain.route) { popUpTo(Screen.RoleSelect.route) { inclusive = true } }
-                        "Clerk"    -> navController.navigate(Screen.ClerkMain.route) { popUpTo(Screen.RoleSelect.route) { inclusive = true } }
-                        "Admin"    -> navController.navigate(Screen.AdminMain.route) { popUpTo(Screen.RoleSelect.route) { inclusive = true } }
+                    when (role.lowercase()) {
+                        "litigant" -> navController.navigate(Screen.LitigantMain.route) { popUpTo(Screen.RoleSelect.route) { inclusive = true } }
+                        "advocate" -> navController.navigate(Screen.AdvocateMain.route) { popUpTo(Screen.RoleSelect.route) { inclusive = true } }
+                        "clerk"    -> navController.navigate(Screen.ClerkMain.route) { popUpTo(Screen.RoleSelect.route) { inclusive = true } }
+                        "admin"    -> navController.navigate(Screen.AdminMain.route) { popUpTo(Screen.RoleSelect.route) { inclusive = true } }
                     }
                 },
                 onNavigateToRegistration = {

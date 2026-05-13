@@ -58,6 +58,23 @@ fun AdvocateDashboardScreen(
             // ── TOP NAV ──────────────────────────────────────────────────
             item { NyaayTopBar(onLogout = { viewModel.signOut() }) }
 
+            // ── ERROR DISPLAY ───────────────────────────────────────────
+            uiState.errorMessage?.let { error ->
+                item {
+                    Surface(
+                        modifier = Modifier.fillMaxWidth().padding(16.dp),
+                        color = MaterialTheme.colorScheme.errorContainer,
+                        shape = RoundedCornerShape(8.dp)
+                    ) {
+                        Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
+                            Icon(Icons.Default.ErrorOutline, null, tint = MaterialTheme.colorScheme.error)
+                            Spacer(Modifier.width(8.dp))
+                            Text(error, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onErrorContainer)
+                        }
+                    }
+                }
+            }
+
             // ── OVERVIEW HEADER ──────────────────────────────────────────
             item {
                 Column(modifier = Modifier.padding(16.dp, 20.dp, 16.dp, 0.dp)) {

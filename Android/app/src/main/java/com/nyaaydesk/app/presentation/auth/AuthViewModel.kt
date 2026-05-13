@@ -101,7 +101,7 @@ class AuthViewModel @Inject constructor(
                     errorMessage = when {
                         e.message?.contains("Invalid login") == true -> "Incorrect email or password."
                         e.message?.contains("Email not confirmed") == true -> "Please verify your email first."
-                        else -> "Login failed. Please try again."
+                        else -> "Login failed: ${e.message ?: "Please check your internet connection"}"
                     }
                 )
             }
